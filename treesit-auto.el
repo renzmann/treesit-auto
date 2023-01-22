@@ -102,7 +102,7 @@ remap the tree-sitter variant back to the default mode."
          (name-mode-bound-p (fboundp name-mode))
          (skip-remap-p (and fallback-assoc
                             (not (cdr fallback-assoc)))))
-    (and (not (skip-remap-p))
+    (and (not skip-remap-p)
          (fboundp name-ts-mode)
          (if (treesit-ready-p name t)
              (add-to-list 'major-mode-remap-alist `(,name-mode . ,name-ts-mode))
