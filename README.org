@@ -16,6 +16,9 @@ Then, in your Emacs configuration file (=~/.emacs.d/init.el=),
     :demand t)
 #+end_src
 
+If you have modified =treesit-language-source-alist= through =setq=, then it is
+recommended to put this =use-package= delcaration AFTER that =setq=.
+
 Once I learn how to publish to MELPA and ELPA, then I will update the
 installation instructions accordingly.
 
