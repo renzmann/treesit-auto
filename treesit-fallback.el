@@ -28,33 +28,34 @@
 ;;; Code:
 (require 'treesit)
 
-(setq treesit-fallback--language-source-alist
-      '((bash "https://github.com/tree-sitter/tree-sitter-bash")
-        (c "https://github.com/tree-sitter/tree-sitter-c")
-        (cmake "https://github.com/uyha/tree-sitter-cmake")
-        (common-lisp "https://github.com/theHamsta/tree-sitter-commonlisp")
-        (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
-        (css "https://github.com/tree-sitter/tree-sitter-css")
-        (csharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
-        (elisp "https://github.com/Wilfred/tree-sitter-elisp")
-        (go "https://github.com/tree-sitter/tree-sitter-go")
-        (go-mod "https://github.com/camdencheek/tree-sitter-go-mod")
-        (html "https://github.com/tree-sitter/tree-sitter-html")
-        (js . ("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
-        (json "https://github.com/tree-sitter/tree-sitter-json")
-        (lua "https://github.com/Azganoth/tree-sitter-lua")
-        (make "https://github.com/alemuller/tree-sitter-make")
-        (markdown "https://github.com/ikatyang/tree-sitter-markdown")
-        (python "https://github.com/tree-sitter/tree-sitter-python")
-        (r "https://github.com/r-lib/tree-sitter-r")
-        (rust "https://github.com/tree-sitter/tree-sitter-rust")
-        (toml "https://github.com/tree-sitter/tree-sitter-toml")
-        (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
-        (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
-        (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+(defvar treesit-fallback--language-source-alist
+  '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+    (c "https://github.com/tree-sitter/tree-sitter-c")
+    (cmake "https://github.com/uyha/tree-sitter-cmake")
+    (common-lisp "https://github.com/theHamsta/tree-sitter-commonlisp")
+    (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+    (css "https://github.com/tree-sitter/tree-sitter-css")
+    (csharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
+    (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+    (go "https://github.com/tree-sitter/tree-sitter-go")
+    (go-mod "https://github.com/camdencheek/tree-sitter-go-mod")
+    (html "https://github.com/tree-sitter/tree-sitter-html")
+    (js . ("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
+    (json "https://github.com/tree-sitter/tree-sitter-json")
+    (lua "https://github.com/Azganoth/tree-sitter-lua")
+    (make "https://github.com/alemuller/tree-sitter-make")
+    (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+    (python "https://github.com/tree-sitter/tree-sitter-python")
+    (r "https://github.com/r-lib/tree-sitter-r")
+    (rust "https://github.com/tree-sitter/tree-sitter-rust")
+    (toml "https://github.com/tree-sitter/tree-sitter-toml")
+    (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
+    (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
+    (yaml "https://github.com/ikatyang/tree-sitter-yaml"))
+  "Default repository URLs for `treesit-install-language-grammar'.")
 
 (dolist (elt treesit-fallback--language-source-alist)
-        (add-to-list 'treesit-language-source-alist elt t))
+  (add-to-list 'treesit-language-source-alist elt t))
 
 (defcustom treesit-fallback-modes
   (mapcar
@@ -79,13 +80,16 @@ prefix (e.g. `python-ts-mode' will attempt a fallback to
 
 In any case, if the fallback mode does not
 exist (e.g. go-mod-mode is not installed but that would be the
-automatic fallback for go-mod-ts-mode), then no fallback is
+automatic fallback for `go-mod-ts-mode'), then no fallback is
 attempted."
   :type '(alist (symbol) (function))
   :group 'treesit)
 
 (defun treesit-fallback--remap-language-source (language-source)
-  "Add a major mode's corresponding ts mode to major-mode-remap-alist, if it's ready."
+  "Determine mode for LANGUAGE-SOURCE.
+If the grammar is installed, remap the base mode to its
+tree-sitter variant in `major-mode-remap-alist'.  Otherwise,
+remap the tree-sitter variant back to the default mode."
   (let* ((name (car language-source))
          (name-ts-mode (intern (concat (symbol-name name) "-ts-mode")))
          (fallback-assoc (assq name-ts-mode treesit-fallback-modes))
@@ -95,17 +99,18 @@ attempted."
          (name-mode-bound-p (fboundp name-mode))
          (skip-remap-p (and fallback-assoc
                             (not (cdr fallback-assoc)))))
-    (and (fboundp name-ts-mode)
+    (and skip-remap-p
+         (fboundp name-ts-mode)
          (if (treesit-ready-p name t)
              (add-to-list 'major-mode-remap-alist `(,name-mode . ,name-ts-mode))
            (when name-mode-bound-p
              (add-to-list 'major-mode-remap-alist `(,name-ts-mode . ,name-mode)))))))
 
 (defun treesit-fallback-apply-remap ()
-  "Examine installed grammars+modes and adjust `major-mode-remap-alist' accordingly."
+  "Adjust `major-mode-remap-alist' using installed tree-sitter grammars."
   (mapcar 'treesit-fallback--remap-language-source treesit-language-source-alist))
 
-(advice-add 'treesit-install-language-grammar :after (lambda (&rest r) (treesit-fallback-apply-remap)))
+(advice-add 'treesit-install-language-grammar :after (lambda (&rest _r) (treesit-fallback-apply-remap)))
 (treesit-fallback-apply-remap)
 
 (provide 'treesit-fallback)
