@@ -1,0 +1,55 @@
+#+TITLE: treesit-fallback
+#+AUTHOR: Robb Enzmann
+
+Automatically pick between TreeSitter and default major modes in Emacs 29+.
+
+* Installation
+
+#+begin_src example
+M-x package-vc-install RET https://github.com/renzmann/treesit-fallback.git
+#+end_src
+
+Then, in your Emacs configuration file (=~/.emacs.d/init.el=),
+
+#+begin_src emacs-lisp
+  (use-package treesit-fallback
+    :demand t)
+#+end_src
+
+Once I learn how to publish to MELPA and ELPA, then I will update the
+installation instructions accordingly.
+
+* What this package does
+
+Emacs 29, while featuring =treesit.el= and a convenient
+=treesit-install-language-grammar=, [[https://archive.casouri.cc/note/2023/tree-sitter-in-emacs-29/index.html][will not feature an intelligent way to choose]]
+between a default mode, such as =python-mode=, and it's tree-sitter enhanced
+version, =python-ts-mode=, automatically.  This package attempts to remedy that
+by applying these rules:
+
+*1. If the grammar is installed, then switch to the appropriate `-ts-mode`:*
+
+In this case, assuming we open a Python buffer, and the [[https://github.com/tree-sitter/tree-sitter-python][Python tree-sitter
+grammar]] is installed, then
+Emacs will use `python-ts-mode` instead of `python-mode`.
+
+*2. If the grammar is NOT installed, and the user has specified a specific mode
+to use instead:*
+
+This packages exposes a customizable variable `treesit-fallback-modes` that you
+may use to specify a specific mode to use instead of the tree-sitter mode,
+should the grammar not be installed.  For instance, if we apply this:
+
+#+begin_src emacs-lisp
+  (add-to-list 'treesit-fallback-modes '(toml-ts-mode . conf-toml-mode))
+#+end_src
+
+Then, when the TOML grammar is missing, Emacs will use =conf-toml-mode=, instead
+of trying to use =toml-mode=.
+
+**3. If the grammar is NOT installed and the user has NOT specified a specific
+   mode to use AND an appropriately named base mode exists, switch to it**
+
+This is the most general case.  If, for example, the Go tree-sitter grammar is
+not installed, but we have installed [[https://github.com/dominikh/go-mode.el][go-mode]], then Emacs will use that instead
+of =go-ts-mode=, since they share the same =go-= prefix.
