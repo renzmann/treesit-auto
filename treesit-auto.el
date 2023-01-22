@@ -95,7 +95,7 @@ tree-sitter variant in `major-mode-remap-alist'.  Otherwise,
 remap the tree-sitter variant back to the default mode."
   (let* ((name (car language-source))
          (name-ts-mode (intern (concat (symbol-name name) "-ts-mode")))
-         (fallback-assoc (assq name-ts-mode treesit-fallback-modes))
+         (fallback-assoc (assq name-ts-mode treesit-auto-fallback-alist))
          (fallback-name (cdr fallback-assoc))
          (name-mode (or fallback-name
                         (intern (concat (symbol-name name) "-mode"))))
