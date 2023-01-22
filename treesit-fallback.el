@@ -1,10 +1,10 @@
-;;; treesit-fallback.el --- Fallback from `-ts-mode' to another major mode -*- lexical-binding: t -*-
+;;; treesit-auto.el --- Automatically use tree-sitter enhacned modes, if available  -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2022 Robert Enzmann
 
 ;; Author: Robb Enzmann <robbenzmann@gmail.com>
-;; Keywords: treesitter mode fallback
-;; URL: https://github.com/renzmann/treesit-fallback
+;; Keywords: treesitter auto automatic major mode fallback
+;; URL: https://github.com/renzmann/treesit-auto
 ;; Version: 0.1.0
 ;; Package-Requires: ((emacs "29.06"))
 
@@ -31,7 +31,7 @@
 ;;; Code:
 (require 'treesit)
 
-(defvar treesit-fallback--language-source-alist
+(defvar treesit-auto--language-source-alist
   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
     (c "https://github.com/tree-sitter/tree-sitter-c")
     (cmake "https://github.com/uyha/tree-sitter-cmake")
@@ -57,10 +57,10 @@
     (yaml "https://github.com/ikatyang/tree-sitter-yaml"))
   "Default repository URLs for `treesit-install-language-grammar'.")
 
-(dolist (elt treesit-fallback--language-source-alist)
+(dolist (elt treesit-auto--language-source-alist)
   (add-to-list 'treesit-language-source-alist elt t))
 
-(defcustom treesit-fallback-modes
+(defcustom treesit-auto-fallback-alist
   (mapcar
    (lambda (elt)
      (cons (purecopy (car elt)) (cdr elt)))
@@ -88,7 +88,7 @@ attempted."
   :type '(alist (symbol) (function))
   :group 'treesit)
 
-(defun treesit-fallback--remap-language-source (language-source)
+(defun treesit-auto--remap-language-source (language-source)
   "Determine mode for LANGUAGE-SOURCE.
 If the grammar is installed, remap the base mode to its
 tree-sitter variant in `major-mode-remap-alist'.  Otherwise,
@@ -109,12 +109,12 @@ remap the tree-sitter variant back to the default mode."
            (when name-mode-bound-p
              (add-to-list 'major-mode-remap-alist `(,name-ts-mode . ,name-mode)))))))
 
-(defun treesit-fallback-apply-remap ()
+(defun treesit-auto-apply-remap ()
   "Adjust `major-mode-remap-alist' using installed tree-sitter grammars."
-  (mapcar 'treesit-fallback--remap-language-source treesit-language-source-alist))
+  (mapcar 'treesit-auto--remap-language-source treesit-language-source-alist))
 
-(advice-add 'treesit-install-language-grammar :after (lambda (&rest _r) (treesit-fallback-apply-remap)))
-(treesit-fallback-apply-remap)
+(advice-add 'treesit-install-language-grammar :after (lambda (&rest _r) (treesit-auto-apply-remap)))
+(treesit-auto-apply-remap)
 
-(provide 'treesit-fallback)
-;;; treesit-fallback.el ends here
+(provide 'treesit-auto)
+;;; treesit-auto.el ends here
