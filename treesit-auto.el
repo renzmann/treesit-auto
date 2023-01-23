@@ -6,7 +6,7 @@
 ;; Keywords: treesitter auto automatic major mode fallback
 ;; URL: https://github.com/renzmann/treesit-auto.git
 ;; Version: 0.1.4
-;; Package-Requires: ((emacs "29.06"))
+;; Package-Requires: ((emacs "29.0"))
 
 ;; This file is not part of GNU Emacs.
 
