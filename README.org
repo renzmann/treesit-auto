@@ -6,7 +6,7 @@ Automatically pick between TreeSitter and default major modes in Emacs 29+.
 * Installation
 
 #+begin_src example
-M-x package-vc-install RET https://github.com/renzmann/treesit-fallback.git
+M-x package-vc-install RET https://github.com/renzmann/treesit-auto.git
 #+end_src
 
 Then, in your Emacs configuration file (=~/.emacs.d/init.el=),
