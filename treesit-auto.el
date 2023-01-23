@@ -1,6 +1,6 @@
 ;;; treesit-auto.el --- Automatically use tree-sitter enhacned modes, if available  -*- lexical-binding: t -*-
 
-;; Copyright (C) 2022 Robert Enzmann
+;; Copyright (C) 2023 Robert Enzmann
 
 ;; Author: Robb Enzmann <robbenzmann@gmail.com>
 ;; Keywords: treesitter auto automatic major mode fallback
@@ -30,35 +30,6 @@
 
 ;;; Code:
 (require 'treesit)
-
-(defvar treesit-auto--language-source-alist
-  '((bash "https://github.com/tree-sitter/tree-sitter-bash")
-    (c "https://github.com/tree-sitter/tree-sitter-c")
-    (cmake "https://github.com/uyha/tree-sitter-cmake")
-    (common-lisp "https://github.com/theHamsta/tree-sitter-commonlisp")
-    (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
-    (css "https://github.com/tree-sitter/tree-sitter-css")
-    (csharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
-    (elisp "https://github.com/Wilfred/tree-sitter-elisp")
-    (go "https://github.com/tree-sitter/tree-sitter-go")
-    (go-mod "https://github.com/camdencheek/tree-sitter-go-mod")
-    (html "https://github.com/tree-sitter/tree-sitter-html")
-    (js . ("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
-    (json "https://github.com/tree-sitter/tree-sitter-json")
-    (lua "https://github.com/Azganoth/tree-sitter-lua")
-    (make "https://github.com/alemuller/tree-sitter-make")
-    (markdown "https://github.com/ikatyang/tree-sitter-markdown")
-    (python "https://github.com/tree-sitter/tree-sitter-python")
-    (r "https://github.com/r-lib/tree-sitter-r")
-    (rust "https://github.com/tree-sitter/tree-sitter-rust")
-    (toml "https://github.com/tree-sitter/tree-sitter-toml")
-    (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
-    (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
-    (yaml "https://github.com/ikatyang/tree-sitter-yaml"))
-  "Default repository URLs for `treesit-install-language-grammar'.")
-
-(dolist (elt treesit-auto--language-source-alist)
-  (add-to-list 'treesit-language-source-alist elt t))
 
 (defcustom treesit-auto-fallback-alist
   (mapcar
@@ -113,6 +84,10 @@ remap the tree-sitter variant back to the default mode."
 
 (defun treesit-auto-apply-remap ()
   "Adjust `major-mode-remap-alist' using installed tree-sitter grammars."
+
+  (dolist (elt treesit-auto--language-source-alist)
+    (add-to-list 'treesit-language-source-alist elt t))
+
   (mapcar 'treesit-auto--remap-language-source treesit-language-source-alist))
 
 (provide 'treesit-auto)
