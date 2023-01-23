@@ -13,11 +13,21 @@ Then, in your Emacs configuration file (=~/.emacs.d/init.el=),
 
 #+begin_src emacs-lisp
   (use-package treesit-auto
-    :demand t)
+    :demand t
+    :config
+    (treesit-auto-apply-remap))
 #+end_src
 
 If you have modified =treesit-language-source-alist= through =setq=, then it is
-recommended to put this =use-package= delcaration AFTER that =setq=.
+recommended to put this =use-package= delcaration AFTER that =setq=.  Also, if you
+want =treesit-auto-apply-remap= to re-run after installing a grammar with
+=treesit-install-language-grammar=, try advising the function with something like
+this:
+
+#+begin_src emacs-lisp
+  (advice-add 'treesit-install-language-grammar
+              :after (lambda (&rest _r) (treesit-auto-apply-remap)))
+#+end_src
 
 Once I learn how to publish to MELPA and ELPA, then I will update the
 installation instructions accordingly.
@@ -30,7 +40,7 @@ between a default mode, such as =python-mode=, and it's tree-sitter enhanced
 version, =python-ts-mode=, automatically.  This package attempts to remedy that
 by applying these rules:
 
-*1. If the grammar is installed, then switch to the appropriate =-ts-mode=:*
+*1. If the grammar is installed, then switch to the appropriate tree-sitter mode:*
 
 In this case, assuming we open a Python buffer, and the [[https://github.com/tree-sitter/tree-sitter-python][Python tree-sitter
 grammar]] is installed, then Emacs will use =python-ts-mode= instead of

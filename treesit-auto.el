@@ -5,7 +5,7 @@
 ;; Author: Robb Enzmann <robbenzmann@gmail.com>
 ;; Keywords: treesitter auto automatic major mode fallback
 ;; URL: https://github.com/renzmann/treesit-auto.git
-;; Version: 0.1.0
+;; Version: 0.1.1
 ;; Package-Requires: ((emacs "29.06"))
 
 ;; This file is not part of GNU Emacs.
@@ -112,9 +112,6 @@ remap the tree-sitter variant back to the default mode."
 (defun treesit-auto-apply-remap ()
   "Adjust `major-mode-remap-alist' using installed tree-sitter grammars."
   (mapcar 'treesit-auto--remap-language-source treesit-language-source-alist))
-
-(advice-add 'treesit-install-language-grammar :after (lambda (&rest _r) (treesit-auto-apply-remap)))
-(treesit-auto-apply-remap)
 
 (provide 'treesit-auto)
 ;;; treesit-auto.el ends here
