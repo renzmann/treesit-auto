@@ -78,13 +78,15 @@ then a fallback attempt is made to the specified mode.
 
 If a treesitter mode is omitted from the keys of this alist
 entirely, then a fallback is attempted by using the same name
-prefix (e.g. `python-ts-mode' will attempt a fallback to
-`python-mode').
+prefix. For example, `python-ts-mode' will attempt a fallback to
+`python-mode'.
 
-In any case, if the fallback mode does not
-exist (e.g. go-mod-mode is not installed but that would be the
-automatic fallback for `go-mod-ts-mode'), then no fallback is
-attempted."
+In any case, if the fallback mode does not exist, then no
+fallback is attempted.  One example of this would be for
+`go-mod-mode', which would be the automatic fallback for
+`go-mod-ts-mode'.  If `go-mod-mode' isn't installed, then Emacs
+will still use its default behavior of using `go-mod-ts-mode',
+regardless of whether the grammar is installed or not."
   :type '(alist (symbol) (function))
   :group 'treesit)
 
