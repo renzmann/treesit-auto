@@ -49,7 +49,7 @@ then a fallback attempt is made to the specified mode.
 
 If a treesitter mode is omitted from the keys of this alist
 entirely, then a fallback is attempted by using the same name
-prefix. For example, `python-ts-mode' will attempt a fallback to
+prefix.  For example, `python-ts-mode' will attempt a fallback to
 `python-mode'.
 
 In any case, if the fallback mode does not exist, then no
@@ -85,6 +85,7 @@ remap the tree-sitter variant back to the default mode."
 (defun treesit-auto-apply-remap ()
   "Adjust `major-mode-remap-alist' using installed tree-sitter grammars."
 
+  (defvar treesit-auto--language-source-alist)
   (dolist (elt treesit-auto--language-source-alist)
     (add-to-list 'treesit-language-source-alist elt t))
 
