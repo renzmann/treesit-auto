@@ -3,7 +3,7 @@
 ;; Copyright (C) 2023 Robert Enzmann
 
 ;; Author: Robb Enzmann <robbenzmann@gmail.com>
-;; Keywords: treesitter auto automatic major mode fallback
+;; Keywords: treesitter auto automatic major mode fallback convenience
 ;; URL: https://github.com/renzmann/treesit-auto.git
 ;; Version: 0.1.4
 ;; Package-Requires: ((emacs "29.0"))
