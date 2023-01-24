@@ -79,6 +79,18 @@ this:
               :after (lambda (&rest _r) (treesit-auto-apply-remap)))
 #+end_src
 
+** Keep track of your hooks
+
+This package does not modify any of your major mode hooks.  That is, if you have
+functions in =python-mode-hook=, but not in =python-ts-mode-hook=, then your hook
+from =python-mode= will not be applied, assuming =python-ts-mode= is what gets
+loaded.  For major modes in which this is a concern, the current recommendation
+is to address this as part of your configuration.
+
+#+begin_src emacs-lisp
+  (setq python-ts-mode-hook python-mode-hook)
+#+end_src
+
 ** Full example
 
 This is how I configure =treesit-auto= for my own personal use.
