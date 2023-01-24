@@ -75,9 +75,7 @@ the hooks defined for the tree-sitter mode."
   :group 'treesit
   :type '(choice
 	  (const :tag "Don't synchronize hooks" nil)
-	  (const :tag "Union default and tree-sitter hooks" t)
-	  (const :tag "Use default mode's hooks" default)
-          (const :tag "Use tree-sitter mode's hooks" tree-sitter)))
+	  (const :tag "Union default and tree-sitter hooks" t)))
 
 (defvar treesit-auto--language-source-alist
   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
@@ -105,6 +103,17 @@ the hooks defined for the tree-sitter mode."
     (yaml "https://github.com/ikatyang/tree-sitter-yaml"))
   "Default repository URLs for `treesit-install-language-grammar'.")
 
+(defun treesit-auto--add-to-alist-maybe-sync-hook (from-mode to-mode sync)
+  "Add an association in `major-mode-remap-alist' for FROM-MODE to TO-MODE.
+If SYNC is non-nil, then TO-MODEs hooks will be set to the union
+of the hooks for both of these modes."
+  (add-to-list 'major-mode-remap-alist `(,from-mode . ,to-mode))
+  (when sync
+    (let* ((from-mode-hook (intern (concat (symbol-name from-mode) "-hook")))
+            (to-mode-hook (intern (concat (symbol-name to-mode) "-hook"))))
+       (eval
+        `(setq ,to-mode-hook (delete-dups (append ,from-mode-hook ,to-mode-hook)))))))
+
 (defun treesit-auto--remap-language-source (language-source)
   "Determine mode for LANGUAGE-SOURCE.
 If the grammar is installed, remap the base mode to its
@@ -117,18 +126,14 @@ remap the tree-sitter variant back to the default mode."
          (name-mode (or fallback-name
                         (intern (concat (symbol-name name) "-mode"))))
          (name-mode-bound-p (fboundp name-mode))
-         (name-mode-hook (intern (concat (symbol-name name-mode) "-hook")))
-         (name-ts-mode-hook (intern (concat (symbol-name name-ts-mode) "-hook")))
          (skip-remap-p (and fallback-assoc
                             (not (cdr fallback-assoc)))))
     (and (not skip-remap-p)
          (fboundp name-ts-mode)
          (if (treesit-ready-p name t)
-             ;; TODO sync hooks if needed
-             (add-to-list 'major-mode-remap-alist `(,name-mode . ,name-ts-mode))
+             (treesit-auto--add-to-alist-maybe-sync-hook name-mode name-ts-mode treesit-auto-sync-hooks)
            (when name-mode-bound-p
-             ;; TODO sync hooks if needed
-             (add-to-list 'major-mode-remap-alist `(,name-ts-mode . ,name-mode)))))))
+             (treesit-auto--add-to-alist-maybe-sync-hook name-ts-mode name-mode nil))))))
 
 (defun treesit-auto-apply-remap ()
   "Adjust `major-mode-remap-alist' using installed tree-sitter grammars."
