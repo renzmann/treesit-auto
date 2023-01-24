@@ -110,10 +110,8 @@ remap the tree-sitter variant back to the default mode."
 
 (defun treesit-auto-apply-remap ()
   "Adjust `major-mode-remap-alist' using installed tree-sitter grammars."
-
   (dolist (elt treesit-auto--language-source-alist)
     (add-to-list 'treesit-language-source-alist elt t))
-
   (mapcar 'treesit-auto--remap-language-source treesit-language-source-alist))
 
 (provide 'treesit-auto)
