@@ -61,6 +61,24 @@ regardless of whether the grammar is installed or not."
   :type '(alist (symbol) (function))
   :group 'treesit)
 
+(defcustom treesit-auto-sync-hooks nil
+  "How hooks should be handled between default and tree-sitter modes.
+The default, nil, means `treesit-auto' does not attempt any
+synchronization.  Otherwise, `treesit-auto-apply-remap' will
+synchronize hooks in one of three ways, depending on the value of
+this variable.
+
+If t, take the union of hooks defined for the
+default mode and the tree-sitter mode.  If set to `default', use
+the fallback major mode's hooks.  If set to `tree-sitter', use
+the hooks defined for the tree-sitter mode."
+  :group 'treesit
+  :type '(choice
+	  (const :tag "Don't synchronize hooks" nil)
+	  (const :tag "Union default and tree-sitter hooks" t)
+	  (const :tag "Use default mode's hooks" default)
+          (const :tag "Use tree-sitter mode's hooks" tree-sitter)))
+
 (defvar treesit-auto--language-source-alist
   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
     (c "https://github.com/tree-sitter/tree-sitter-c")
@@ -99,13 +117,17 @@ remap the tree-sitter variant back to the default mode."
          (name-mode (or fallback-name
                         (intern (concat (symbol-name name) "-mode"))))
          (name-mode-bound-p (fboundp name-mode))
+         (name-mode-hook (intern (concat (symbol-name name-mode) "-hook")))
+         (name-ts-mode-hook (intern (concat (symbol-name name-ts-mode) "-hook")))
          (skip-remap-p (and fallback-assoc
                             (not (cdr fallback-assoc)))))
     (and (not skip-remap-p)
          (fboundp name-ts-mode)
          (if (treesit-ready-p name t)
+             ;; TODO sync hooks if needed
              (add-to-list 'major-mode-remap-alist `(,name-mode . ,name-ts-mode))
            (when name-mode-bound-p
+             ;; TODO sync hooks if needed
              (add-to-list 'major-mode-remap-alist `(,name-ts-mode . ,name-mode)))))))
 
 (defun treesit-auto-apply-remap ()
