@@ -35,8 +35,7 @@ In this case, assuming we open a Python buffer, and the [[https://github.com/tre
 grammar]] is installed, then Emacs will use =python-ts-mode= instead of
 =python-mode=.
 
-*2. If the grammar is NOT installed, and the user has specified a mode to use
-instead:*
+*2. If the grammar is NOT installed, and the user has specified a fallback:*
 
 This package exposes a customizable variable =treesit-auto-fallback-alist= that
 lets you pick the fallback modes by name.  For instance, if we apply this:
