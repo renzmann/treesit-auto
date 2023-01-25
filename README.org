@@ -5,7 +5,7 @@ Automatically pick between TreeSitter and default major modes in Emacs 29+.
 
 * Installation
 
-This package is not on ELPA/MELPA yet.  To install it, you will need to copy 
+This package is not on ELPA/MELPA yet.  To install it, you will need to copy
 =treesit-auto.el= to somewhere on your =load-path=, or use the new
 =package-vc-install=.
 
@@ -35,22 +35,21 @@ In this case, assuming we open a Python buffer, and the [[https://github.com/tre
 grammar]] is installed, then Emacs will use =python-ts-mode= instead of
 =python-mode=.
 
-*2. If the grammar is NOT installed, and the user has specified a specific mode
-to use instead:*
+*2. If the grammar is NOT installed, and the user has specified a mode to use
+instead:*
 
-This packages exposes a customizable variable =treesit-auto-fallback-alist= that you
-may use to specify a specific mode to use instead of the tree-sitter mode,
-should the grammar not be installed.  For instance, if we apply this:
+This package exposes a customizable variable =treesit-auto-fallback-alist= that
+lets you pick the fallback modes by name.  For instance, if we apply this:
 
 #+begin_src emacs-lisp
   (add-to-list 'treesit-auto-fallback-alist '(toml-ts-mode . conf-toml-mode))
 #+end_src
 
 Then, when the TOML grammar is missing, Emacs will use =conf-toml-mode=, instead
-of trying to use =toml-mode=.
+of trying to fall back to =toml-mode=.
 
-**3. If the grammar is NOT installed and the user has NOT specified a specific
-   mode to use AND an appropriately named base mode exists, switch to it**
+**3. If the grammar is NOT installed and the user has NOT specified a fallback
+    mode AND an appropriately named base mode exists, switch to it**
 
 This is the most general case.  If, for example, the Go tree-sitter grammar is
 not installed, but we have installed [[https://github.com/dominikh/go-mode.el][go-mode]], then Emacs will use that instead
