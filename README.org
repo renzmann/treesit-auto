@@ -5,6 +5,10 @@ Automatically pick between TreeSitter and default major modes in Emacs 29+.
 
 * Installation
 
+This package is not on ELPA/MELPA yet.  To install it, you will need to copy 
+=treesit-auto.el= to somewhere on your =load-path=, or use the new
+=package-vc-install=.
+
 #+begin_src example
 M-x package-vc-install RET https://github.com/renzmann/treesit-auto.git
 #+end_src
@@ -16,9 +20,6 @@ Then, in your Emacs configuration file (=~/.emacs.d/init.el=),
     :config
     (treesit-auto-apply-remap))
 #+end_src
-
-Once I learn how to publish to MELPA and ELPA, then I will update the
-installation instructions accordingly.
 
 * What this package does
 
