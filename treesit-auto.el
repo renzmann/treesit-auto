@@ -63,11 +63,14 @@ regardless of whether the grammar is installed or not."
 
 (defvar treesit-auto--language-source-alist
   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+    (bibtex "https://github.com/latex-lsp/tree-sitter-bibtex")
     (c "https://github.com/tree-sitter/tree-sitter-c")
+    (clojure "https://github.com/sogaiu/tree-sitter-clojure")
     (cmake "https://github.com/uyha/tree-sitter-cmake")
     (common-lisp "https://github.com/theHamsta/tree-sitter-commonlisp")
     (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
     (css "https://github.com/tree-sitter/tree-sitter-css")
+    (css-in-js "https://github.com/orzechowskid/tree-sitter-css-in-js")
     (csharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
     (elisp "https://github.com/Wilfred/tree-sitter-elisp")
     (go "https://github.com/tree-sitter/tree-sitter-go")
@@ -75,6 +78,7 @@ regardless of whether the grammar is installed or not."
     (html "https://github.com/tree-sitter/tree-sitter-html")
     (js . ("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
     (json "https://github.com/tree-sitter/tree-sitter-json")
+    (latex "https://github.com/latex-lsp/tree-sitter-latex")
     (lua "https://github.com/Azganoth/tree-sitter-lua")
     (make "https://github.com/alemuller/tree-sitter-make")
     (markdown "https://github.com/ikatyang/tree-sitter-markdown")

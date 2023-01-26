@@ -5,6 +5,10 @@ Automatically pick between TreeSitter and default major modes in Emacs 29+.
 
 * Installation
 
+This package is not on ELPA/MELPA yet.  To install it, you will need to copy
+=treesit-auto.el= to somewhere on your =load-path=, or use the new
+=package-vc-install=.
+
 #+begin_src example
 M-x package-vc-install RET https://github.com/renzmann/treesit-auto.git
 #+end_src
@@ -13,24 +17,9 @@ Then, in your Emacs configuration file (=~/.emacs.d/init.el=),
 
 #+begin_src emacs-lisp
   (use-package treesit-auto
-    :demand t
     :config
     (treesit-auto-apply-remap))
 #+end_src
-
-If you have modified =treesit-language-source-alist= through =setq=, then it is
-recommended to put this =use-package= delcaration AFTER that =setq=.  Also, if you
-want =treesit-auto-apply-remap= to re-run after installing a grammar with
-=treesit-install-language-grammar=, try advising the function with something like
-this:
-
-#+begin_src emacs-lisp
-  (advice-add 'treesit-install-language-grammar
-              :after (lambda (&rest _r) (treesit-auto-apply-remap)))
-#+end_src
-
-Once I learn how to publish to MELPA and ELPA, then I will update the
-installation instructions accordingly.
 
 * What this package does
 
@@ -46,23 +35,71 @@ In this case, assuming we open a Python buffer, and the [[https://github.com/tre
 grammar]] is installed, then Emacs will use =python-ts-mode= instead of
 =python-mode=.
 
-*2. If the grammar is NOT installed, and the user has specified a specific mode
-to use instead:*
+*2. If the grammar is NOT installed, and the user has specified a fallback:*
 
-This packages exposes a customizable variable =treesit-auto-fallback-alist= that you
-may use to specify a specific mode to use instead of the tree-sitter mode,
-should the grammar not be installed.  For instance, if we apply this:
+This package exposes a customizable variable =treesit-auto-fallback-alist= that
+lets you pick the fallback modes by name.  For instance, if we apply this:
 
 #+begin_src emacs-lisp
   (add-to-list 'treesit-auto-fallback-alist '(toml-ts-mode . conf-toml-mode))
 #+end_src
 
 Then, when the TOML grammar is missing, Emacs will use =conf-toml-mode=, instead
-of trying to use =toml-mode=.
+of trying to fall back to =toml-mode=.
 
-**3. If the grammar is NOT installed and the user has NOT specified a specific
-   mode to use AND an appropriately named base mode exists, switch to it**
+**3. If the grammar is NOT installed and the user has NOT specified a fallback
+    mode AND an appropriately named base mode exists, switch to it**
 
 This is the most general case.  If, for example, the Go tree-sitter grammar is
 not installed, but we have installed [[https://github.com/dominikh/go-mode.el][go-mode]], then Emacs will use that instead
 of =go-ts-mode=, since they share the same =go-= prefix.
+
+* Configuration
+
+If you have modified =treesit-language-source-alist= through =setq=, then it is
+recommended to put any configuration of this package AFTER that =setq=.
+
+Not all default major modes make sense to bump up to a similar tree-sitter mode.
+For example, when /I/ open a =.sh= file, my intent is nearly always to be using it
+with Bash.  This is not the case for everyone, though, so by default this
+package will not replace =sh-mode= with =bash-ts-mode=.  If you do want such a
+remap, simply include a line like this before calling =treesit-auto-apply-remap=:
+
+#+begin_src emacs-lisp
+  (add-to-list 'treesit-auto-fallback-alist '(bash-ts-mode . sh-mode))
+#+end_src
+
+If you want =treesit-auto-apply-remap= to re-run after installing a grammar with
+=treesit-install-language-grammar=, try advising the function with something like
+this:
+
+#+begin_src emacs-lisp
+  (advice-add 'treesit-install-language-grammar
+              :after (lambda (&rest _r) (treesit-auto-apply-remap)))
+#+end_src
+
+** Keep track of your hooks
+
+This package does not modify any of your major mode hooks.  That is, if you have
+functions in =python-mode-hook=, but not in =python-ts-mode-hook=, then your hook
+from =python-mode= will not be applied, assuming =python-ts-mode= is what gets
+loaded.  For major modes in which this is a concern, the current recommendation
+is to address this as part of your configuration.
+
+#+begin_src emacs-lisp
+  (setq python-ts-mode-hook python-mode-hook)
+#+end_src
+
+** Full example
+
+This is how I configure =treesit-auto= for my own personal use.
+
+#+begin_src emacs-lisp
+  (use-package treesit-auto
+    :demand t
+    :config
+    (add-to-list 'treesit-auto-fallback-alist '(bash-ts-mode . sh-mode))
+    (treesit-auto-apply-remap)
+    (advice-add 'treesit-install-language-grammar
+                :after (lambda (&rest _r) (treesit-auto-apply-remap))))
+#+end_src
