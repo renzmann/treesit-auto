@@ -61,6 +61,11 @@ regardless of whether the grammar is installed or not."
   :type '(alist (symbol) (function))
   :group 'treesit)
 
+(defcustom treesit-auto-install-p 't
+  "If non-nil, then treesit-auto will prompt the user to install a
+language grammar if it detects it is in a `ts-mode' and that the
+grammar for that mode is missing.")
+
 (defvar treesit-auto--language-source-alist
   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
     (bibtex "https://github.com/latex-lsp/tree-sitter-bibtex")
@@ -112,11 +117,62 @@ remap the tree-sitter variant back to the default mode."
            (when name-mode-bound-p
              (add-to-list 'major-mode-remap-alist `(,name-ts-mode . ,name-mode)))))))
 
+(defun treesit-auto--prompt-to-install-package (lang)
+  "Asks the user if they want to install a treesitter grammar.
+
+Returns `non-nil' if install was completed without error."
+  (if-let* ((repo (alist-get lang treesit-language-source-alist))
+            (response (yes-or-no-p (format "Tree Sitter grammar for %s is missing. Would you like to install it from: %s"
+                                           (symbol-name lang)
+                                           (car repo)))))
+      ;; treesit-install-language-grammar will return nil if the
+      ;; operation succeeded and 't if a warning was tossed. I don't
+      ;; think this is by design but just because of the way
+      ;; `display-warning' works.
+      (not (treesit-install-language-grammar lang))))
+
+;;;###autoload
+(defun treesit-auto--maybe-install-grammar ()
+  "Tries to install the grammar matching the current major-mode.
+
+If the tree-sitter grammar is missing for the current major mode,
+it will prompt the user if they want to install it from the
+currently registered repository. If the user chooses to install
+the grammar it will then re-enable the current major-mode.
+"
+  (when-let* ((mode (symbol-name major-mode))
+              (lang (and (string-match "\\(.*\\)-ts-mode$" mode)
+                         (intern (replace-regexp-in-string
+                                  "\\(.*\\)-ts-mode$" "\\1"
+                                  mode))))
+              (_grammar-missing (not (treesit-ready-p lang 't)))
+              (_success (treesit-auto--prompt-to-install-package lang)))
+    ;; We need to rerun the current major mode after a successful
+    ;; install because we only hook into after the major-mode has
+    ;; finished setup. So, if the install fails it will fail to load
+    ;; or fallback to the mode defined in the remap-alist. But, if it
+    ;; succeeds we assume the user wants to use the `ts-mode'.
+    (funcall major-mode)))
+
+
+;;;###autoload
 (defun treesit-auto-apply-remap ()
   "Adjust `major-mode-remap-alist' using installed tree-sitter grammars."
   (dolist (elt treesit-auto--language-source-alist)
     (add-to-list 'treesit-language-source-alist elt t))
   (mapcar #'treesit-auto--remap-language-source treesit-language-source-alist))
+
+;;;###autoload
+(define-minor-mode treesit-auto-minor-mode
+  "Toggle treesit-auto-minor-mode."
+  :lighter " treesit-auto"
+  :global 't
+  (if treesit-auto-minor-mode
+      (progn
+        (and treesit-auto-install-p (add-hook 'prog-mode-hook #'treesit-auto--maybe-install-grammar))
+        (treesit-auto-apply-remap))
+    (and treesit-auto-install-p
+         (remove-hook 'prog-mode-hook #'treesit-auto--maybe-install-grammar))))
 
 (provide 'treesit-auto)
 ;;; treesit-auto.el ends here
