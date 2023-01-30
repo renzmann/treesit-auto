@@ -1,6 +1,9 @@
 #+TITLE: treesit-auto
 #+AUTHOR: Robb Enzmann
 
+[[https://melpa.org/#/treesit-auto][file:https://melpa.org/packages/treesit-auto-badge.svg]]
+[[https://stable.melpa.org/#/treesit-auto][file:https://stable.melpa.org/packages/treesit-auto-badge.svg]]
+
 Automatically pick between TreeSitter and default major modes in Emacs 29+.
 
 * Installation
