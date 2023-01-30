@@ -62,11 +62,9 @@ regardless of whether the grammar is installed or not."
   :group 'treesit)
 
 (defcustom treesit-auto-install nil
-  "If set to `t' or `prompt', treesit-auto will attempt to install the
-appropriate grammar for a given `ts-mode', if the grammar is
-missing from `treesit-extra-load-path'. If set to `prompt'
-treesit-auto will confirm with the user before attempting to
-download the grammar."
+  "If non-nil auto install the missing grammar for the current `ts-mode'.
+If set to `prompt' treesit-auto will confirm with the user before
+downloading and installing the grammar."
   :type '(choice (const :tag "Yes" t)
                  (const :tag "No" nil)
                  (const :tag "Ask" prompt))
@@ -124,16 +122,16 @@ remap the tree-sitter variant back to the default mode."
              (add-to-list 'major-mode-remap-alist `(,name-ts-mode . ,name-mode)))))))
 
 (defun treesit-auto--prompt-to-install-package (lang &optional ignore-prompt)
-  "Asks the user if they want to install a treesitter grammar for `lang'.
+  "Ask the user if they want to install a treesitter grammar for `LANG'.
 
-If `ignore-prompt' is set to true, no prompt will be given and we
+If `IGNORE-PROMPT' is set to true, no prompt will be given and we
 will try to install the tree-sitter grammar as long as a
 repository can be found in `treesit-language-source-alist'.
 
 Returns `non-nil' if install was completed without error."
   (if-let* ((repo (alist-get lang treesit-language-source-alist))
             (response (or ignore-prompt
-                          (yes-or-no-p (format "Tree Sitter grammar for %s is missing. Would you like to install it from: %s"
+                          (yes-or-no-p (format "Tree Sitter grammar for %s is missing.  Would you like to install it from: %s?"
                                                (symbol-name lang)
                                                (car repo))))))
       ;; treesit-install-language-grammar will return nil if the
@@ -144,27 +142,25 @@ Returns `non-nil' if install was completed without error."
         (message "Installing the tree-sitter grammar for %s" lang)
         (not (treesit-install-language-grammar lang)))))
 
-;;;###autoload
 (defun treesit-auto--maybe-install-grammar ()
-  "Tries to install the grammar matching the current major-mode.
+  "Try to install the grammar matching the current major-mode.
 
 If the tree-sitter grammar is missing for the current major mode,
 it will prompt the user if they want to install it from the
-currently registered repository. If the user chooses to install
-the grammar it will then re-enable the current major-mode.
-"
+currently registered repository.  If the user chooses to install
+the grammar it will then re-enable the current major-mode."
   (when-let* ((mode (symbol-name major-mode))
               (lang (and (string-match "\\(.*\\)-ts-mode$" mode)
                          (intern (replace-regexp-in-string
                                   "\\(.*\\)-ts-mode$" "\\1"
                                   mode))))
-              (_grammar-missing (not (treesit-ready-p lang 't)))
-              (_success (and
-                         treesit-auto-install
-                         (treesit-auto--prompt-to-install-package lang
-                                                                  (not
-                                                                   (equal treesit-auto-install
-                                                                          'prompt))))))
+              ((not (treesit-ready-p lang 't)))
+              ((and
+                treesit-auto-install
+                (treesit-auto--prompt-to-install-package lang
+                                                         (not
+                                                          (equal treesit-auto-install
+                                                                 'prompt))))))
     ;; We need to rerun the current major mode after a successful
     ;; install because we only hook into after the major-mode has
     ;; finished setup. So, if the install fails it will fail to load
@@ -183,6 +179,7 @@ the grammar it will then re-enable the current major-mode.
 (define-minor-mode treesit-auto-minor-mode
   "Toggle treesit-auto-minor-mode."
   :lighter " treesit-auto"
+  :group 'treesit
   :global 't
   (if treesit-auto-minor-mode
       (progn
