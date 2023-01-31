@@ -129,7 +129,7 @@ Returns `non-nil' if install was completed without error."
   (let ((repo (alist-get lang treesit-language-source-alist)))
     (when (cond ((eq t treesit-auto-install) t)
                 ((eq 'prompt treesit-auto-install)
-                 (yes-or-no-p (format "Tree Sitter grammar for %s is missing.  Would you like to install it from: %s?"
+                 (yes-or-no-p (format "Tree-sitter grammar for %s is missing.  Would you like to install it from %s? "
                                       (symbol-name lang)
                                       (car repo))))
                 (t) nil)
