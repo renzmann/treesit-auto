@@ -100,6 +100,16 @@ downloading and installing the grammar."
     (yaml "https://github.com/ikatyang/tree-sitter-yaml"))
   "Default repository URLs for `treesit-install-language-grammar'.")
 
+(defun treesit-auto--install-langs ()
+  "Build a list of all modes ending with `-ts-mode' as strings."
+  (let ((result '()))
+    (mapatoms (lambda (elt)
+                (when-let* ((name (symbol-name elt))
+                            (match (string-match "-ts-mode$" name))
+                            (no-internals (not (string-match "--" name))))
+                  (push name result))))
+    result))
+
 (defun treesit-auto--remap-language-source (language-source)
   "Determine mode for LANGUAGE-SOURCE.
 If the grammar is installed, remap the base mode to its
