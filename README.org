@@ -1,6 +1,7 @@
 #+TITLE: treesit-auto
 #+AUTHOR: Robb Enzmann
 
+#+html: <a href="https://www.gnu.org/software/emacs/"><img alt="GNU Emacs" src="https://github.com/minad/corfu/blob/screenshots/emacs.svg?raw=true"/></a>
 [[https://melpa.org/#/treesit-auto][file:https://melpa.org/packages/treesit-auto-badge.svg]]
 [[https://stable.melpa.org/#/treesit-auto][file:https://stable.melpa.org/packages/treesit-auto-badge.svg]]
 
