@@ -192,6 +192,10 @@ the grammar it will then re-enable the current major-mode."
     (add-to-list 'treesit-language-source-alist elt t))
   (mapcar #'treesit-auto--remap-language-source treesit-language-source-alist))
 
+(defun treesit-auto--install-language-grammar-wrapper (&rest _r)
+  "Run `treesit-auto-apply-remap' after `treesit-install-language-grammar'."
+  (treesit-auto-apply-remap))
+
 ;;;###autoload
 (define-minor-mode global-treesit-auto-mode
   "Toggle `global-treesit-auto-mode'."
@@ -200,8 +204,11 @@ the grammar it will then re-enable the current major-mode."
   (if global-treesit-auto-mode
       (progn
         (add-hook 'prog-mode-hook #'treesit-auto--maybe-install-grammar)
+        (advice-add 'treesit-install-language-grammar
+		:after #'treesit-auto--install-language-grammar-wrapper)
         (treesit-auto-apply-remap))
-    (remove-hook 'prog-mode-hook #'treesit-auto--maybe-install-grammar)))
+    (remove-hook 'prog-mode-hook #'treesit-auto--maybe-install-grammar)
+    (advice-remove 'treesit-install-language-grammar #'treesit-auto--install-language-grammar-wrapper)))
 
 (provide 'treesit-auto)
 ;;; treesit-auto.el ends here
