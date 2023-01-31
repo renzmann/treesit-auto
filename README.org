@@ -28,7 +28,7 @@ Then, in your Emacs configuration file (=~/.emacs.d/init.el=),
 #+begin_src emacs-lisp
   (use-package treesit-auto
     :config
-    (treesit-auto-apply-remap))
+    (global-treesit-auto-mode))
 #+end_src
 
 * What this package does
@@ -57,18 +57,48 @@ lets you pick the fallback modes by name.  For instance, if we apply this:
 Then, when the TOML grammar is missing, Emacs will use =conf-toml-mode=, instead
 of trying to fall back to =toml-mode=.
 
-**3. If the grammar is NOT installed and the user has NOT specified a fallback
-    mode AND an appropriately named base mode exists, switch to it**
+*3. If the grammar is NOT installed and the user has NOT specified a fallback mode AND an appropriately named base mode exists, switch to it*
 
 This is the most general case.  If, for example, the Go tree-sitter grammar is
 not installed, but we have installed [[https://github.com/dominikh/go-mode.el][go-mode]], then Emacs will use that instead
-of =go-ts-mode=, since they share the same =go-= prefix.
+of =go-ts-mode=, since they share the same =go-= prefix.  See the section for
+[[Automatically install grammars if they are missing][configuration for treesit-auto-install]].
+
+*4. If the grammar is NOT installed, but we activate a -ts-mode anyway:*
+
+Check the value of =treesit-auto-install=, and either ignore the issue, prompt the
+user for action, or attempt an install of the grammar automatically.  See
 
 * Configuration
 
 If you have modified =treesit-language-source-alist= through =setq=, then it is
 recommended to put any configuration of this package AFTER that =setq=.
 
+** Automatically install grammars if they are missing
+The =treesit-auto-install= variable controls whether a grammar should be installed
+automatically when activating a tree-sitter mode.
+
+1. =nil=, the default, means =treesit-auto= won't try to install anything
+2. =t= means =treesit-auto= should always try to clone and install a gramar when missing
+3. ='prompt= will cause a yes/no prompt to appear in the minibuffer before
+   attempting installation
+
+#+begin_src emacs-lisp
+  (setq treesit-auto-install 'prompt)
+#+end_src
+
+Then, supposing I don't have =libtree-sitter-python.so= (or its equivalent) under
+=~/.emacs.d/tree-sitter= or anywhere else in =treesit-extra-load-path=, then calling
+=M-x python-ts-mode= will display this prompt:
+
+#+begin_example
+  Tree-sitter grammar for python is missing.  Would you like to install it from https://github.com/tree-sitter/tree-sitter-python? (yes/no)
+#+end_example
+
+Responding with "yes" will use =treesit-install-langauge-grammar= to go fetch and
+compile the missing grammar.
+
+** When major mode names don't match
 Not all default major modes make sense to bump up to a similar tree-sitter mode.
 For example, when /I/ open a =.sh= file, my intent is nearly always to be using it
 with Bash.  This is not the case for everyone, though, so by default this
@@ -79,6 +109,7 @@ remap, simply include a line like this before calling =treesit-auto-apply-remap=
   (add-to-list 'treesit-auto-fallback-alist '(bash-ts-mode . sh-mode))
 #+end_src
 
+** Refresh major mode remaps after installing a grammar
 If you want =treesit-auto-apply-remap= to re-run after installing a grammar with
 =treesit-install-language-grammar=, try advising the function with something like
 this:
@@ -89,7 +120,6 @@ this:
 #+end_src
 
 ** Keep track of your hooks
-
 This package does not modify any of your major mode hooks.  That is, if you have
 functions in =python-mode-hook=, but not in =python-ts-mode-hook=, then your hook
 from =python-mode= will not be applied, assuming =python-ts-mode= is what gets
@@ -101,15 +131,15 @@ is to address this as part of your configuration.
 #+end_src
 
 ** Full example
-
 This is how I configure =treesit-auto= for my own personal use.
 
 #+begin_src emacs-lisp
-  (use-package treesit-auto
-    :demand t
-    :config
-    (add-to-list 'treesit-auto-fallback-alist '(bash-ts-mode . sh-mode))
-    (treesit-auto-apply-remap)
-    (advice-add 'treesit-install-language-grammar
-                :after (lambda (&rest _r) (treesit-auto-apply-remap))))
+    (use-package treesit-auto
+      :demand t
+      :config
+      (add-to-list 'treesit-auto-fallback-alist '(bash-ts-mode . sh-mode))
+      (setq treesit-auto-install 'prompt)
+      (advice-add 'treesit-install-language-grammar
+		  :after (lambda (&rest _r) (treesit-auto-apply-remap)))
+      (global-treesit-auto-mode))
 #+end_src
