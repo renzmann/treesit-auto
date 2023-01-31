@@ -123,9 +123,7 @@ remap the tree-sitter variant back to the default mode."
 
 (defun treesit-auto--prompt-to-install-package (lang)
   "Ask the user if they want to install a treesitter grammar for `LANG'.
-If `IGNORE-PROMPT' is set to true, no prompt will be given and we
-will try to install the tree-sitter grammar as long as a
-repository can be found in `treesit-language-source-alist'.
+
 Returns `non-nil' if install was completed without error."
 
   (let ((repo (alist-get lang treesit-language-source-alist)))
@@ -137,9 +135,10 @@ Returns `non-nil' if install was completed without error."
                 (t) nil)
       (message "Installing the tree-sitter grammar for %s" lang)
       ;; treesit-install-language-grammar will return nil if the
-      ;; operation succeeded and 't if a warning was tossed. I don't
-      ;; think this is by design but just because of the way
-      ;; `display-warning' works.
+      ;; operation succeeded and 't if a warning was sent to the
+      ;; warning buffer. I don't think this is by design but just
+      ;; because of the way `display-warning' works, so this might not
+      ;; work in the future.
       (not (treesit-install-language-grammar lang)))))
 
 (defun treesit-auto--maybe-install-grammar ()
@@ -157,10 +156,7 @@ the grammar it will then re-enable the current major-mode."
               ((not (treesit-ready-p lang 't)))
               ((and
                 treesit-auto-install
-                (treesit-auto--prompt-to-install-package lang
-                                                         (not
-                                                          (equal treesit-auto-install
-                                                                 'prompt))))))
+                (treesit-auto--prompt-to-install-package lang))))
     ;; We need to rerun the current major mode after a successful
     ;; install because we only hook into after the major-mode has
     ;; finished setup. So, if the install fails it will fail to load
