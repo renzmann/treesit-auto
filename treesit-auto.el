@@ -109,6 +109,13 @@ downloading and installing the grammar."
                             (no-internals (not (string-match "--" name))))
                   (push name result))))
     result))
+;; TODO Now, if any of these `-ts-mode's appear as a car in
+;; `major-mode-remap-alist', that means we're missing its grammar, and when
+;; visiting the cdr, should check the auto-install variable
+;;
+;;  ((yaml-ts-mode . yaml-mode)  ; DO check for auto install on next yaml-mode buffer
+;;   ...
+;;   (go-mode . go-ts-mode)      ; DON'T check for auto install (already have it)
 
 (defun treesit-auto--remap-language-source (language-source)
   "Determine mode for LANGUAGE-SOURCE.
