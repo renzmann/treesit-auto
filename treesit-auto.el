@@ -121,26 +121,26 @@ remap the tree-sitter variant back to the default mode."
            (when name-mode-bound-p
              (add-to-list 'major-mode-remap-alist `(,name-ts-mode . ,name-mode)))))))
 
-(defun treesit-auto--prompt-to-install-package (lang &optional ignore-prompt)
+(defun treesit-auto--prompt-to-install-package (lang)
   "Ask the user if they want to install a treesitter grammar for `LANG'.
-
 If `IGNORE-PROMPT' is set to true, no prompt will be given and we
 will try to install the tree-sitter grammar as long as a
 repository can be found in `treesit-language-source-alist'.
-
 Returns `non-nil' if install was completed without error."
-  (if-let* ((repo (alist-get lang treesit-language-source-alist))
-            (response (or ignore-prompt
-                          (yes-or-no-p (format "Tree Sitter grammar for %s is missing.  Would you like to install it from: %s?"
-                                               (symbol-name lang)
-                                               (car repo))))))
+
+  (let ((repo (alist-get lang treesit-language-source-alist)))
+    (when (cond ((eq t treesit-auto-install) t)
+                ((eq 'prompt treesit-auto-install)
+                 (yes-or-no-p (format "Tree Sitter grammar for %s is missing.  Would you like to install it from: %s?"
+                                      (symbol-name lang)
+                                      (car repo))))
+                (t) nil)
+      (message "Installing the tree-sitter grammar for %s" lang)
       ;; treesit-install-language-grammar will return nil if the
       ;; operation succeeded and 't if a warning was tossed. I don't
       ;; think this is by design but just because of the way
       ;; `display-warning' works.
-      (progn
-        (message "Installing the tree-sitter grammar for %s" lang)
-        (not (treesit-install-language-grammar lang)))))
+      (not (treesit-install-language-grammar lang)))))
 
 (defun treesit-auto--maybe-install-grammar ()
   "Try to install the grammar matching the current major-mode.
@@ -176,12 +176,11 @@ the grammar it will then re-enable the current major-mode."
   (mapcar #'treesit-auto--remap-language-source treesit-language-source-alist))
 
 ;;;###autoload
-(define-minor-mode treesit-auto-minor-mode
-  "Toggle treesit-auto-minor-mode."
-  :lighter " treesit-auto"
+(define-minor-mode global-treesit-auto-mode
+  "Toggle `global-treesit-auto-mode'."
   :group 'treesit
   :global 't
-  (if treesit-auto-minor-mode
+  (if global-treesit-auto-mode
       (progn
         (add-hook 'prog-mode-hook #'treesit-auto--maybe-install-grammar)
         (treesit-auto-apply-remap))
