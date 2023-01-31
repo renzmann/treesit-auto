@@ -115,7 +115,11 @@ downloading and installing the grammar."
 ;;
 ;;  ((yaml-ts-mode . yaml-mode)  ; DO check for auto install on next yaml-mode buffer
 ;;   ...
-;;   (go-mode . go-ts-mode)      ; DON'T check for auto install (already have it)
+;;   (go-mode . go-ts-mode))     ; DON'T check for auto install (already have it)
+;;
+;; This behavior should be patched into `treesit-auto--maybe-install-grammar',
+;; which should also retain its current behavior of auto-installing upon
+;; activation of a missing-grammar `-ts-mode'.
 
 (defun treesit-auto--remap-language-source (language-source)
   "Determine mode for LANGUAGE-SOURCE.
