@@ -123,6 +123,16 @@ downloading and installing the grammar."
         `(,(cdr fallback-assoc) . ,(car fallback-assoc)))
       `(,ts-name .  ,(treesit-auto--string-convert-ts-name (symbol-name ts-name)))))
 
+(defun treesit-auto--available-alist ()
+  "Build an alist of available tree-sitter modes paired with original modes."
+  (mapcar 'treesit-auto--get-assoc (treesit-auto--available-modes)))
+
+(defun treesit-auto--lang (mode)
+  "Determine the tree-sitter language symbol for MODE.
+For both `python-mode' and `python-ts-mode', this is 'python."
+  ;; TODO
+  )
+
 (defun treesit-auto--remap-language-source (language-source)
   "Determine mode for LANGUAGE-SOURCE.
 If the grammar is installed, remap the base mode to its
