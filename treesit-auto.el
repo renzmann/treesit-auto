@@ -110,20 +110,6 @@ downloading and installing the grammar."
                             (no-internals (not (string-match "--" name))))
                   (push (intern name) result))))
     result))
-;; TODO Now, if any of these `-ts-mode's appear as a car in
-;; `major-mode-remap-alist', that means we're missing its grammar, and when
-;; visiting the cdr, should check the auto-install variable
-;;
-;;  ((yaml-ts-mode . yaml-mode)  ; DO check for auto install on next yaml-mode buffer
-;;   ...
-;;   (go-mode . go-ts-mode))     ; DON'T check for auto install (already have it)
-;;
-;; This behavior should be patched into `treesit-auto--maybe-install-grammar',
-;; which should also retain its current behavior of auto-installing upon
-;; activation of a missing-grammar `-ts-mode', since it is not a guarantee that
-;; every missing-grammar `-ts-mode' appears in this alist.  For example, if
-;; `go-mode' is not installed, `go-ts-mode' will not be in the alist unless it
-;; is added by the user.
 
 (defun treesit-auto--string-convert-ts-name (name-ts-mode)
   "Convert NAME-TS-MODE, a string, to `name-mode', a symbol."
@@ -178,9 +164,6 @@ Returns `non-nil' if install was completed without error."
       ;; work in the future.
       (not (treesit-install-language-grammar lang)))))
 
-
-;; TODO a general utility for swapping between `name-mode' and `name-ts-mode',
-;; using all available information would be useful here.
 (defun treesit-auto--maybe-install-grammar ()
   "Try to install the grammar matching the current major-mode.
 
