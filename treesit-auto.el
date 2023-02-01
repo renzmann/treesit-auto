@@ -42,6 +42,7 @@
      (typescript-ts-mode . nil)
      (tsx-ts-mode . nil)))
   "Alist mapping treesitter modes to their respective fallback modes.
+
 If the CDR of the association is nil, then no fallback will be
 attempted when encountering a tree-sitter mode that is missing an
 installation of its respecitve grammar.  If the CDR is non-nil,
@@ -63,6 +64,7 @@ regardless of whether the grammar is installed or not."
 
 (defcustom treesit-auto-install nil
   "If non-nil auto install the missing grammar for the current `ts-mode'.
+
 If set to `prompt' treesit-auto will confirm with the user before
 downloading and installing the grammar."
   :type '(choice (const :tag "Yes" t)
@@ -111,9 +113,13 @@ downloading and installing the grammar."
                   (push (intern name) result))))
     result))
 
+(defun treesit-auto--extract-lang (name-ts-mode)
+  "Get language from the first component of NAME-TS-MODE."
+  (replace-regexp-in-string "\\(.*\\)-ts-mode$" "\\1" name-ts-mode))
+
 (defun treesit-auto--string-convert-ts-name (name-ts-mode)
   "Convert NAME-TS-MODE, a string, to `name-mode', a symbol."
-  (intern (concat (replace-regexp-in-string "\\(.*\\)-ts-mode$" "\\1" name-ts-mode) "-mode")))
+  (intern (concat (treesit-auto--extract-lang name-ts-mode) "-mode")))
 
 (defun treesit-auto--get-assoc (ts-name)
   "Build a cons like (`name-ts-mode' . `name-mode') based on TS-NAME."
@@ -129,12 +135,24 @@ downloading and installing the grammar."
 
 (defun treesit-auto--lang (mode)
   "Determine the tree-sitter language symbol for MODE.
-For both `python-mode' and `python-ts-mode', this is 'python."
-  ;; TODO
-  )
+
+For both `python-mode' and `python-ts-mode', this is `python'."
+  (let* ((available (treesit-auto--available-alist))
+         (ts-mode (or (car (rassq mode available))
+                      (car (assq mode available))))
+         (ts-name (symbol-name ts-mode)))
+    (intern (treesit-auto--extract-lang ts-name))))
+
+(defun treesit-auto--ready-p (mode)
+  "Determine if MODE is tree-sitter ready.
+
+MODE can be either of the form `name-ts-mode' or its associated
+original mode, such as `name-mode'."
+  (treesit-ready-p (treesit-auto--lang mode) t))
 
 (defun treesit-auto--remap-language-source (language-source)
   "Determine mode for LANGUAGE-SOURCE.
+
 If the grammar is installed, remap the base mode to its
 tree-sitter variant in `major-mode-remap-alist'.  Otherwise,
 remap the tree-sitter variant back to the default mode."
@@ -180,12 +198,8 @@ If the tree-sitter grammar is missing for the current major mode,
 it will prompt the user if they want to install it from the
 currently registered repository.  If the user chooses to install
 the grammar it will then re-enable the current major-mode."
-  (when-let* ((mode (symbol-name major-mode))
-              (lang (and (string-match "\\(.*\\)-ts-mode$" mode)
-                         (intern (replace-regexp-in-string
-                                  "\\(.*\\)-ts-mode$" "\\1"
-                                  mode))))
-              ((not (treesit-ready-p lang 't)))
+  (when-let* (((not (treesit-auto--ready-p major-mode)))
+              (lang (treesit-auto--lang major-mode))
               ((treesit-auto--prompt-to-install-package lang)))
     ;; We need to rerun the current major mode after a successful
     ;; install because we only hook into after the major-mode has
@@ -212,11 +226,14 @@ the grammar it will then re-enable the current major-mode."
   :global 't
   (if global-treesit-auto-mode
       (progn
-        (add-hook 'prog-mode-hook #'treesit-auto--maybe-install-grammar)
+        (dolist (elt (flatten-tree (treesit-auto--available-alist)))
+          (add-hook (intern (concat (symbol-name elt) "-hook")) #'treesit-auto--maybe-install-grammar))
         (advice-add 'treesit-install-language-grammar
-		:after #'treesit-auto--install-language-grammar-wrapper)
+		    :after #'treesit-auto--install-language-grammar-wrapper)
         (treesit-auto-apply-remap))
     (remove-hook 'prog-mode-hook #'treesit-auto--maybe-install-grammar)
+    (dolist (elt (flatten-tree (treesit-auto--available-alist)))
+      (remove-hook (intern (concat (symbol-name elt) "-hook")) #'treesit-auto--maybe-install-grammar))
     (advice-remove 'treesit-install-language-grammar #'treesit-auto--install-language-grammar-wrapper)))
 
 (provide 'treesit-auto)
