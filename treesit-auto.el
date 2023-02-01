@@ -117,7 +117,6 @@ downloading and installing the grammar."
 
 (defun treesit-auto--get-assoc (ts-name)
   "Build a cons like (`name-ts-mode' . `name-mode') based on TS-NAME."
-  ;; TODO if ts-name in fallback alist, use lookup, otherwise string manipulate
   (or (assq ts-name treesit-auto-fallback-alist)
       (when-let (fallback-assoc (rassq ts-name treesit-auto-fallback-alist))
         ;; Reverse order so that ts-mode comes first
