@@ -100,14 +100,15 @@ downloading and installing the grammar."
     (yaml "https://github.com/ikatyang/tree-sitter-yaml"))
   "Default repository URLs for `treesit-install-language-grammar'.")
 
-(defun treesit-auto--install-langs ()
+(defun treesit-auto--available-modes ()
   "Build a list of all modes ending with `-ts-mode' as strings."
   (let ((result '()))
     (mapatoms (lambda (elt)
-                (when-let* ((name (symbol-name elt))
+                (when-let* ((is-func (functionp elt))
+                            (name (symbol-name elt))
                             (match (string-match "-ts-mode$" name))
                             (no-internals (not (string-match "--" name))))
-                  (push name result))))
+                  (push (intern name) result))))
     result))
 ;; TODO Now, if any of these `-ts-mode's appear as a car in
 ;; `major-mode-remap-alist', that means we're missing its grammar, and when
@@ -123,6 +124,19 @@ downloading and installing the grammar."
 ;; every missing-grammar `-ts-mode' appears in this alist.  For example, if
 ;; `go-mode' is not installed, `go-ts-mode' will not be in the alist unless it
 ;; is added by the user.
+
+(defun treesit-auto--string-convert-ts-name (name-ts-mode)
+  "Convert NAME-TS-MODE, a string, to `name-mode', a symbol."
+  (intern (concat (replace-regexp-in-string "\\(.*\\)-ts-mode$" "\\1" name-ts-mode) "-mode")))
+
+(defun treesit-auto--get-assoc (ts-name)
+  "Build a cons like (`name-ts-mode' . `name-mode') based on TS-NAME."
+  ;; TODO if ts-name in fallback alist, use lookup, otherwise string manipulate
+  (or (assq ts-name treesit-auto-fallback-alist)
+      (when-let (fallback-assoc (rassq ts-name treesit-auto-fallback-alist))
+        ;; Reverse order so that ts-mode comes first
+        `(,(cdr fallback-assoc) . ,(car fallback-assoc)))
+      `(,ts-name .  ,(treesit-auto--string-convert-ts-name (symbol-name ts-name)))))
 
 (defun treesit-auto--remap-language-source (language-source)
   "Determine mode for LANGUAGE-SOURCE.
@@ -149,7 +163,6 @@ remap the tree-sitter variant back to the default mode."
   "Ask the user if they want to install a treesitter grammar for `LANG'.
 
 Returns `non-nil' if install was completed without error."
-
   (let ((repo (alist-get lang treesit-language-source-alist)))
     (when (cond ((eq t treesit-auto-install) t)
                 ((eq 'prompt treesit-auto-install)
