@@ -81,6 +81,7 @@ downloading and installing the grammar."
     (css "https://github.com/tree-sitter/tree-sitter-css")
     (css-in-js "https://github.com/orzechowskid/tree-sitter-css-in-js")
     (csharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
+    (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
     (elisp "https://github.com/Wilfred/tree-sitter-elisp")
     (go "https://github.com/tree-sitter/tree-sitter-go")
     (go-mod "https://github.com/camdencheek/tree-sitter-go-mod")
