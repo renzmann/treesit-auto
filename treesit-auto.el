@@ -134,9 +134,7 @@ downloading and installing the grammar."
   (mapcar 'treesit-auto--get-assoc (treesit-auto--available-modes)))
 
 (defun treesit-auto--lang (mode)
-  "Determine the tree-sitter language symbol for MODE.
-
-For both `python-mode' and `python-ts-mode', this is `python'."
+  "Determine the tree-sitter language symbol for MODE."
   (let* ((available (treesit-auto--available-alist))
          (ts-mode (or (car (rassq mode available))
                       (car (assq mode available))))
