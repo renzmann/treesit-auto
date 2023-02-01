@@ -194,9 +194,7 @@ the grammar it will then re-enable the current major-mode."
                                   "\\(.*\\)-ts-mode$" "\\1"
                                   mode))))
               ((not (treesit-ready-p lang 't)))
-              ((and
-                treesit-auto-install
-                (treesit-auto--prompt-to-install-package lang))))
+              ((treesit-auto--prompt-to-install-package lang)))
     ;; We need to rerun the current major mode after a successful
     ;; install because we only hook into after the major-mode has
     ;; finished setup. So, if the install fails it will fail to load
