@@ -1,4 +1,4 @@
-;;; treesit-auto.el --- Automatically use tree-sitter enhacned modes, if available  -*- lexical-binding: t -*-
+;;; treesit-auto.el --- Automatically use tree-sitter enhanced major modes when available  -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2023 Robert Enzmann
 
@@ -24,7 +24,7 @@
 ;; along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-;; If a tree-sitter grammer is available and installed, use it instead of the
+;; If a tree-sitter grammar is available and installed, use it instead of the
 ;; corresponding default mode.  Conversely, when a tree-sitter grammar is not
 ;; available and a fallback major mode is available/specified, use it instead.
 
@@ -41,13 +41,13 @@
      ;; See deprecation note in their README: https://github.com/emacs-typescript/typescript.el#a-short-note-on-development-halt
      (typescript-ts-mode . nil)
      (tsx-ts-mode . nil)))
-  "Alist mapping treesitter modes to their respective fallback modes.
+  "Alist mapping tree-sitter modes to their respective fallback modes.
 If the CDR of the association is nil, then no fallback will be
 attempted when encountering a tree-sitter mode that is missing an
-installation of its respecitve grammar.  If the CDR is non-nil,
+installation of its respective grammar.  If the CDR is non-nil,
 then a fallback attempt is made to the specified mode.
 
-If a treesitter mode is omitted from the keys of this alist
+If a tree-sitter mode is omitted from the keys of this alist
 entirely, then a fallback is attempted by using the same name
 prefix.  For example, `python-ts-mode' will attempt a fallback to
 `python-mode'.
@@ -122,7 +122,7 @@ remap the tree-sitter variant back to the default mode."
              (add-to-list 'major-mode-remap-alist `(,name-ts-mode . ,name-mode)))))))
 
 (defun treesit-auto--prompt-to-install-package (lang)
-  "Ask the user if they want to install a treesitter grammar for `LANG'.
+  "Ask the user if they want to install a tree-sitter grammar for `LANG'.
 
 Returns `non-nil' if install was completed without error."
 
