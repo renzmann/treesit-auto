@@ -155,7 +155,7 @@ Returns `non-nil' if install was completed without error."
                  (yes-or-no-p (format "Tree-sitter grammar for %s is missing.  Would you like to install it from %s? "
                                       (symbol-name lang)
                                       (car repo))))
-                (t) nil)
+                (t))
       (message "Installing the tree-sitter grammar for %s" lang)
       ;; treesit-install-language-grammar will return nil if the
       ;; operation succeeded and 't if a warning was sent to the
