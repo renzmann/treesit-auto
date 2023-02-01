@@ -12,3 +12,7 @@
 
 # Tokens
 api_token
+
+# Autoloading/packaging
+treesit-auto-pkg.el
+treesit-auto-autoloads.el
