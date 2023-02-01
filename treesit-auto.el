@@ -197,16 +197,12 @@ Returns `non-nil' if install was completed without error."
 If the tree-sitter grammar is missing for the current major mode,
 it will prompt the user if they want to install it from the
 currently registered repository.  If the user chooses to install
-the grammar it will then re-enable the current major-mode."
-  (when-let* (((not (treesit-auto--ready-p major-mode)))
+the grammar it will then switch to the tree-sitter powered
+version of the current major-mode."
+  (when-let* ((not-ready (not (treesit-auto--ready-p major-mode)))
               (lang (treesit-auto--lang major-mode))
-              ((treesit-auto--prompt-to-install-package lang)))
-    ;; We need to rerun the current major mode after a successful
-    ;; install because we only hook into after the major-mode has
-    ;; finished setup. So, if the install fails it will fail to load
-    ;; or fallback to the mode defined in the remap-alist. But, if it
-    ;; succeeds we assume the user wants to use the `ts-mode'.
-    (funcall major-mode)))
+              (install-success (treesit-auto--prompt-to-install-package lang)))
+    (funcall (intern (concat (symbol-name lang) "-ts-mode")))))
 
 ;;;###autoload
 (defun treesit-auto-apply-remap ()
