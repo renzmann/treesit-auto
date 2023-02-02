@@ -182,8 +182,7 @@ Returns `non-nil' if install was completed without error."
                 ((eq 'prompt treesit-auto-install)
                  (yes-or-no-p (format "Tree-sitter grammar for %s is missing.  Would you like to install it from %s? "
                                       (symbol-name lang)
-                                      (car repo))))
-                (t))
+                                      (car repo)))))
       (message "Installing the tree-sitter grammar for %s" lang)
       ;; treesit-install-language-grammar will return nil if the
       ;; operation succeeded and 't if a warning was sent to the
