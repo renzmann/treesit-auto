@@ -134,13 +134,17 @@ prefix.  Each entry should have the form (PREFIX . LANG).")
   "Convert NAME-TS-MODE, a string, to `name-mode', a symbol."
   (intern (concat (treesit-auto--extract-name name-ts-mode) "-mode")))
 
+;; FIXME `ts-name' is a confusing variable name.  Change to name-ts-mode
 (defun treesit-auto--get-assoc (ts-name)
   "Build a cons like (`name-ts-mode' . `name-mode') based on TS-NAME."
   (or (assq ts-name treesit-auto-fallback-alist)
       (when-let (fallback-assoc (rassq ts-name treesit-auto-fallback-alist))
         ;; Reverse order so that ts-mode comes first
         `(,(cdr fallback-assoc) . ,(car fallback-assoc)))
-      `(,ts-name .  ,(treesit-auto--string-convert-ts-name (symbol-name ts-name)))))
+      (when-let ((auto-name (treesit-auto--string-convert-ts-name (symbol-name ts-name)))
+                 ((fboundp auto-name)))
+        `(,ts-name .  ,auto-name))
+      `(,ts-name . nil)))
 
 (defvar treesit-auto--available-alist
   (mapcar 'treesit-auto--get-assoc (treesit-auto--available-modes))
