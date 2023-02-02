@@ -156,3 +156,12 @@ This is how I configure =treesit-auto= for my own personal use.
       (setq treesit-auto-install 'prompt)
       (global-treesit-auto-mode))
 #+end_src
+
+* Contributing
+Bug reports, feature requests, and contributions are most welcome.  Even though
+this is a small project, there is always room for improvement.  I also
+appreciate "nitpicky" contributions, such as formatting, conventions, variable
+naming, code simplification, and improvements to language in documentation.
+
+Issues are tracked on [[https://github.com/renzmann/treesit-auto/issues][GitHub]], which is also where patches and pull requests
+should be submitted.
