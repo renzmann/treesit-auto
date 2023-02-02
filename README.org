@@ -5,7 +5,7 @@
 [[https://melpa.org/#/treesit-auto][file:https://melpa.org/packages/treesit-auto-badge.svg]]
 [[https://stable.melpa.org/#/treesit-auto][file:https://stable.melpa.org/packages/treesit-auto-badge.svg]]
 
-Automatically pick between TreeSitter and default major modes in Emacs 29+.
+Automatically pick between tree-sitter and default major modes in Emacs 29+.
 
 * Installation
 
@@ -32,13 +32,16 @@ Then, in your Emacs configuration file (=~/.emacs.d/init.el=),
     (global-treesit-auto-mode))
 #+end_src
 
+There are some nifty things you might want to enable, though, which are covered
+under [[* Configuration]["Configuration"]].
+
 * What this package does
 
 Emacs 29, while featuring =treesit.el= and a convenient
 =treesit-install-language-grammar=, [[https://archive.casouri.cc/note/2023/tree-sitter-in-emacs-29/index.html][will not feature an intelligent way to choose]]
-between a default mode, such as =python-mode=, and it's tree-sitter enhanced
-version, =python-ts-mode=, automatically.  This package attempts to remedy that
-by applying these rules:
+between a default mode, such as =python-mode=, and its tree-sitter enhanced
+version, =python-ts-mode=.  This package attempts to remedy that by applying these
+rules:
 
 *1. If the grammar is installed, then switch to the appropriate tree-sitter mode:*
 
@@ -46,10 +49,27 @@ In this case, assuming we open a Python buffer, and the [[https://github.com/tre
 grammar]] is installed, then Emacs will use =python-ts-mode= instead of
 =python-mode=.
 
-*2. If the grammar is NOT installed, and the user has specified a fallback:*
+*2. The grammar is NOT installed and `treesit-auto-install` is non-nil:*
 
-This package exposes a customizable variable =treesit-auto-fallback-alist= that
-lets you pick the fallback modes by name.  For instance, if we apply this:
+If `treesit-auto-install` is t, then upon visiting any major mode that has a
+tree-sitter version available, the grammar will be downloaded and compiled using
+`treesit-install-language-grammar`.
+
+If `treesit-auto-install` is `'prompt`, then a message will be displayed in the
+echo area asking for a yes/no response before attempting the installation.  See
+the section for [[Automatically install grammars if they are missing][configuration for treesit-auto-install]].
+
+In both of these cases, if I visit a Python file and didn't already have the
+grammar installed, I wind up with an installed grammar and a buffer using
+`python-ts-mode`.
+
+Otherwise, when `treesit-auto-install` is nil, it will try to fall back to
+another major mode, described below.
+
+*3. If the grammar is NOT installed, and the user has specified a fallback*
+
+The customizable variable =treesit-auto-fallback-alist= lets you pick the fallback
+modes by name.  For instance, if we apply this:
 
 #+begin_src emacs-lisp
   (add-to-list 'treesit-auto-fallback-alist '(toml-ts-mode . conf-toml-mode))
@@ -58,17 +78,16 @@ lets you pick the fallback modes by name.  For instance, if we apply this:
 Then, when the TOML grammar is missing, Emacs will use =conf-toml-mode=, instead
 of trying to fall back to =toml-mode=.
 
-*3. If the grammar is NOT installed and the user has NOT specified a fallback mode AND an appropriately named base mode exists, switch to it*
+*4. All other cases...*
 
-This is the most general case.  If, for example, the Go tree-sitter grammar is
-not installed, but we have installed [[https://github.com/dominikh/go-mode.el][go-mode]], then Emacs will use that instead
-of =go-ts-mode=, since they share the same =go-= prefix.  See the section for
-[[Automatically install grammars if they are missing][configuration for treesit-auto-install]].
+That is, the grammar is not installed, `treesit-auto-install` is nil, no
+fallback mode is specified by in `treesit-auto-fallback-alist`, and an
+appropriately named base mode exists.  This is the most general case, and
+`treesit-auto` will switch to the similarly named non-tree-sitter major mode.
 
-*4. If the grammar is NOT installed, but we activate a -ts-mode anyway:*
-
-Check the value of =treesit-auto-install=, and either ignore the issue, prompt the
-user for action, or attempt an install of the grammar automatically.  See
+If, for example, the Go tree-sitter grammar is not installed, but we have
+installed [[https://github.com/dominikh/go-mode.el][go-mode]], then Emacs will use that instead of =go-ts-mode=, since they
+share the same =go-= prefix.
 
 * Configuration
 
@@ -80,7 +99,8 @@ The =treesit-auto-install= variable controls whether a grammar should be install
 automatically when activating a tree-sitter mode.
 
 1. =nil=, the default, means =treesit-auto= won't try to install anything
-2. =t= means =treesit-auto= should always try to clone and install a gramar when missing
+2. =t= means =treesit-auto= should always try to clone and install a grammar when
+   missing
 3. ='prompt= will cause a yes/no prompt to appear in the minibuffer before
    attempting installation
 
@@ -88,9 +108,9 @@ automatically when activating a tree-sitter mode.
   (setq treesit-auto-install 'prompt)
 #+end_src
 
-Then, supposing I don't have =libtree-sitter-python.so= (or its equivalent) under
-=~/.emacs.d/tree-sitter= or anywhere else in =treesit-extra-load-path=, then calling
-=M-x python-ts-mode= will display this prompt:
+Then, supposing I don't have =libtree-sitter-python.so= (or its mac/Windows
+equivalent) under =~/.emacs.d/tree-sitter= or anywhere else in
+=treesit-extra-load-path=, calling =M-x python-ts-mode= will display this prompt:
 
 #+begin_example
   Tree-sitter grammar for python is missing.  Would you like to install it from https://github.com/tree-sitter/tree-sitter-python? (yes/no)
@@ -98,6 +118,9 @@ Then, supposing I don't have =libtree-sitter-python.so= (or its equivalent) unde
 
 Responding with "yes" will use =treesit-install-langauge-grammar= to go fetch and
 compile the missing grammar.
+
+Setting to t instead will skip the prompt entirely and just attempt the
+installation.
 
 ** When major mode names don't match
 Not all default major modes make sense to bump up to a similar tree-sitter mode.
