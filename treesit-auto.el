@@ -90,7 +90,7 @@ downloading and installing the grammar."
     (html "https://github.com/tree-sitter/tree-sitter-html")
     (java "https://github.com/tree-sitter/tree-sitter-java")
     (julia "https://github.com/tree-sitter/tree-sitter-julia")
-    (js . ("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
+    (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
     (json "https://github.com/tree-sitter/tree-sitter-json")
     (latex "https://github.com/latex-lsp/tree-sitter-latex")
     (lua "https://github.com/Azganoth/tree-sitter-lua")
@@ -117,13 +117,22 @@ downloading and installing the grammar."
                   (push (intern name) result))))
     result))
 
-(defun treesit-auto--extract-lang (name-ts-mode)
-  "Get language from the first component of NAME-TS-MODE."
+(defvar treesit-auto--name-lang-alist
+  '((c++ . cpp)
+    (js . javascript))
+  "Alist defining the `lang' symbol for a given tree-sitter mode.
+
+This is for the special case of when the `lang' passed
+`treesit-install-language-grammar' is different than the mode
+prefix.  Each entry should have the form (PREFIX . LANG).")
+
+(defun treesit-auto--extract-name (name-ts-mode)
+  "Get language from the first component of NAME-TS-MODE as a string."
   (replace-regexp-in-string "\\(.*\\)-ts-mode$" "\\1" name-ts-mode))
 
 (defun treesit-auto--string-convert-ts-name (name-ts-mode)
   "Convert NAME-TS-MODE, a string, to `name-mode', a symbol."
-  (intern (concat (treesit-auto--extract-lang name-ts-mode) "-mode")))
+  (intern (concat (treesit-auto--extract-name name-ts-mode) "-mode")))
 
 (defun treesit-auto--get-assoc (ts-name)
   "Build a cons like (`name-ts-mode' . `name-mode') based on TS-NAME."
@@ -133,17 +142,17 @@ downloading and installing the grammar."
         `(,(cdr fallback-assoc) . ,(car fallback-assoc)))
       `(,ts-name .  ,(treesit-auto--string-convert-ts-name (symbol-name ts-name)))))
 
-(defun treesit-auto--available-alist ()
-  "Build an alist of available tree-sitter modes paired with original modes."
-  (mapcar 'treesit-auto--get-assoc (treesit-auto--available-modes)))
+(defvar treesit-auto--available-alist
+  (mapcar 'treesit-auto--get-assoc (treesit-auto--available-modes))
+  "Alist of available tree-sitter modes with their fallback modes.")
 
 (defun treesit-auto--lang (mode)
   "Determine the tree-sitter language symbol for MODE."
-  (let* ((available (treesit-auto--available-alist))
-         (ts-mode (or (car (rassq mode available))
-                      (car (assq mode available))))
-         (ts-name (symbol-name ts-mode)))
-    (intern (treesit-auto--extract-lang ts-name))))
+  (let* ((ts-mode (car (or (rassq mode treesit-auto--available-alist)
+                           (assq mode treesit-auto--available-alist))))
+         (ts-prefix (intern (treesit-auto--extract-name (symbol-name ts-mode)))))
+    (or (alist-get ts-prefix treesit-auto--name-lang-alist)
+        ts-prefix)))
 
 (defun treesit-auto--ready-p (mode)
   "Determine if MODE is tree-sitter ready.
@@ -152,27 +161,34 @@ MODE can be either of the form `name-ts-mode' or its associated
 original mode, such as `name-mode'."
   (treesit-ready-p (treesit-auto--lang mode) t))
 
+(defun treesit-auto--lang-to-ts-mode (lang)
+  "Convert a `lang' symbol to its corresponding tree-sitter major mode."
+  (intern
+   (concat (symbol-name (treesit-auto--lang-to-name lang))
+           "-ts-mode")))
+
+(defun treesit-auto--lang-to-name (lang)
+  "Convert LANG symbol to its corresponding name prefix."
+  (or (car (rassq lang treesit-auto--name-lang-alist))
+         lang))
+
 (defun treesit-auto--remap-language-source (language-source)
-  "Determine mode for LANGUAGE-SOURCE.
+  "Maybe add an entry to `major-mode-remap-alist' for LANGUAGE-SOURCE.
 
 If the grammar is installed, remap the base mode to its
 tree-sitter variant in `major-mode-remap-alist'.  Otherwise,
 remap the tree-sitter variant back to the default mode."
-  (let* ((name (car language-source))
-         (name-ts-mode (intern (concat (symbol-name name) "-ts-mode")))
-         (fallback-assoc (assq name-ts-mode treesit-auto-fallback-alist))
-         (fallback-name (cdr fallback-assoc))
-         (name-mode (or fallback-name
-                        (intern (concat (symbol-name name) "-mode"))))
-         (name-mode-bound-p (fboundp name-mode))
-         (skip-remap-p (and fallback-assoc
-                            (not (cdr fallback-assoc)))))
-    (and (not skip-remap-p)
-         (fboundp name-ts-mode)
-         (if (treesit-ready-p name t)
-             (add-to-list 'major-mode-remap-alist `(,name-mode . ,name-ts-mode))
-           (when name-mode-bound-p
-             (add-to-list 'major-mode-remap-alist `(,name-ts-mode . ,name-mode)))))))
+  (when-let* (;; `lang' is the symbol used in the tree-sitter grammar's
+              ;; parser.c, such as `cpp'.  These are exactly the symbols found
+              ;; in the CAR of each element in `treesit-language-source-alist'.
+              (lang (car language-source))
+              ;; `name' is the prefix to major modes in Emacs, like `c++' for
+              ;; `c++-mode'.  Usually this matches `lang', but not always.
+              (name-ts-mode (treesit-auto--lang-to-ts-mode lang))
+              (fallback-mode (alist-get name-ts-mode treesit-auto--available-alist)))
+    (if (treesit-auto--ready-p name-ts-mode)
+        (add-to-list 'major-mode-remap-alist `(,fallback-mode . ,name-ts-mode))
+      (add-to-list 'major-mode-remap-alist `(,name-ts-mode . ,fallback-mode)))))
 
 (defun treesit-auto--prompt-to-install-package (lang)
   "Ask the user if they want to install a tree-sitter grammar for `LANG'.
@@ -182,7 +198,7 @@ Returns `non-nil' if install was completed without error."
     (when (cond ((eq t treesit-auto-install) t)
                 ((eq 'prompt treesit-auto-install)
                  (yes-or-no-p (format "Tree-sitter grammar for %s is missing.  Would you like to install it from %s? "
-                                      (symbol-name lang)
+                                      (symbol-name (treesit-auto--lang-to-name lang))
                                       (car repo)))))
       (message "Installing the tree-sitter grammar for %s" lang)
       ;; treesit-install-language-grammar will return nil if the
@@ -203,7 +219,7 @@ version of the current major-mode."
   (when-let* ((not-ready (not (treesit-auto--ready-p major-mode)))
               (lang (treesit-auto--lang major-mode))
               (install-success (treesit-auto--prompt-to-install-package lang)))
-    (funcall (intern (concat (symbol-name lang) "-ts-mode")))))
+    (funcall (treesit-auto--lang-to-ts-mode lang))))
 
 ;;;###autoload
 (defun treesit-auto-apply-remap ()
@@ -223,13 +239,13 @@ version of the current major-mode."
   :global 't
   (if global-treesit-auto-mode
       (progn
-        (dolist (elt (flatten-tree (treesit-auto--available-alist)))
+        (dolist (elt (flatten-tree treesit-auto--available-alist))
           (add-hook (intern (concat (symbol-name elt) "-hook")) #'treesit-auto--maybe-install-grammar))
         (advice-add 'treesit-install-language-grammar
 		    :after #'treesit-auto--install-language-grammar-wrapper)
         (treesit-auto-apply-remap))
     (remove-hook 'prog-mode-hook #'treesit-auto--maybe-install-grammar)
-    (dolist (elt (flatten-tree (treesit-auto--available-alist)))
+    (dolist (elt (flatten-tree treesit-auto--available-alist))
       (remove-hook (intern (concat (symbol-name elt) "-hook")) #'treesit-auto--maybe-install-grammar))
     (advice-remove 'treesit-install-language-grammar #'treesit-auto--install-language-grammar-wrapper)))
 
