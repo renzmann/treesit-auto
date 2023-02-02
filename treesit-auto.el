@@ -100,6 +100,7 @@ downloading and installing the grammar."
     (r "https://github.com/r-lib/tree-sitter-r")
     (ruby "https://github.com/tree-sitter/tree-sitter-ruby")
     (rust "https://github.com/tree-sitter/tree-sitter-rust")
+    (swift "https://gitlab.com/woolsweater/tree-sitter-swifter")
     (toml "https://github.com/tree-sitter/tree-sitter-toml")
     (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
     (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
