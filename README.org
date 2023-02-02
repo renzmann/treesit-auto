@@ -109,8 +109,8 @@ automatically when activating a major mode compatible with tree-sitter.
 
 Then, supposing I don't have =libtree-sitter-python.so= (or its mac/Windows
 equivalent) under =~/.emacs.d/tree-sitter= (or anywhere else in
-=treesit-extra-load-path=), visiting a Python file or calling =M-x
-python-ts-mode= will generate this prompt:
+=treesit-extra-load-path=), visiting a Python file or calling =M-x python-ts-mode=
+will generate this prompt:
 
 #+begin_example
   Tree-sitter grammar for python is missing.  Would you like to install it from https://github.com/tree-sitter/tree-sitter-python? (yes/no)
