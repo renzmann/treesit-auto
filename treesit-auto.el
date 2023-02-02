@@ -42,6 +42,7 @@
      (typescript-ts-mode . nil)
      (tsx-ts-mode . nil)))
   "Alist mapping tree-sitter modes to their respective fallback modes.
+
 If the CDR of the association is nil, then no fallback will be
 attempted when encountering a tree-sitter mode that is missing an
 installation of its respective grammar.  If the CDR is non-nil,
@@ -63,6 +64,7 @@ regardless of whether the grammar is installed or not."
 
 (defcustom treesit-auto-install nil
   "If non-nil auto install the missing grammar for the current `ts-mode'.
+
 If set to `prompt' treesit-auto will confirm with the user before
 downloading and installing the grammar."
   :type '(choice (const :tag "Yes" t)
@@ -103,8 +105,55 @@ downloading and installing the grammar."
     (yaml "https://github.com/ikatyang/tree-sitter-yaml"))
   "Default repository URLs for `treesit-install-language-grammar'.")
 
+(defun treesit-auto--available-modes ()
+  "Build a list of all modes ending with `-ts-mode' as strings."
+  (let ((result '()))
+    (mapatoms (lambda (elt)
+                (when-let* ((is-func (functionp elt))
+                            (name (symbol-name elt))
+                            (match (string-match "-ts-mode$" name))
+                            (no-internals (not (string-match "--" name))))
+                  (push (intern name) result))))
+    result))
+
+(defun treesit-auto--extract-lang (name-ts-mode)
+  "Get language from the first component of NAME-TS-MODE."
+  (replace-regexp-in-string "\\(.*\\)-ts-mode$" "\\1" name-ts-mode))
+
+(defun treesit-auto--string-convert-ts-name (name-ts-mode)
+  "Convert NAME-TS-MODE, a string, to `name-mode', a symbol."
+  (intern (concat (treesit-auto--extract-lang name-ts-mode) "-mode")))
+
+(defun treesit-auto--get-assoc (ts-name)
+  "Build a cons like (`name-ts-mode' . `name-mode') based on TS-NAME."
+  (or (assq ts-name treesit-auto-fallback-alist)
+      (when-let (fallback-assoc (rassq ts-name treesit-auto-fallback-alist))
+        ;; Reverse order so that ts-mode comes first
+        `(,(cdr fallback-assoc) . ,(car fallback-assoc)))
+      `(,ts-name .  ,(treesit-auto--string-convert-ts-name (symbol-name ts-name)))))
+
+(defun treesit-auto--available-alist ()
+  "Build an alist of available tree-sitter modes paired with original modes."
+  (mapcar 'treesit-auto--get-assoc (treesit-auto--available-modes)))
+
+(defun treesit-auto--lang (mode)
+  "Determine the tree-sitter language symbol for MODE."
+  (let* ((available (treesit-auto--available-alist))
+         (ts-mode (or (car (rassq mode available))
+                      (car (assq mode available))))
+         (ts-name (symbol-name ts-mode)))
+    (intern (treesit-auto--extract-lang ts-name))))
+
+(defun treesit-auto--ready-p (mode)
+  "Determine if MODE is tree-sitter ready.
+
+MODE can be either of the form `name-ts-mode' or its associated
+original mode, such as `name-mode'."
+  (treesit-ready-p (treesit-auto--lang mode) t))
+
 (defun treesit-auto--remap-language-source (language-source)
   "Determine mode for LANGUAGE-SOURCE.
+
 If the grammar is installed, remap the base mode to its
 tree-sitter variant in `major-mode-remap-alist'.  Otherwise,
 remap the tree-sitter variant back to the default mode."
@@ -128,7 +177,6 @@ remap the tree-sitter variant back to the default mode."
   "Ask the user if they want to install a tree-sitter grammar for `LANG'.
 
 Returns `non-nil' if install was completed without error."
-
   (let ((repo (alist-get lang treesit-language-source-alist)))
     (when (cond ((eq t treesit-auto-install) t)
                 ((eq 'prompt treesit-auto-install)
@@ -150,22 +198,12 @@ Returns `non-nil' if install was completed without error."
 If the tree-sitter grammar is missing for the current major mode,
 it will prompt the user if they want to install it from the
 currently registered repository.  If the user chooses to install
-the grammar it will then re-enable the current major-mode."
-  (when-let* ((mode (symbol-name major-mode))
-              (lang (and (string-match "\\(.*\\)-ts-mode$" mode)
-                         (intern (replace-regexp-in-string
-                                  "\\(.*\\)-ts-mode$" "\\1"
-                                  mode))))
-              ((not (treesit-ready-p lang 't)))
-              ((and
-                treesit-auto-install
-                (treesit-auto--prompt-to-install-package lang))))
-    ;; We need to rerun the current major mode after a successful
-    ;; install because we only hook into after the major-mode has
-    ;; finished setup. So, if the install fails it will fail to load
-    ;; or fallback to the mode defined in the remap-alist. But, if it
-    ;; succeeds we assume the user wants to use the `ts-mode'.
-    (funcall major-mode)))
+the grammar it will then switch to the tree-sitter powered
+version of the current major-mode."
+  (when-let* ((not-ready (not (treesit-auto--ready-p major-mode)))
+              (lang (treesit-auto--lang major-mode))
+              (install-success (treesit-auto--prompt-to-install-package lang)))
+    (funcall (intern (concat (symbol-name lang) "-ts-mode")))))
 
 ;;;###autoload
 (defun treesit-auto-apply-remap ()
@@ -185,11 +223,14 @@ the grammar it will then re-enable the current major-mode."
   :global 't
   (if global-treesit-auto-mode
       (progn
-        (add-hook 'prog-mode-hook #'treesit-auto--maybe-install-grammar)
+        (dolist (elt (flatten-tree (treesit-auto--available-alist)))
+          (add-hook (intern (concat (symbol-name elt) "-hook")) #'treesit-auto--maybe-install-grammar))
         (advice-add 'treesit-install-language-grammar
-		:after #'treesit-auto--install-language-grammar-wrapper)
+		    :after #'treesit-auto--install-language-grammar-wrapper)
         (treesit-auto-apply-remap))
     (remove-hook 'prog-mode-hook #'treesit-auto--maybe-install-grammar)
+    (dolist (elt (flatten-tree (treesit-auto--available-alist)))
+      (remove-hook (intern (concat (symbol-name elt) "-hook")) #'treesit-auto--maybe-install-grammar))
     (advice-remove 'treesit-install-language-grammar #'treesit-auto--install-language-grammar-wrapper)))
 
 (provide 'treesit-auto)
