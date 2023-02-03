@@ -5,7 +5,8 @@
 [[https://melpa.org/#/treesit-auto][file:https://melpa.org/packages/treesit-auto-badge.svg]]
 [[https://stable.melpa.org/#/treesit-auto][file:https://stable.melpa.org/packages/treesit-auto-badge.svg]]
 
-Automatically pick between tree-sitter and default major modes in Emacs 29+.
+Automatically install and use tree-sitter major modes in Emacs 29+.  If the 
+tree-sitter version can't be used, fall back to the original major mode.
 
 * Installation
 ~treesit-auto~ is available from [[https://melpa.org/][MELPA]].  After following [[https://melpa.org/#/getting-started][their setup]], you can
