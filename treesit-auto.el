@@ -154,6 +154,10 @@ prefix.  Each entry should have the form (PREFIX . LANG).")
   "Alist of available tree-sitter modes with their fallback modes."
   (mapcar 'treesit-auto--get-assoc (treesit-auto--available-modes)))
 
+(defvar treesit-auto--available-alist
+  (treesit-auto--available-alist)
+  "Alist of available tree-sitter modes with their fallback modes.")
+
 (defun treesit-auto--lang (mode)
   "Determine the tree-sitter language symbol for MODE."
   (let* ((ts-mode (car (or (rassq mode treesit-auto--available-alist)
