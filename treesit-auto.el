@@ -77,17 +77,17 @@ downloading and installing the grammar."
   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
     (bibtex "https://github.com/latex-lsp/tree-sitter-bibtex")
     (c "https://github.com/tree-sitter/tree-sitter-c")
+    (c-sharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
     (clojure "https://github.com/sogaiu/tree-sitter-clojure")
     (cmake "https://github.com/uyha/tree-sitter-cmake")
-    (common-lisp "https://github.com/theHamsta/tree-sitter-commonlisp")
+    (commonlisp "https://github.com/theHamsta/tree-sitter-commonlisp")
     (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
     (css "https://github.com/tree-sitter/tree-sitter-css")
     (css-in-js "https://github.com/orzechowskid/tree-sitter-css-in-js")
-    (csharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
     (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
     (elisp "https://github.com/Wilfred/tree-sitter-elisp")
     (go "https://github.com/tree-sitter/tree-sitter-go")
-    (go-mod "https://github.com/camdencheek/tree-sitter-go-mod")
+    (gomod "https://github.com/camdencheek/tree-sitter-go-mod")
     (html "https://github.com/tree-sitter/tree-sitter-html")
     (java "https://github.com/tree-sitter/tree-sitter-java")
     (julia "https://github.com/tree-sitter/tree-sitter-julia")
@@ -120,7 +120,10 @@ downloading and installing the grammar."
 
 (defvar treesit-auto--name-lang-alist
   '((c++ . cpp)
-    (js . javascript))
+    (js . javascript)
+    (common-lisp . commonlisp)
+    (csharp . c-sharp)
+    (go-mod . gomod))
   "Alist defining the `lang' symbol for a given tree-sitter mode.
 
 This is for the special case of when the `lang' passed
@@ -236,8 +239,7 @@ version of the current major-mode."
 For example, to prevent installing the `rust-ts-mode' grammar,
 add \\='rust to this list."
   :type '(list (symbol))
-  :group 'treesit
-  )
+  :group 'treesit)
 
 ;;;###autoload
 (defun tresit-auto-install-all ()
@@ -246,13 +248,13 @@ add \\='rust to this list."
 Individual grammars can be opted out of by adding them to
 `treesit-auto-opt-out-list'."
   (interactive)
-  (let* ((to-install (seq-filter
-                      (lambda (lang) (not (treesit-auto--ready-p lang)))
-                      (cl-set-difference
-                       (mapcar 'car treesit-auto--language-source-alist)
-                       treesit-auto-opt-out-list)))
-         (prompt (format "The following tree-sitter grammars are missing:\n%s\n"
-                         (mapconcat 'symbol-name to-install "\n"))))
+  (when-let* ((to-install (seq-filter
+                           (lambda (lang) (not (treesit-auto--ready-p lang)))
+                           (cl-set-difference
+                            (mapcar 'car treesit-auto--language-source-alist)
+                            treesit-auto-opt-out-list)))
+              (prompt (format "The following tree-sitter grammars are missing:\n%s\n"
+                              (mapconcat 'symbol-name to-install "\n"))))
     (with-output-to-temp-buffer "*Treesit-auto install candidates*"
       (princ prompt))
     (when (y-or-n-p "Install missing grammars? ")
