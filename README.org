@@ -5,7 +5,7 @@
 [[https://melpa.org/#/treesit-auto][file:https://melpa.org/packages/treesit-auto-badge.svg]]
 [[https://stable.melpa.org/#/treesit-auto][file:https://stable.melpa.org/packages/treesit-auto-badge.svg]]
 
-Automatically install and use tree-sitter major modes in Emacs 29+.  If the 
+Automatically install and use tree-sitter major modes in Emacs 29+.  If the
 tree-sitter version can't be used, fall back to the original major mode.
 
 * Installation
@@ -33,7 +33,10 @@ Then, in your Emacs configuration file (=~/.emacs.d/init.el=),
 #+end_src
 
 There are some nifty things you might want to enable, though, which are covered
-in the "Configuration" section below.
+in the "Configuration" section below.  If you want to install all the maintained
+grammars up front, then =M-x treesit-auto-install-all= will display any missing
+grammars and ask whether you would like to install them, unless configured to be
+quiet - see "Configuration" below.
 
 * What this package does
 Emacs 29, while featuring =treesit.el= and a convenient
@@ -101,7 +104,7 @@ automatically when activating a major mode compatible with tree-sitter.
    rely on the fallback logic outlined above
 2. =t= means =treesit-auto= should always try to clone and install a grammar when
    missing
-3. ~'prompt~ will cause a yes/no prompt to appear in the minibuffer before
+3. ~prompt~ will cause a yes/no prompt to appear in the minibuffer before
    attempting installation
 
 #+begin_src emacs-lisp
@@ -114,11 +117,15 @@ equivalent) under =~/.emacs.d/tree-sitter= (or anywhere else in
 will generate this prompt:
 
 #+begin_example
-  Tree-sitter grammar for python is missing.  Would you like to install it from https://github.com/tree-sitter/tree-sitter-python? (yes/no)
+  Tree-sitter grammar for python is missing.  Would you like to install it from https://github.com/tree-sitter/tree-sitter-python? (y or n)
 #+end_example
 
-Responding with "yes" will use =treesit-install-langauge-grammar= to go fetch and
+Responding with "y" will use =treesit-install-language-grammar= to go fetch and
 compile the missing grammar.
+
+If this variable is either nil or =prompt=, then using =M-x
+treesit-auto-install-all= will use a prompt and temporary buffer.  Only when set
+to t will it skip the prompt and install everything.
 
 ** When major mode names don't match
 Not all default major modes make sense to bump up to a similar tree-sitter mode.
