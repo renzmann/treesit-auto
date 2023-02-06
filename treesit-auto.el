@@ -206,7 +206,7 @@ Returns `non-nil' if install was completed without error."
   (let ((repo (alist-get lang treesit-language-source-alist)))
     (when (cond ((eq t treesit-auto-install) t)
                 ((eq 'prompt treesit-auto-install)
-                 (yes-or-no-p (format "Tree-sitter grammar for %s is missing.  Would you like to install it from %s? "
+                 (y-or-n-p (format "Tree-sitter grammar for %s is missing.  Would you like to install it from %s? "
                                       (symbol-name (treesit-auto--lang-to-name lang))
                                       (car repo)))))
       (message "Installing the tree-sitter grammar for %s" lang)
@@ -251,12 +251,11 @@ Individual grammars can be opted out of by adding them to
                       (cl-set-difference
                        (mapcar 'car treesit-auto--language-source-alist)
                        treesit-auto-opt-out-list)))
-         (prompt (format "The following tree-sitter grammars are missing.  Would you like to install them?\n%s\n"
+         (prompt (format "The following tree-sitter grammars are missing:\n%s\n"
                          (mapconcat 'symbol-name to-install "\n"))))
-    ;; FIXME: works, but doesn't display the whole message if
-    ;; `max-mini-window-height' is too small.  Need to find a better
-    ;; display/prompt system.
-    (when (yes-or-no-p prompt)
+    (with-output-to-temp-buffer "*Treesit-auto install candidates*"
+      (princ prompt))
+    (when (y-or-n-p "Install missing grammars? ")
       (mapcar 'treesit-install-language-grammar to-install))))
 
 ;;;###autoload
