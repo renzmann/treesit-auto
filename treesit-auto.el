@@ -150,9 +150,9 @@ prefix.  Each entry should have the form (PREFIX . LANG).")
         `(,ts-name .  ,auto-name))
       `(,ts-name . nil)))
 
-(defvar treesit-auto--available-alist
-  (mapcar 'treesit-auto--get-assoc (treesit-auto--available-modes))
-  "Alist of available tree-sitter modes with their fallback modes.")
+(defun treesit-auto--available-alist ()
+  "Alist of available tree-sitter modes with their fallback modes."
+  (mapcar 'treesit-auto--get-assoc (treesit-auto--available-modes)))
 
 (defun treesit-auto--lang (mode)
   "Determine the tree-sitter language symbol for MODE."
@@ -182,7 +182,7 @@ original mode, such as `name-mode' or a language symbol, like `name'."
 (defun treesit-auto--lang-to-name (lang)
   "Convert LANG symbol to its corresponding name prefix."
   (or (car (rassq lang treesit-auto--name-lang-alist))
-         lang))
+      lang))
 
 (defun treesit-auto--remap-language-source (language-source)
   "Maybe add an entry to `major-mode-remap-alist' for LANGUAGE-SOURCE.
@@ -210,8 +210,8 @@ Returns `non-nil' if install was completed without error."
     (when (cond ((eq t treesit-auto-install) t)
                 ((eq 'prompt treesit-auto-install)
                  (y-or-n-p (format "Tree-sitter grammar for %s is missing.  Would you like to install it from %s? "
-                                      (symbol-name (treesit-auto--lang-to-name lang))
-                                      (car repo)))))
+                                   (symbol-name (treesit-auto--lang-to-name lang))
+                                   (car repo)))))
       (message "Installing the tree-sitter grammar for %s" lang)
       ;; treesit-install-language-grammar will return nil if the
       ;; operation succeeded and 't if a warning was sent to the
@@ -269,6 +269,7 @@ Individual grammars can be opted out of by adding them to
   "Adjust `major-mode-remap-alist' using installed tree-sitter grammars."
   (dolist (elt treesit-auto--language-source-alist)
     (add-to-list 'treesit-language-source-alist elt t))
+  ;; This is what actually modifies `major-mode-remap-alist'
   (mapcar #'treesit-auto--remap-language-source treesit-language-source-alist))
 
 (defun treesit-auto--install-language-grammar-wrapper (&rest _r)
@@ -280,6 +281,9 @@ Individual grammars can be opted out of by adding them to
   "Toggle `global-treesit-auto-mode'."
   :group 'treesit
   :global 't
+  ;; To speed things up, this caches all of the user options that cause a
+  ;; tree-sitter and regular mode to get paired together, just for this run
+  (setq treesit-auto--available-alist (treesit-auto--available-alist))
   (if global-treesit-auto-mode
       (progn
         (dolist (elt (flatten-tree treesit-auto--available-alist))
