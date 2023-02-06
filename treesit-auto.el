@@ -30,6 +30,7 @@
 
 ;;; Code:
 (require 'treesit)
+(require 'cl-lib)
 
 (defcustom treesit-auto-fallback-alist
   (mapcar
@@ -161,12 +162,16 @@ prefix.  Each entry should have the form (PREFIX . LANG).")
 (defun treesit-auto--ready-p (mode)
   "Determine if MODE is tree-sitter ready.
 
-MODE can be either of the form `name-ts-mode' or its associated
-original mode, such as `name-mode'."
-  (treesit-ready-p (treesit-auto--lang mode) t))
+MODE can be of the form `name-ts-mode', its associated
+original mode, such as `name-mode' or a language symbol, like `name'."
+  (let ((lang (if (alist-get mode treesit-auto--language-source-alist)
+                  ;; In case a lang symbol was passed in
+                  mode
+                (treesit-auto--lang mode))))
+    (treesit-ready-p lang t)))
 
 (defun treesit-auto--lang-to-ts-mode (lang)
-  "Convert a `lang' symbol to its corresponding tree-sitter major mode."
+  "Convert LANG, a symbol, to its corresponding tree-sitter major mode."
   (intern
    (concat (symbol-name (treesit-auto--lang-to-name lang))
            "-ts-mode")))
@@ -224,6 +229,35 @@ version of the current major-mode."
               (lang (treesit-auto--lang major-mode))
               (install-success (treesit-auto--prompt-to-install-package lang)))
     (funcall (treesit-auto--lang-to-ts-mode lang))))
+
+(defcustom treesit-auto-opt-out-list nil
+  "Grammars for `treesit-auto-install-all' to avoid.
+
+For example, to prevent installing the `rust-ts-mode' grammar,
+add \\='rust to this list."
+  :type '(list (symbol))
+  :group 'treesit
+  )
+
+;;;###autoload
+(defun tresit-auto-install-all ()
+  "Install all available and maintained grammars.
+
+Individual grammars can be opted out of by adding them to
+`treesit-auto-opt-out-list'."
+  (interactive)
+  (let* ((to-install (seq-filter
+                      (lambda (lang) (not (treesit-auto--ready-p lang)))
+                      (cl-set-difference
+                       (mapcar 'car treesit-auto--language-source-alist)
+                       treesit-auto-opt-out-list)))
+         (prompt (format "The following tree-sitter grammars are missing.  Would you like to install them?\n%s\n"
+                         (mapconcat 'symbol-name to-install "\n"))))
+    ;; FIXME: works, but doesn't display the whole message if
+    ;; `max-mini-window-height' is too small.  Need to find a better
+    ;; display/prompt system.
+    (when (yes-or-no-p prompt)
+      (mapcar 'treesit-install-language-grammar to-install))))
 
 ;;;###autoload
 (defun treesit-auto-apply-remap ()
