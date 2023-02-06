@@ -255,10 +255,14 @@ Individual grammars can be opted out of by adding them to
                             treesit-auto-opt-out-list)))
               (prompt (format "The following tree-sitter grammars are missing:\n%s\n"
                               (mapconcat 'symbol-name to-install "\n"))))
-    (with-output-to-temp-buffer "*Treesit-auto install candidates*"
-      (princ prompt))
-    (when (y-or-n-p "Install missing grammars? ")
-      (mapcar 'treesit-install-language-grammar to-install))))
+    ;; TODO QOL - it would be nice if this messaged what was installed or at
+    ;; least mentioned that nothing was installed if skipped.
+    (unless (eq treesit-auto-install t) ; Quiet mode is off
+      ;; TODO de-couple this?  Allow for prefix to prompt?
+      (with-output-to-temp-buffer "*Treesit-auto install candidates*"
+        (princ prompt))
+      (y-or-n-p "Install missing grammars? "))
+    (mapcar 'treesit-install-language-grammar to-install)))
 
 ;;;###autoload
 (defun treesit-auto-apply-remap ()
