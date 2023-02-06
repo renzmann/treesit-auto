@@ -5,7 +5,7 @@
 ;; Author: Robb Enzmann <robbenzmann@gmail.com>
 ;; Keywords: treesitter auto automatic major mode fallback convenience
 ;; URL: https://github.com/renzmann/treesit-auto.git
-;; Version: 0.3.3
+;; Version: 0.4.0
 ;; Package-Requires: ((emacs "29.0"))
 
 ;; This file is not part of GNU Emacs.
@@ -30,6 +30,7 @@
 
 ;;; Code:
 (require 'treesit)
+(require 'cl-lib)
 
 (defcustom treesit-auto-fallback-alist
   (mapcar
@@ -76,17 +77,17 @@ downloading and installing the grammar."
   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
     (bibtex "https://github.com/latex-lsp/tree-sitter-bibtex")
     (c "https://github.com/tree-sitter/tree-sitter-c")
+    (c-sharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
     (clojure "https://github.com/sogaiu/tree-sitter-clojure")
     (cmake "https://github.com/uyha/tree-sitter-cmake")
-    (common-lisp "https://github.com/theHamsta/tree-sitter-commonlisp")
+    (commonlisp "https://github.com/theHamsta/tree-sitter-commonlisp")
     (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
     (css "https://github.com/tree-sitter/tree-sitter-css")
     (css-in-js "https://github.com/orzechowskid/tree-sitter-css-in-js")
-    (csharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
     (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
     (elisp "https://github.com/Wilfred/tree-sitter-elisp")
     (go "https://github.com/tree-sitter/tree-sitter-go")
-    (go-mod "https://github.com/camdencheek/tree-sitter-go-mod")
+    (gomod "https://github.com/camdencheek/tree-sitter-go-mod")
     (html "https://github.com/tree-sitter/tree-sitter-html")
     (java "https://github.com/tree-sitter/tree-sitter-java")
     (julia "https://github.com/tree-sitter/tree-sitter-julia")
@@ -119,7 +120,10 @@ downloading and installing the grammar."
 
 (defvar treesit-auto--name-lang-alist
   '((c++ . cpp)
-    (js . javascript))
+    (js . javascript)
+    (common-lisp . commonlisp)
+    (csharp . c-sharp)
+    (go-mod . gomod))
   "Alist defining the `lang' symbol for a given tree-sitter mode.
 
 This is for the special case of when the `lang' passed
@@ -146,9 +150,9 @@ prefix.  Each entry should have the form (PREFIX . LANG).")
         `(,ts-name .  ,auto-name))
       `(,ts-name . nil)))
 
-(defvar treesit-auto--available-alist
-  (mapcar 'treesit-auto--get-assoc (treesit-auto--available-modes))
-  "Alist of available tree-sitter modes with their fallback modes.")
+(defun treesit-auto--available-alist ()
+  "Alist of available tree-sitter modes with their fallback modes."
+  (mapcar 'treesit-auto--get-assoc (treesit-auto--available-modes)))
 
 (defun treesit-auto--lang (mode)
   "Determine the tree-sitter language symbol for MODE."
@@ -161,12 +165,16 @@ prefix.  Each entry should have the form (PREFIX . LANG).")
 (defun treesit-auto--ready-p (mode)
   "Determine if MODE is tree-sitter ready.
 
-MODE can be either of the form `name-ts-mode' or its associated
-original mode, such as `name-mode'."
-  (treesit-ready-p (treesit-auto--lang mode) t))
+MODE can be of the form `name-ts-mode', its associated
+original mode, such as `name-mode' or a language symbol, like `name'."
+  (let ((lang (if (alist-get mode treesit-auto--language-source-alist)
+                  ;; In case a lang symbol was passed in
+                  mode
+                (treesit-auto--lang mode))))
+    (treesit-ready-p lang t)))
 
 (defun treesit-auto--lang-to-ts-mode (lang)
-  "Convert a `lang' symbol to its corresponding tree-sitter major mode."
+  "Convert LANG, a symbol, to its corresponding tree-sitter major mode."
   (intern
    (concat (symbol-name (treesit-auto--lang-to-name lang))
            "-ts-mode")))
@@ -174,7 +182,7 @@ original mode, such as `name-mode'."
 (defun treesit-auto--lang-to-name (lang)
   "Convert LANG symbol to its corresponding name prefix."
   (or (car (rassq lang treesit-auto--name-lang-alist))
-         lang))
+      lang))
 
 (defun treesit-auto--remap-language-source (language-source)
   "Maybe add an entry to `major-mode-remap-alist' for LANGUAGE-SOURCE.
@@ -201,9 +209,9 @@ Returns `non-nil' if install was completed without error."
   (let ((repo (alist-get lang treesit-language-source-alist)))
     (when (cond ((eq t treesit-auto-install) t)
                 ((eq 'prompt treesit-auto-install)
-                 (yes-or-no-p (format "Tree-sitter grammar for %s is missing.  Would you like to install it from %s? "
-                                      (symbol-name (treesit-auto--lang-to-name lang))
-                                      (car repo)))))
+                 (y-or-n-p (format "Tree-sitter grammar for %s is missing.  Would you like to install it from %s? "
+                                   (symbol-name (treesit-auto--lang-to-name lang))
+                                   (car repo)))))
       (message "Installing the tree-sitter grammar for %s" lang)
       ;; treesit-install-language-grammar will return nil if the
       ;; operation succeeded and 't if a warning was sent to the
@@ -225,11 +233,43 @@ version of the current major-mode."
               (install-success (treesit-auto--prompt-to-install-package lang)))
     (funcall (treesit-auto--lang-to-ts-mode lang))))
 
+(defcustom treesit-auto-opt-out-list nil
+  "Grammars for `treesit-auto-install-all' to avoid.
+
+For example, to prevent installing the `rust-ts-mode' grammar,
+add \\='rust to this list."
+  :type '(list (symbol))
+  :group 'treesit)
+
+;;;###autoload
+(defun tresit-auto-install-all ()
+  "Install all available and maintained grammars.
+
+Individual grammars can be opted out of by adding them to
+`treesit-auto-opt-out-list'."
+  (interactive)
+  (when-let* ((to-install (seq-filter
+                           (lambda (lang) (not (treesit-auto--ready-p lang)))
+                           (cl-set-difference
+                            (mapcar 'car treesit-auto--language-source-alist)
+                            treesit-auto-opt-out-list)))
+              (prompt (format "The following tree-sitter grammars are missing:\n%s\n"
+                              (mapconcat 'symbol-name to-install "\n"))))
+    ;; TODO QOL - it would be nice if this messaged what was installed or at
+    ;; least mentioned that nothing was installed if skipped.
+    (unless (eq treesit-auto-install t) ; Quiet mode is off
+      ;; TODO de-couple this?  Allow for prefix to prompt?
+      (with-output-to-temp-buffer "*Treesit-auto install candidates*"
+        (princ prompt))
+      (y-or-n-p "Install missing grammars? "))
+    (mapcar 'treesit-install-language-grammar to-install)))
+
 ;;;###autoload
 (defun treesit-auto-apply-remap ()
   "Adjust `major-mode-remap-alist' using installed tree-sitter grammars."
   (dolist (elt treesit-auto--language-source-alist)
     (add-to-list 'treesit-language-source-alist elt t))
+  ;; This is what actually modifies `major-mode-remap-alist'
   (mapcar #'treesit-auto--remap-language-source treesit-language-source-alist))
 
 (defun treesit-auto--install-language-grammar-wrapper (&rest _r)
@@ -241,6 +281,9 @@ version of the current major-mode."
   "Toggle `global-treesit-auto-mode'."
   :group 'treesit
   :global 't
+  ;; To speed things up, this caches all of the user options that cause a
+  ;; tree-sitter and regular mode to get paired together, just for this run
+  (setq treesit-auto--available-alist (treesit-auto--available-alist))
   (if global-treesit-auto-mode
       (progn
         (dolist (elt (flatten-tree treesit-auto--available-alist))
