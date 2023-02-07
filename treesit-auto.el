@@ -38,10 +38,7 @@
      (cons (purecopy (car elt)) (cdr elt)))
    `((toml-ts-mode . conf-toml-mode)
      (html-ts-mode . mhtml-mode)
-     ;; Even though the mode is `js-mode', `auto-mode-alist' uses the alias
-     ;; `javascript-mode', which `major-mode-remap-alist' will not recognize
-     ;; unless explicitly called by name.
-     (js-ts-mode . javascript-mode)
+     (json-ts-mode . js-json-mode)
      ;; See deprecation note in their README: https://github.com/emacs-typescript/typescript.el#a-short-note-on-development-halt
      (typescript-ts-mode . nil)
      (tsx-ts-mode . nil)))
@@ -294,10 +291,19 @@ Individual grammars can be opted out of by adding them to
       (progn
         (dolist (elt (flatten-tree treesit-auto--available-alist))
           (add-hook (intern (concat (symbol-name elt) "-hook")) #'treesit-auto--maybe-install-grammar))
+        ;; The use of the alias javascript-mode instead of js-mode in the
+        ;; auto-mode-alist prevents automatic switching. See
+        ;; https://github.com/renzmann/treesit-auto/issues/23
+        (add-to-list 'auto-mode-alist '("\\.js[mx]?\\'" . js-mode))
+        (add-to-list 'auto-mode-alist '("\\.har\\'" . js-mode))
         (advice-add 'treesit-install-language-grammar
 		    :after #'treesit-auto--install-language-grammar-wrapper)
         (treesit-auto-apply-remap))
     (remove-hook 'prog-mode-hook #'treesit-auto--maybe-install-grammar)
+    ;; See comment above, too.
+    ;; https://github.com/renzmann/treesit-auto/issues/23
+    (setq auto-mode-alist (delete '("\\.js[mx]?\\'" . js-mode) auto-mode-alist))
+    (setq auto-mode-alist (delete '("\\.har\\'" . js-mode) auto-mode-alist))
     (dolist (elt (flatten-tree treesit-auto--available-alist))
       (remove-hook (intern (concat (symbol-name elt) "-hook")) #'treesit-auto--maybe-install-grammar))
     (advice-remove 'treesit-install-language-grammar #'treesit-auto--install-language-grammar-wrapper)))
