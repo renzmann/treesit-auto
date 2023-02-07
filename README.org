@@ -175,6 +175,15 @@ This is how I configure =treesit-auto= for my own personal use.
       (global-treesit-auto-mode))
 #+end_src
 
+* Caveats
+This package is, admittedly, a hack.  =treesit.el= provides an excellent
+foundation to incremental source code parsing for Emacs 29, but over time that
+foundation /will/ expand into an improved core editing experience.  With that in
+mind, I fully expect this package to eventually be obsolesced by the default
+options in Emacs 30 and beyond.  That does not preclude us from adding a few
+quality of life improvements to Emacs 29, though, and so it still seems prudent
+to have this plugin available in the meantime.
+
 * Contributing
 Bug reports, feature requests, and contributions are most welcome.  Even though
 this is a small project, there is always room for improvement.  I also
