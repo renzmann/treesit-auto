@@ -299,8 +299,6 @@ Individual grammars can be opted out of by adding them to
         (advice-add 'treesit-install-language-grammar
 		    :after #'treesit-auto--install-language-grammar-wrapper)
         (treesit-auto-apply-remap))
-    (remove-hook 'prog-mode-hook #'treesit-auto--maybe-install-grammar)
-    ;; See comment above, too.
     ;; https://github.com/renzmann/treesit-auto/issues/23
     (setq auto-mode-alist (delete '("\\.js[mx]?\\'" . js-mode) auto-mode-alist))
     (setq auto-mode-alist (delete '("\\.har\\'" . js-mode) auto-mode-alist))
