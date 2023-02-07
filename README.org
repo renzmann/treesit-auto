@@ -177,7 +177,7 @@ This is how I configure =treesit-auto= for my own personal use.
 
 * Caveats
 This package is, admittedly, a hack.  =treesit.el= provides an excellent
-foundation to incremental source code parsing for Emacs 29, but over time that
+foundation to incremental source code parsing for Emacs 29, and over time that
 foundation /will/ expand into an improved core editing experience.  With that in
 mind, I fully expect this package to eventually be obsolesced by the default
 options in Emacs 30 and beyond.  That does not preclude us from adding a few
