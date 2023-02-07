@@ -5,8 +5,20 @@
 [[https://melpa.org/#/treesit-auto][file:https://melpa.org/packages/treesit-auto-badge.svg]]
 [[https://stable.melpa.org/#/treesit-auto][file:https://stable.melpa.org/packages/treesit-auto-badge.svg]]
 
-Automatically install and use tree-sitter major modes in Emacs 29+.  If the 
+Automatically install and use tree-sitter major modes in Emacs 29+.  If the
 tree-sitter version can't be used, fall back to the original major mode.
+
+* Features
+Each of these behaviors are configurable and documented under the
+"Configuration" section.  By activating =global-treesit-auto-mode=, Emacs will:
+
++ Automatically switch to =<name>-ts-mode= when the grammar for =<name>= is installed
++ Stick with =<name>-mode= if the grammar isn't installed
++ (Optional) automatically install a grammar before opening a compatible file
+  type
+
+There is also a convenience function =M-x treesit-auto-install-all=, which will
+install all of the maintained and compatible grammars.
 
 * Installation
 ~treesit-auto~ is available from [[https://melpa.org/][MELPA]].  After following [[https://melpa.org/#/getting-started][their setup]], you can
@@ -39,8 +51,9 @@ in the "Configuration" section below.
 Emacs 29, while featuring =treesit.el= and a convenient
 =treesit-install-language-grammar=, [[https://archive.casouri.cc/note/2023/tree-sitter-in-emacs-29/index.html][will not feature an intelligent way to choose]]
 between a default mode, such as =python-mode=, and its tree-sitter enhanced
-version, =python-ts-mode=.  This package attempts to remedy that by applying these
-rules:
+version, =python-ts-mode=.  This package attempts to remedy that by adjusting the
+=major-mode-remap-alist= and =treesit-language-source-alist= variables in order to
+get the following behavior:
 
 *1. If the grammar is installed, then switch to the appropriate tree-sitter mode:*
 
@@ -55,7 +68,7 @@ activating any major mode that has a corresponding tree-sitter mode, the grammar
 will be downloaded and compiled using ~treesit-install-language-grammar~.  Emacs
 will then activate the tree-sitter major mode for that buffer.
 
-~'prompt~ is like t, except a message will be displayed in the echo area asking
+~prompt~ is like t, except a message will be displayed in the echo area asking
 for a yes/no response before attempting the installation.
 
 As an example for both cases: if I visit a Python file and didn't already have
@@ -101,7 +114,7 @@ automatically when activating a major mode compatible with tree-sitter.
    rely on the fallback logic outlined above
 2. =t= means =treesit-auto= should always try to clone and install a grammar when
    missing
-3. ~'prompt~ will cause a yes/no prompt to appear in the minibuffer before
+3. ~prompt~ will cause a yes/no prompt to appear in the minibuffer before
    attempting installation
 
 #+begin_src emacs-lisp
@@ -119,6 +132,10 @@ will generate this prompt:
 
 Responding with "yes" will use =treesit-install-langauge-grammar= to go fetch and
 compile the missing grammar.
+
+The other function that respects this variable is =treesit-auto-install-all=.
+When =treesit-auto-install= is t, using =M-x treesit-auto-install-all= will skip all
+prompts.  Otherwise, it will ask before attempting the installation.
 
 ** When major mode names don't match
 Not all default major modes make sense to bump up to a similar tree-sitter mode.
