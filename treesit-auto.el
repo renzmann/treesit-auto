@@ -37,7 +37,6 @@
    (lambda (elt)
      (cons (purecopy (car elt)) (cdr elt)))
    `((toml-ts-mode . conf-toml-mode)
-     ;; TODO: I do not know if the future treesitter mode for HTML will be called html-ts-mode or mhtml-mode
      (html-ts-mode . mhtml-mode)
      ;; See deprecation note in their README: https://github.com/emacs-typescript/typescript.el#a-short-note-on-development-halt
      (typescript-ts-mode . nil)
