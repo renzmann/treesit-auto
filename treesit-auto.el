@@ -38,6 +38,10 @@
      (cons (purecopy (car elt)) (cdr elt)))
    `((toml-ts-mode . conf-toml-mode)
      (html-ts-mode . mhtml-mode)
+     ;; Even though the mode is `js-mode', `auto-mode-alist' uses the alias
+     ;; `javascript-mode', which `major-mode-remap-alist' will not recognize
+     ;; unless explicitly called by name.
+     (js-ts-mode . javascript-mode)
      ;; See deprecation note in their README: https://github.com/emacs-typescript/typescript.el#a-short-note-on-development-halt
      (typescript-ts-mode . nil)
      (tsx-ts-mode . nil)))
