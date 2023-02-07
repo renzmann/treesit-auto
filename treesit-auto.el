@@ -249,7 +249,7 @@ add \\='rust to this list."
   :group 'treesit)
 
 ;;;###autoload
-(defun tresit-auto-install-all ()
+(defun treesit-auto-install-all ()
   "Install all available and maintained grammars.
 
 Individual grammars can be opted out of by adding them to
