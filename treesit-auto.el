@@ -43,13 +43,14 @@
 (require 'cl-lib)
 
 (defcustom treesit-auto-install nil
-  "If non-nil, auto install the missing tree-sitter grammars.
+  "If non-nil, auto install missing tree-sitter grammars.
 
-This variable takes affect whenever visiting a file that has a
-tree-sitter version available or when using
-`treesit-auto-install-all'.  If set to `prompt' treesit-auto will
-confirm with the user before downloading and installing the
-grammar."
+This variable enables the automatic clone, compile, and
+installation of tree-sitter grammars whenever visiting a file
+that has a compatible tree-sitter mode.  If set to `prompt'
+treesit-auto will ask for confirmation before downloading the
+grammar.  Additionally, `treesit-auto-install-all' will skip the
+yes/no prompt when this variable is t."
   :type '(choice (const :tag "Yes" t)
                  (const :tag "No" nil)
                  (const :tag "Ask" prompt))
@@ -134,6 +135,11 @@ automatic installation (or prompting, based on the value of
       :remap 'dockerfile-mode
       :url "https://github.com/camdencheek/tree-sitter-dockerfile")
     ,(make-treesit-auto-recipe
+      :lang 'elixir
+      :ts-mode 'elixir-ts-mode
+      :remap 'elixir-mode
+      :url "https://github.com/elixir-lang/tree-sitter-elixir")
+    ,(make-treesit-auto-recipe
       :lang 'go
       :ts-mode 'go-ts-mode
       :remap 'go-mode
@@ -144,6 +150,11 @@ automatic installation (or prompting, based on the value of
       :remap 'go-mod-mode
       :url "https://github.com/camdencheek/tree-sitter-go-mod")
     ,(make-treesit-auto-recipe
+      :lang 'heex
+      :ts-mode 'heex-ts-mode
+      :remap 'heex-mode
+      :url "https://github.com/phoenixframework/tree-sitter-heex")
+    ,(make-treesit-auto-recipe
       :lang 'html
       :ts-mode 'html-ts-mode
       :remap '(mhtml-mode sgml-mode)
@@ -153,11 +164,6 @@ automatic installation (or prompting, based on the value of
       :ts-mode 'java-ts-mode
       :remap 'java-mode
       :url "https://github.com/tree-sitter/tree-sitter-java")
-    ,(make-treesit-auto-recipe
-      :lang 'julia
-      :ts-mode 'julia-ts-mode
-      :remap 'julia-mode
-      :url "https://github.com/tree-sitter/tree-sitter-julia")
     ,(make-treesit-auto-recipe
       :lang 'javascript
       :ts-mode 'js-ts-mode
@@ -170,6 +176,16 @@ automatic installation (or prompting, based on the value of
       :ts-mode 'json-ts-mode
       :remap 'js-json-mode
       :url "https://github.com/tree-sitter/tree-sitter-json")
+    ,(make-treesit-auto-recipe
+      :lang 'julia
+      :ts-mode 'julia-ts-mode
+      :remap 'julia-mode
+      :url "https://github.com/tree-sitter/tree-sitter-julia")
+    ,(make-treesit-auto-recipe
+      :lang 'kotlin
+      :ts-mode 'kotlin-ts-mode
+      :remap 'kotlin-mode
+      :url "https://github.com/fwcd/tree-sitter-kotlin")
     ,(make-treesit-auto-recipe
       :lang 'latex
       :ts-mode 'latex-ts-mode
@@ -190,6 +206,11 @@ automatic installation (or prompting, based on the value of
       :ts-mode 'markdown-ts-mode
       :remap '(poly-markdown-mode markdown-mode)
       :url "https://github.com/ikatyang/tree-sitter-markdown")
+    ,(make-treesit-auto-recipe
+      :lang 'protobuf
+      :ts-mode 'protobuf-ts-mode
+      :remap 'protobuf-mode
+      :url "https://github.com/mitchellh/tree-sitter-proto")
     ,(make-treesit-auto-recipe
       :lang 'python
       :ts-mode 'python-ts-mode
@@ -232,15 +253,15 @@ automatic installation (or prompting, based on the value of
       :ts-mode 'yaml-ts-mode
       :remap 'yaml-mode
       :url "https://github.com/ikatyang/tree-sitter-yaml"))
-    "Map each tree-sitter lang to Emacs metadata.")
+  "Map each tree-sitter lang to Emacs metadata.")
 
 (defvar treesit-auto--lang-recipe-alist
   nil
-  "Lookup recipe by lang.")
+  "Lookup a recipe using a tree-sitter lang symbol.")
 
 (defvar treesit-auto--mode-lang-alist
   nil
-  "Lookup lang by remap mode.")
+  "Lookup tree-sitter lang symbol using an Emacs major mode.")
 
 (defvar treesit-auto--original-language-source-alist
   (purecopy treesit-language-source-alist)
@@ -250,8 +271,13 @@ automatic installation (or prompting, based on the value of
   (purecopy major-mode-remap-alist)
   "Keep track of `major-mode-remap-alist'.")
 
+;; This function is the juicy, "black magic" part of the package.
 (defun treesit-auto--build-alists ()
-  "Rebuild internal alists from language recipes."
+  "Rebuild internal alists from language recipes.
+
+Applies all of the `treesit-auto' settings to adjust
+`treesit-language-source-alist' and `major-mode-remap-alist'.
+Called whenever enabling `global-treesit-auto-mode'."
   (setq treesit-auto--lang-recipe-alist ())
   (setq treesit-auto--mode-lang-alist ())
   (dolist (recipe treesit-auto-recipe-list)
@@ -282,6 +308,7 @@ automatic installation (or prompting, based on the value of
 
 (defun treesit-auto--ready-p (mode)
   "Determine if MODE is tree-sitter ready.
+
 MODE can be either the tree-sitter enhanced version or one of the
 fallback modes."
   (let* ((lang (alist-get mode treesit-auto--mode-lang-alist))
@@ -294,7 +321,7 @@ fallback modes."
 (defun treesit-auto--prompt-to-install-package (lang)
   "Ask the user if they want to install a tree-sitter grammar for `LANG'.
 
-non-nil only if installation completed without any errors."
+Non-nil only if installation completed without any errors."
   (when (cond ((eq t treesit-auto-install) t)
               ((eq 'prompt treesit-auto-install)
                (y-or-n-p (format "Tree-sitter grammar for %s is missing.  Install it from %s? "
@@ -312,10 +339,10 @@ non-nil only if installation completed without any errors."
   "Try to install the grammar matching the current major-mode.
 
 If the tree-sitter grammar is missing for the current major mode,
-it will prompt the user if they want to install it from the
-currently registered repository.  If the user chooses to install
-the grammar it will then switch to the tree-sitter powered
-version of the current major-mode."
+this will silently fail, automatically install the grammar, or
+prompt the user about automatic installation, depending on the
+value of `treesit-auto-install'.  If installation of the grammar
+is successful, activate the tree-sitter major mode."
   (when-let* ((not-ready (not (treesit-auto--ready-p major-mode)))
               (lang (alist-get major-mode treesit-auto--mode-lang-alist))
               (recipe (alist-get lang treesit-auto--lang-recipe-alist))
@@ -326,7 +353,9 @@ version of the current major-mode."
 
 (defvar treesit-auto-opt-out-list
   nil
-  "Deprecated: language symbols to avoid when using `treesit-auto-install-all'.")
+  "Language symbols to avoid when using `treesit-auto-install-all'.
+
+This variable is ignored if `treesit-auto-langs' is non-nil.")
 
 ;;;###autoload
 (defun treesit-auto-install-all ()
@@ -356,7 +385,7 @@ how to modify the behavior of this function."
   (treesit-auto--build-alists))
 
 (defun treesit-auto--setup ()
-  "Set up global minor mode."
+  "Set up `global-treesit-auto-mode'."
   (setq treesit-auto--original-major-mode-remap-alist (purecopy major-mode-remap-alist))
   (setq treesit-auto--original-language-source-alist (purecopy treesit-language-source-alist))
   ;; TODO add maybe-install hook to all remap modes
@@ -368,7 +397,7 @@ how to modify the behavior of this function."
 	      :after #'treesit-auto--install-language-grammar-wrapper))
 
 (defun treesit-auto--teardown ()
-  "Undo any change made by global minor mode."
+  "Undo any change made by `global-treesit-auto-mode'."
   (advice-remove 'treesit-install-language-grammar
                  #'treesit-auto--install-language-grammar-wrapper)
   (dolist (elt (mapcar 'car treesit-auto--mode-lang-alist))
