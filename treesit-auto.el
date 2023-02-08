@@ -73,8 +73,7 @@ automatic installation (or prompting, based on the value of
   lang ts-mode remap url revision source-dir cc c++)
 
 (defvar treesit-auto-recipe-list
-  `(
-    ,(make-treesit-auto-recipe
+  `(,(make-treesit-auto-recipe
       :lang 'bash
       :ts-mode 'bash-ts-mode
       :remap 'sh-mode
@@ -222,8 +221,7 @@ automatic installation (or prompting, based on the value of
       :lang 'yaml
       :ts-mode 'yaml-ts-mode
       :remap 'yaml-mode
-      :url "https://github.com/ikatyang/tree-sitter-yaml")
-    )
+      :url "https://github.com/ikatyang/tree-sitter-yaml"))
     "Map each tree-sitter lang to Emacs metadata.")
 
 (defvar treesit-auto--lang-recipe-alist
