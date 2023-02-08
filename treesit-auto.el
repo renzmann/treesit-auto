@@ -33,10 +33,13 @@
 (require 'cl-lib)
 
 (defcustom treesit-auto-install nil
-  "If non-nil, auto install the missing grammar for the current `ts-mode'.
+  "If non-nil, auto install the missing tree-sitter grammars.
 
-If set to `prompt' treesit-auto will confirm with the user before
-downloading and installing the grammar."
+This variable takes affect whenever visiting a file that has a
+tree-sitter version available or when using
+`treesit-auto-install-all'.  If set to `prompt' treesit-auto will
+confirm with the user before downloading and installing the
+grammar."
   :type '(choice (const :tag "Yes" t)
                  (const :tag "No" nil)
                  (const :tag "Ask" prompt))
