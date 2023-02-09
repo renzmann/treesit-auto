@@ -284,7 +284,7 @@ Called whenever enabling `global-treesit-auto-mode'."
     (when-let* ((lang (treesit-auto-recipe-lang recipe))
                 (ts-mode (treesit-auto-recipe-ts-mode recipe))
                 (remap (ensure-list (treesit-auto-recipe-remap recipe)))
-                (fallback (car remap)))
+                (fallback (car (seq-filter 'fboundp remap))))
       ;; For lang -> Emacs metadata lookups
       (push `(,lang . ,recipe) treesit-auto--lang-recipe-alist)
       ;; For mode -> lang lookup
