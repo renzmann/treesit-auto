@@ -370,7 +370,7 @@ how to modify the behavior of this function."
                                (cl-set-difference
                                 (mapcar 'car treesit-language-source-alist)
                                 treesit-auto-opt-out-list))))
-              (prompt (format "The following tree-sitter grammars are missing:\n%s\n"
+              (prompt (format "The following tree-sitter grammars are/were missing:\n%s\n"
                               (mapconcat 'symbol-name to-install "\n"))))
     ;; TODO QOL - it would be nice if this messaged what was installed or at
     ;; least mentioned that nothing was installed if skipped.
