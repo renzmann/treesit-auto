@@ -388,7 +388,6 @@ how to modify the behavior of this function."
   "Set up `global-treesit-auto-mode'."
   (setq treesit-auto--original-major-mode-remap-alist (purecopy major-mode-remap-alist))
   (setq treesit-auto--original-language-source-alist (purecopy treesit-language-source-alist))
-  ;; TODO add maybe-install hook to all remap modes
   (treesit-auto--build-alists)
   (dolist (elt (mapcar 'car treesit-auto-mode-lang-alist))
     (add-hook (intern (concat (symbol-name elt) "-hook"))
