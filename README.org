@@ -15,7 +15,6 @@ Each of these behaviors are configurable and documented under the
 + Automatically switch to =<name>-ts-mode= when the grammar for =<name>= is installed
 + Stick with =<name>-mode= if the grammar isn't installed
 + (Optional) automatically install a grammar before opening a compatible file
-  type
 
 There is also a convenience function =M-x treesit-auto-install-all=, which will
 install all of the maintained and compatible grammars.
@@ -44,8 +43,8 @@ Then, in your Emacs configuration file (=~/.emacs.d/init.el=),
     (global-treesit-auto-mode))
 #+end_src
 
-There are some nifty things you might want to enable, though, which are covered
-in the "Configuration" section below.
+For most users, this will be enough.  There are some nifty things you might want
+to enable, though, which are covered in the "Configuration" section below.
 
 * What this package does
 Emacs 29, while featuring =treesit.el= and a convenient
@@ -78,29 +77,29 @@ the grammar installed, I wind up with an installed grammar and a buffer using
 Otherwise, when ~treesit-auto-install~ is nil, it will try to fall back to
 another major mode as described in the following two rules.
 
-*3. If the grammar is NOT installed, and the user has specified a fallback*
+*3. If the grammar is NOT installed, and a fallback is specified*
 
-The customizable variable =treesit-auto-fallback-alist= lets you pick the fallback
-modes by name.  For instance, if we apply this:
+Most languages will have a fallback mode specified, such as =python-ts-mode=
+falling back to =python-mode=, if the grammar is not installed.  If you ever need
+to double-check what that fallback will be, you can double check what's in the
+recipe for that language like this:
 
-#+begin_src emacs-lisp
-  (add-to-list 'treesit-auto-fallback-alist '(toml-ts-mode . conf-toml-mode))
-#+end_src
+#+begin_example
+(treesit-auto-recipe-remap (alist-get 'python treesit-auto-lang-recipe-alist))
+    ⇒ python-mode
+#+end_example
 
-Then, when the TOML grammar is missing, Emacs will use =conf-toml-mode=, instead
-of trying to fall back to =toml-mode=.
+See "Configuration/Configuring behavior for a specific language" in case you
+would like to specify different fallback modes than the default.
 
 *4. All other cases...*
 
 This is the most general case, where the grammar is not installed,
-~treesit-auto-install~ is nil, no fallback mode is specified in
-~treesit-auto-fallback-alist~, and an similarly named base mode exists.  Here,
-~treesit-auto~ will switch to the non-tree-sitter major mode sharing a common
-prefix.
-
-For example, if the Go tree-sitter grammar is not installed, but we have
-installed [[https://github.com/dominikh/go-mode.el][go-mode]], then Emacs will use that instead of =go-ts-mode=, since they
-share the same =go-= prefix.
+~treesit-auto-install~ is nil, and no fallback mode is specified in the language
+recipe present on =treesit-auto-recipe-list=.  In this case, we still gain the
+benefit of quickly installing grammars through =treesit-install-language-grammar=
+without having the build the recipe interactively, but =treesit-auto= will make no
+attempt to switch away from the tree-sitter mode.
 
 * Configuration
 If you have modified =treesit-language-source-alist= through =setq=, then it is
@@ -127,26 +126,64 @@ equivalent) under =~/.emacs.d/tree-sitter= (or anywhere else in
 will generate this prompt:
 
 #+begin_example
-  Tree-sitter grammar for python is missing.  Would you like to install it from https://github.com/tree-sitter/tree-sitter-python? (yes/no)
+  Tree-sitter grammar for python is missing.  Would you like to install it from https://github.com/tree-sitter/tree-sitter-python? (y or n)
 #+end_example
 
-Responding with "yes" will use =treesit-install-langauge-grammar= to go fetch and
+Responding with "yes" will use =treesit-install-language-grammar= to go fetch and
 compile the missing grammar.
 
 The other function that respects this variable is =treesit-auto-install-all=.
 When =treesit-auto-install= is t, using =M-x treesit-auto-install-all= will skip all
 prompts.  Otherwise, it will ask before attempting the installation.
 
-** When major mode names don't match
-Not all default major modes make sense to bump up to a similar tree-sitter mode.
-For example, when /I/ open a =.sh= file, my intent is nearly always to use it with
-Bash.  This is not the case for everyone, though, so by default this package
-will not replace =sh-mode= with =bash-ts-mode=.  If you do want such a remap, simply
-include a line like this before calling =treesit-auto-apply-remap=:
+** Configuring behavior for a specific language
+The variable =treesit-auto-recipe-list= keeps track of all the language "recipes."
+These control how =treesit-auto= decides which modes to upgrade/downgrade to/from,
+where the source code of the language grammar is hosted, and which C/C++
+compiler to use.  Each recipe can take these arguments:
 
-#+begin_src emacs-lisp
-  (add-to-list 'treesit-auto-fallback-alist '(bash-ts-mode . sh-mode))
+#+begin_example
+:lang
+:ts-mode
+:remap
+:url
+:revision
+:source-dir
+:cc
+:c++
+#+end_example
+
+To create a recipe, use =make-treesit-auto-recipe=:
+
+#+begin_src elisp
+  (setq my-js-tsauto-config
+	(make-treesit-auto-recipe
+	 :lang 'javascript
+	 :ts-mode 'js-ts-mode
+	 :remap '(js2-mode js-mode javascript-mode)
+	 :url "https://github.com/tree-sitter/tree-sitter-javascript"
+	 :revision "master"
+	 :source-dir "src"))
+
+  (add-to-list 'treesit-auto-recipe-list my-js-tsauto-config)
 #+end_src
+
+Here, we've specified that the tree-sitter compiler will be creating a file
+named =libtree-sitter-javascript.so= (or =.dylib= or =.dll=), based on the =:lang=
+field.  The corresponding tree-sitter mode in Emacs is called =js-ts-mode=, and
+all of =js2-mode=, =js-mode=, and =javascript-mode= should attempt switching to the
+=js-ts-mode=, if possible.
+
+Moreover, since =js-2-mode= is first under the =:remap= section, that is the
+"primary fallback."  Meaning that if the tree-sitter grammar is not available,
+it will be the first mode tried.  If that doesn't work, it will try =js-mode=, and
+=javascript-mode=, in that order, until one /does/ work.  If only one fallback needs
+to be specified, a single quoted symbol is also acceptable.  For instance,
+=python-ts-mode= just uses =:remap 'python= in this argument position.
+
+The =:url=, =:revision=, =:source-dir=, =:cc=, and =:c++= arguments are all documented
+under =treesit-language-source-alist=, which is part of base Emacs, not this
+package.
 
 ** Keep track of your hooks
 This package does not modify any of your major mode hooks.  That is, if you have
@@ -156,7 +193,7 @@ loaded.  For major modes in which this is a concern, the current recommendation
 is to address this as part of your configuration.
 
 #+begin_src emacs-lisp
-  (setq rust-ts-mode-hook rust-mode-hook)
+(setq rust-ts-mode-hook rust-mode-hook)
 #+end_src
 
 Some modes have a shared base, such as =python-ts-mode= and =python-mode= both
@@ -167,12 +204,11 @@ deriving from =python-base-mode=.  For these languages, you can opt to hook into
 This is how I configure =treesit-auto= for my own personal use.
 
 #+begin_src emacs-lisp
-    (use-package treesit-auto
-      :demand t
-      :config
-      (add-to-list 'treesit-auto-fallback-alist '(bash-ts-mode . sh-mode))
-      (setq treesit-auto-install 'prompt)
-      (global-treesit-auto-mode))
+(use-package treesit-auto
+  :demand t
+  :config
+  (setq treesit-auto-install 'prompt)
+  (global-treesit-auto-mode))
 #+end_src
 
 * Caveats
@@ -192,3 +228,7 @@ naming, code simplification, and improvements to language in documentation.
 
 Issues are tracked on [[https://github.com/renzmann/treesit-auto/issues][GitHub]], which is also where patches and pull requests
 should be submitted.
+
+If you would like to submit a new language recipe to be distributed as part of
+this package, see [[CONTRIBUTING.md][CONTRIBUTING.md]] for a quick guide on how to write and submit
+the new recipe.
