@@ -30,7 +30,6 @@ JavaScript:
 6. `:cc` and `:c++` should be left unspecified, as they are reserved for user
    customization
 
-
 When submitting a pull request for a new recipe, use the title `New recipe:
 <grammar name>`, and ensure that the patch consists only of the net-new recipe
 lines, in the correct alphabetical position within `treesit-auto-recipe-list`.
