@@ -255,11 +255,11 @@ automatic installation (or prompting, based on the value of
       :url "https://github.com/ikatyang/tree-sitter-yaml"))
   "Map each tree-sitter lang to Emacs metadata.")
 
-(defvar treesit-auto--lang-recipe-alist
+(defvar treesit-auto-lang-recipe-alist
   nil
   "Lookup a recipe using a tree-sitter lang symbol.")
 
-(defvar treesit-auto--mode-lang-alist
+(defvar treesit-auto-mode-lang-alist
   nil
   "Lookup tree-sitter lang symbol using an Emacs major mode.")
 
@@ -278,19 +278,19 @@ automatic installation (or prompting, based on the value of
 Applies all of the `treesit-auto' settings to adjust
 `treesit-language-source-alist' and `major-mode-remap-alist'.
 Called whenever enabling `global-treesit-auto-mode'."
-  (setq treesit-auto--lang-recipe-alist ())
-  (setq treesit-auto--mode-lang-alist ())
+  (setq treesit-auto-lang-recipe-alist ())
+  (setq treesit-auto-mode-lang-alist ())
   (dolist (recipe treesit-auto-recipe-list)
     (when-let* ((lang (treesit-auto-recipe-lang recipe))
                 (ts-mode (treesit-auto-recipe-ts-mode recipe))
                 (remap (ensure-list (treesit-auto-recipe-remap recipe)))
                 (fallback (car (seq-filter 'fboundp remap))))
       ;; For lang -> Emacs metadata lookups
-      (push `(,lang . ,recipe) treesit-auto--lang-recipe-alist)
+      (push `(,lang . ,recipe) treesit-auto-lang-recipe-alist)
       ;; For mode -> lang lookup
       (dolist (mode remap)
-        (push `(,mode . ,lang) treesit-auto--mode-lang-alist))
-      (push `(,ts-mode . ,lang) treesit-auto--mode-lang-alist)
+        (push `(,mode . ,lang) treesit-auto-mode-lang-alist))
+      (push `(,ts-mode . ,lang) treesit-auto-mode-lang-alist)
       ;; Tree-sitter <--> fallback automation happens here
       (if (treesit-auto--ready-p ts-mode)
           (dolist (mode remap)
@@ -311,8 +311,8 @@ Called whenever enabling `global-treesit-auto-mode'."
 
 MODE can be either the tree-sitter enhanced version or one of the
 fallback modes."
-  (let* ((lang (alist-get mode treesit-auto--mode-lang-alist))
-         (recipe (alist-get lang treesit-auto--lang-recipe-alist))
+  (let* ((lang (alist-get mode treesit-auto-mode-lang-alist))
+         (recipe (alist-get lang treesit-auto-lang-recipe-alist))
          (ts-mode (treesit-auto-recipe-ts-mode recipe)))
     (and (treesit-ready-p lang t)
          (fboundp mode)
@@ -344,8 +344,8 @@ prompt the user about automatic installation, depending on the
 value of `treesit-auto-install'.  If installation of the grammar
 is successful, activate the tree-sitter major mode."
   (when-let* ((not-ready (not (treesit-auto--ready-p major-mode)))
-              (lang (alist-get major-mode treesit-auto--mode-lang-alist))
-              (recipe (alist-get lang treesit-auto--lang-recipe-alist))
+              (lang (alist-get major-mode treesit-auto-mode-lang-alist))
+              (recipe (alist-get lang treesit-auto-lang-recipe-alist))
               (ts-mode (treesit-auto-recipe-ts-mode recipe))
               (ts-mode-exists (fboundp ts-mode))
               (install-success (treesit-auto--prompt-to-install-package lang)))
@@ -390,7 +390,7 @@ how to modify the behavior of this function."
   (setq treesit-auto--original-language-source-alist (purecopy treesit-language-source-alist))
   ;; TODO add maybe-install hook to all remap modes
   (treesit-auto--build-alists)
-  (dolist (elt (mapcar 'car treesit-auto--mode-lang-alist))
+  (dolist (elt (mapcar 'car treesit-auto-mode-lang-alist))
     (add-hook (intern (concat (symbol-name elt) "-hook"))
               #'treesit-auto--maybe-install-grammar))
   (advice-add 'treesit-install-language-grammar
@@ -400,7 +400,7 @@ how to modify the behavior of this function."
   "Undo any change made by `global-treesit-auto-mode'."
   (advice-remove 'treesit-install-language-grammar
                  #'treesit-auto--install-language-grammar-wrapper)
-  (dolist (elt (mapcar 'car treesit-auto--mode-lang-alist))
+  (dolist (elt (mapcar 'car treesit-auto-mode-lang-alist))
     (remove-hook (intern (concat (symbol-name elt) "-hook"))
                  #'treesit-auto--maybe-install-grammar))
   (setq major-mode-remap-alist (purecopy treesit-auto--original-major-mode-remap-alist))
