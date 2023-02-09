@@ -15,7 +15,8 @@ JavaScript:
 ```
 
 1. `:lang` should *exactly* match the grammar name in the source repository's
-   `grammar.json`
+   `grammar.js`.  Look for a line [like
+   this](https://github.com/tree-sitter/tree-sitter-python/blob/9e53981ec31b789ee26162ea335de71f02186003/grammar.js#L28)
 2. `:ts-mode` must be a single quoted symbol that is the tree-sitter mode Emacs
    should use for this grammar
 3. `:remap` is either a quoted symbol or quoted list of symbols that are modes
