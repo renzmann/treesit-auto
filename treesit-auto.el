@@ -140,7 +140,7 @@ automatic installation (or prompting, based on the value of
       :ts-mode 'elixir-ts-mode
       :remap 'elixir-mode
       :url "https://github.com/elixir-lang/tree-sitter-elixir"
-      :requires '(heex))
+      :requires 'heex)
     ,(make-treesit-auto-recipe
       :lang 'go
       :ts-mode 'go-ts-mode
@@ -271,7 +271,7 @@ is successful, activate the tree-sitter major mode."
               (ts-mode-exists (fboundp ts-mode))
               (lang (treesit-auto-recipe-lang recipe)))
     ;; install required grammars
-    (dolist (lang (or (treesit-auto-recipe-requires recipe) '()))
+    (dolist (lang (ensure-list (treesit-auto-recipe-requires recipe)))
       (treesit-auto--prompt-to-install-package lang))
     (when (treesit-auto--prompt-to-install-package lang)
       (funcall ts-mode))))
