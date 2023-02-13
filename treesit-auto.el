@@ -82,7 +82,7 @@ automatic installation (or prompting, based on the value of
 
 (cl-defstruct treesit-auto-recipe
   "Emacs metadata for a tree-sitter language grammar."
-  lang ts-mode remap url requires revision source-dir cc c++)
+  lang ts-mode remap requires url revision source-dir cc c++)
 
 (defvar treesit-auto-recipe-list
   `(,(make-treesit-auto-recipe
