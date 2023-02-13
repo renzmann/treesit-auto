@@ -245,6 +245,7 @@ automatic installation (or prompting, based on the value of
     ,(make-treesit-auto-recipe
       :lang 'typescript
       :ts-mode 'typescript-ts-mode
+      :remap 'typescript-mode
       :url "https://github.com/tree-sitter/tree-sitter-typescript"
       :revision "master"
       :source-dir "typescript/src")
