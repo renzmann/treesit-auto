@@ -314,7 +314,7 @@ MODE can be either the tree-sitter enhanced version or one of the
 fallback modes."
   (let* ((lang (alist-get mode treesit-auto-mode-lang-alist))
          (recipe (alist-get lang treesit-auto-lang-recipe-alist))
-         (ts-mode (treesit-auto-recipe-ts-mode recipe)))
+         (ts-mode (when recipe (treesit-auto-recipe-ts-mode recipe))))
     (and (treesit-ready-p lang t)
          (fboundp mode)
          (fboundp ts-mode))))
