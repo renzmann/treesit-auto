@@ -381,6 +381,10 @@ how to modify the behavior of this function."
                   (add-to-list 'modes mode))
              finally return modes))
   (if global-treesit-auto-mode
+      ;; adding advice to set-auto-mode-0 is potentially dangerous
+      ;; but we need to temporary update major-mode-remap-alist
+      ;; and not modify the user specified list which will allow
+      ;; the user to be in control of existing remaps.
       (advice-add #'set-auto-mode-0 :before #'treesit-auto--set-major-remap)
     (advice-remove #'set-auto-mode-0 #'treesit-auto--set-major-remap)))
 
