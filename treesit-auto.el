@@ -314,17 +314,21 @@ This variable is ignored if `treesit-auto-langs' is non-nil.")
 (defun treesit-auto--get-mode-recipe (&optional mode)
   (let ((mode (or mode major-mode)))
     (cl-loop for recipe in treesit-auto-recipe-list
-             if (or (equal (treesit-auto-recipe-remap recipe) mode)
-                    (equal (treesit-auto-recipe-ts-mode recipe) mode))
+             if (memq
+                 mode
+                 (cons (treesit-auto-recipe-ts-mode recipe)
+                       (ensure-list (treesit-auto-recipe-remap recipe))))
              return recipe)))
 
 (defun treesit-auto--build-major-mode-remap-alist ()
   (append major-mode-remap-alist
-          (cl-loop for recipe in treesit-auto-recipe-list
-                   for remap = (treesit-auto-recipe-remap recipe)
-                   for ts-mode = (treesit-auto-recipe-ts-mode recipe)
-                   when (treesit-auto--ready-p ts-mode)
-                   collect (cons remap ts-mode))))
+          (let ((remap-alist) '())
+            (cl-loop for recipe in treesit-auto-recipe-list
+                     for ts-mode = (treesit-auto-recipe-ts-mode recipe)
+                     when (treesit-auto--ready-p ts-mode)
+                     do (dolist (remap (ensure-list (treesit-auto-recipe-remap recipe)))
+                          (add-to-list 'remap-alist (cons remap ts-mode)))
+                     finally return remap-alist))))
 
 (defun treesit-auto--build-treesit-source-alist ()
   (append treesit-language-source-alist
@@ -370,11 +374,12 @@ how to modify the behavior of this function."
   ;; in case only the ts-mode is available.
   ;; non emacs core ts-modes might autoload and would be
   ;; nice to also prompt for grammar installation
-  (mapcan (lambda (recipe)
-            (list
-             (treesit-auto-recipe-remap recipe)
-             (treesit-auto-recipe-ts-mode recipe)))
-          treesit-auto-recipe-list)
+  (let ((modes '()))
+    (cl-loop for recipe in treesit-auto-recipe-list
+             do (add-to-list 'modes (treesit-auto-recipe-ts-mode recipe))
+             do (dolist (mode (ensure-list (treesit-auto-recipe-remap recipe)))
+                  (add-to-list 'modes mode))
+             finally return modes))
   (if global-treesit-auto-mode
       (advice-add #'set-auto-mode-0 :before #'treesit-auto--set-major-remap)
     (advice-remove #'set-auto-mode-0 #'treesit-auto--set-major-remap)))
