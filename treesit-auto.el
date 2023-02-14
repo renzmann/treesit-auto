@@ -81,7 +81,7 @@ automatic installation (or prompting, based on the value of
 
 (cl-defstruct treesit-auto-recipe
   "Emacs metadata for a tree-sitter language grammar."
-  lang ts-mode remap url revision source-dir cc c++)
+  lang ts-mode remap requires url revision source-dir cc c++)
 
 (defvar treesit-auto-recipe-list
   `(,(make-treesit-auto-recipe
@@ -239,6 +239,7 @@ automatic installation (or prompting, based on the value of
     ,(make-treesit-auto-recipe
       :lang 'tsx
       :ts-mode 'tsx-ts-mode
+      :requires 'typescript
       :url "https://github.com/tree-sitter/tree-sitter-typescript"
       :revision "master"
       :source-dir "tsx/src")
@@ -246,6 +247,7 @@ automatic installation (or prompting, based on the value of
       :lang 'typescript
       :ts-mode 'typescript-ts-mode
       :remap 'typescript-mode
+      :requires 'tsx
       :url "https://github.com/tree-sitter/tree-sitter-typescript"
       :revision "master"
       :source-dir "typescript/src")
@@ -282,10 +284,10 @@ Called whenever enabling `global-treesit-auto-mode'."
   (setq treesit-auto-lang-recipe-alist ())
   (setq treesit-auto-mode-lang-alist ())
   (dolist (recipe treesit-auto-recipe-list)
-    (when-let* ((lang (treesit-auto-recipe-lang recipe))
-                (ts-mode (treesit-auto-recipe-ts-mode recipe))
-                (remap (ensure-list (treesit-auto-recipe-remap recipe)))
-                (fallback (car (seq-filter 'fboundp remap))))
+    (let* ((lang (treesit-auto-recipe-lang recipe))
+           (ts-mode (treesit-auto-recipe-ts-mode recipe))
+           (remap (ensure-list (treesit-auto-recipe-remap recipe)))
+           (fallback (car (seq-filter 'fboundp remap))))
       ;; For lang -> Emacs metadata lookups
       (push `(,lang . ,recipe) treesit-auto-lang-recipe-alist)
       ;; For mode -> lang lookup
@@ -350,6 +352,9 @@ is successful, activate the tree-sitter major mode."
               (ts-mode (treesit-auto-recipe-ts-mode recipe))
               (ts-mode-exists (fboundp ts-mode))
               (install-success (treesit-auto--prompt-to-install-package lang)))
+    (dolist (lang (ensure-list (treesit-auto-recipe-requires recipe)))
+      (unless (treesit-ready-p lang)
+        (treesit-auto--prompt-to-install-package lang)))
     (funcall ts-mode)))
 
 (defvar treesit-auto-opt-out-list
