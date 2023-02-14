@@ -385,10 +385,14 @@ how to modify the behavior of this function."
     (advice-remove #'set-auto-mode-0 #'treesit-auto--set-major-remap)))
 
 (defun treesit-auto--set-major-remap (&rest _)
-  ;; even though this is set as local, when a major-mode gets
-  ;; matched it will be added to auto-mode-alist
-  ;; so it can't be really "switched off" once it mapped a ts-mode
-  ;; to a function.
+  ;; even though major-mode-remap-alist is set as local here,
+  ;; when a major-mode matches the mode will be added to the top of
+  ;; auto-mode-alist so it can't be really "switched off" afterwards.
+  ;; The user needs to restart emacs or somehow reset auto-mode-alist to
+  ;; the original.
+  ;; For this mode to keep a cached copy is dangerous as it will be a global
+  ;; replacement and ignores all changes while this mode is active, so
+  ;; don't think it is a valid option.
   (setq-local major-mode-remap-alist (treesit-auto--build-major-mode-remap-alist)))
 
 (defun treesit-auto--on ()
