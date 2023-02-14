@@ -138,6 +138,7 @@ automatic installation (or prompting, based on the value of
       :lang 'elixir
       :ts-mode 'elixir-ts-mode
       :remap 'elixir-mode
+      :requires 'heex
       :url "https://github.com/elixir-lang/tree-sitter-elixir")
     ,(make-treesit-auto-recipe
       :lang 'go
