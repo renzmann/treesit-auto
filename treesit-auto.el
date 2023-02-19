@@ -277,9 +277,9 @@ is successful, activate the tree-sitter major mode."
 
 MODE can be either the tree-sitter enhanced version or one of the
 fallback modes."
-  (let* ((recipe (treesit-auto--get-mode-recipe mode))
-         (lang (treesit-auto-recipe-lang recipe))
-         (ts-mode (when recipe (treesit-auto-recipe-ts-mode recipe))))
+  (when-let* ((recipe (treesit-auto--get-mode-recipe mode))
+              (lang (treesit-auto-recipe-lang recipe))
+              (ts-mode (treesit-auto-recipe-ts-mode recipe)))
     (and (treesit-ready-p lang t)
          (fboundp mode)
          (fboundp ts-mode))))
