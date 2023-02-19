@@ -41,7 +41,9 @@
 ;;; Code:
 
 (require 'treesit)
-(eval-when-compile (require 'cl-lib))
+(eval-when-compile
+  (require 'cl-lib)
+  (require 'files))
 
 (defcustom treesit-auto-install nil
   "If non-nil, auto install missing tree-sitter grammars.
