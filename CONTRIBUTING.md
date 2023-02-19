@@ -5,13 +5,14 @@ a recipe in `treesit-auto-recipe-list`.  Here is an example entry for
 JavaScript:
 
 ```elisp
-    ,(make-treesit-auto-recipe
-      :lang 'javascript
-      :ts-mode 'js-ts-mode
-      :remap '(js-mode javascript-mode js2-mode)
-      :url "https://github.com/tree-sitter/tree-sitter-javascript"
-      :revision "master"
-      :source-dir "src")
+,(make-treesit-auto-recipe
+  :lang 'typescript
+  :ts-mode 'typescript-ts-mode
+  :remap 'typescript-mode
+  :requires 'tsx
+  :url "https://github.com/tree-sitter/tree-sitter-typescript"
+  :revision "master"
+  :source-dir "typescript/src")
 ```
 
 1. `:lang` should *exactly* match the grammar name in the source repository's
@@ -23,6 +24,8 @@ JavaScript:
    that should attempt to "switch up" to the tree-sitter major mode.  When the
    tree-sitter grammar isn't available, these modes are tried *in order* as
    fallback modes
+4. `:requires` optionally specifies a quoted language symbol or quoted list of
+   symbols of any grammars that must be installed alongside this one.
 4. `:url` must specify the grammar's source repository.  Many are already listed
    on the [tree-sitter GitHub](https://github.com/tree-sitter)
 5. `:revision` and `:source-dir` are optional, but may be required if the

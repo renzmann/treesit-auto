@@ -5,7 +5,7 @@
 ;; Author: Robb Enzmann <robbenzmann@gmail.com>
 ;; Keywords: treesitter auto automatic major mode fallback convenience
 ;; URL: https://github.com/renzmann/treesit-auto.git
-;; Version: 0.5.1
+;; Version: 0.5.4
 ;; Package-Requires: ((emacs "29.0"))
 
 ;; This file is not part of GNU Emacs.
@@ -139,8 +139,8 @@ automatic installation (or prompting, based on the value of
       :lang 'elixir
       :ts-mode 'elixir-ts-mode
       :remap 'elixir-mode
-      :url "https://github.com/elixir-lang/tree-sitter-elixir"
-      :requires 'heex)
+      :requires 'heex
+      :url "https://github.com/elixir-lang/tree-sitter-elixir")
     ,(make-treesit-auto-recipe
       :lang 'go
       :ts-mode 'go-ts-mode
@@ -241,12 +241,15 @@ automatic installation (or prompting, based on the value of
     ,(make-treesit-auto-recipe
       :lang 'tsx
       :ts-mode 'tsx-ts-mode
+      :requires 'typescript
       :url "https://github.com/tree-sitter/tree-sitter-typescript"
       :revision "master"
       :source-dir "tsx/src")
     ,(make-treesit-auto-recipe
       :lang 'typescript
       :ts-mode 'typescript-ts-mode
+      :remap 'typescript-mode
+      :requires 'tsx
       :url "https://github.com/tree-sitter/tree-sitter-typescript"
       :revision "master"
       :source-dir "typescript/src")

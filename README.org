@@ -148,6 +148,7 @@ compiler to use.  Each recipe can take these arguments:
 :remap
 :url
 :revision
+:requires
 :source-dir
 :cc
 :c++
@@ -180,6 +181,12 @@ it will be the first mode tried.  If that doesn't work, it will try =js-mode=, a
 =javascript-mode=, in that order, until one /does/ work.  If only one fallback needs
 to be specified, a single quoted symbol is also acceptable.  For instance,
 =python-ts-mode= just uses =:remap 'python= in this argument position.
+
+If a grammar mandates any other grammars be installed as a dependency, the
+=:requires= keyword can specify a language symbol or list of symbols that should
+be installed.  One example of this is found in the TypeScript recipe, which
+specifies =:requires 'tsx=, since activating =typescript-ts-mode= on some Emacs
+builds will attempt to load the TSX grammar.
 
 The =:url=, =:revision=, =:source-dir=, =:cc=, and =:c++= arguments are all documented
 under =treesit-language-source-alist=, which is part of base Emacs, not this
