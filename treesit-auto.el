@@ -59,15 +59,6 @@ yes/no prompt when this variable is t."
                  (const :tag "Ask" prompt))
   :group 'treesit)
 
-(defcustom treesit-auto-fallback-alist nil
-  "Ignored.
-
-Formerly the method of defining fallback & promotion modes
-between tree-sitter and original modes.  This is handled instead
-by manipulating the `treesit-auto-recipe-list' variable."
-  :type '(alist (symbol) (function))
-  :group 'treesit)
-
 (defcustom treesit-auto-langs nil
   "Language symbols that should be automatically installed.
 
