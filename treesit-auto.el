@@ -76,7 +76,7 @@ rust go), then `treesit-auto-install-all' will only check and
 install those three grammars.  Likewise, we will only get
 automatic installation (or prompting, based on the value of
 `treesit-auto-install') when visiting a Python, Go, or Rust file."
-  :type '(list (symbol))
+  :type '(repeat symbol)
   :group 'treesit)
 
 (cl-defstruct treesit-auto-recipe
