@@ -62,7 +62,7 @@ yes/no prompt when this variable is t."
 Formerly the method of defining fallback & promotion modes
 between tree-sitter and original modes.  This is handled instead
 by manipulating the `treesit-auto-recipe-list' variable."
-  :type '(alist (symbol) (function))
+  :type '(alist :key-type symbol :value-type function)
   :group 'treesit)
 
 (defcustom treesit-auto-langs nil
