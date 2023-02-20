@@ -59,6 +59,15 @@ yes/no prompt when this variable is t."
                  (const :tag "Ask" prompt))
   :group 'treesit)
 
+(defcustom treesit-auto-fallback-alist nil
+  "Ignored.
+
+Formerly the method of defining fallback & promotion modes
+between tree-sitter and original modes.  This is handled instead
+by manipulating the `treesit-auto-recipe-list' variable."
+  :type '(alist :key-type symbol :value-type function)
+  :group 'treesit)
+
 (defcustom treesit-auto-langs nil
   "Language symbols that should be automatically installed.
 
@@ -70,7 +79,7 @@ rust go), then `treesit-auto-install-all' will only check and
 install those three grammars.  Likewise, we will only get
 automatic installation (or prompting, based on the value of
 `treesit-auto-install') when visiting a Python, Go, or Rust file."
-  :type '(list (symbol))
+  :type '(repeat symbol)
   :group 'treesit)
 
 (cl-defstruct treesit-auto-recipe
