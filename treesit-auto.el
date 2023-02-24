@@ -317,6 +317,7 @@ Non-nil only if installation completed without any errors."
 This variable is ignored if `treesit-auto-langs' is non-nil.")
 
 (defun treesit-auto--get-mode-recipe (&optional mode)
+  "Look up the recipe for MODE.  If MODE is nil, use the current `major-mode'."
   (let ((mode (or mode major-mode)))
     (cl-loop for recipe in treesit-auto-recipe-list
              if (memq
@@ -326,16 +327,18 @@ This variable is ignored if `treesit-auto-langs' is non-nil.")
              return recipe)))
 
 (defun treesit-auto--build-major-mode-remap-alist ()
+  "Construct `major-mode-remap-alist' using all known recipes."
   (append major-mode-remap-alist
-          (let ((remap-alist) '())
+          (let ((remap-alist '()))
             (cl-loop for recipe in treesit-auto-recipe-list
                      for ts-mode = (treesit-auto-recipe-ts-mode recipe)
                      when (treesit-auto--ready-p ts-mode)
                      do (dolist (remap (ensure-list (treesit-auto-recipe-remap recipe)))
-                          (add-to-list 'remap-alist (cons remap ts-mode)))
+                          (push (cons remap ts-mode) 'remap-alist))
                      finally return remap-alist))))
 
 (defun treesit-auto--build-treesit-source-alist ()
+  "Construct `treesit-language-source-alist' using all known recipes."
   (append treesit-language-source-alist
           (cl-loop for recipe in treesit-auto-recipe-list
                    collect (cons (treesit-auto-recipe-lang recipe)
@@ -381,9 +384,9 @@ how to modify the behavior of this function."
   ;; nice to also prompt for grammar installation
   (let ((modes '()))
     (cl-loop for recipe in treesit-auto-recipe-list
-             do (add-to-list 'modes (treesit-auto-recipe-ts-mode recipe))
+             do (push (treesit-auto-recipe-ts-mode recipe) 'modes)
              do (dolist (mode (ensure-list (treesit-auto-recipe-remap recipe)))
-                  (add-to-list 'modes mode))
+                  (push mode 'modes))
              finally return modes))
   (if global-treesit-auto-mode
       ;; adding advice to set-auto-mode-0 is potentially dangerous
@@ -394,6 +397,7 @@ how to modify the behavior of this function."
     (advice-remove #'set-auto-mode-0 #'treesit-auto--set-major-remap)))
 
 (defun treesit-auto--set-major-remap (&rest _)
+  "Locally set `major-mode-remap-alist', based on all known recipes."
   ;; even though major-mode-remap-alist is set as local here,
   ;; when a major-mode matches the mode will be added to the top of
   ;; auto-mode-alist so it can't be really "switched off" afterwards.
