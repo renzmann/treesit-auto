@@ -317,6 +317,7 @@ Non-nil only if installation completed without any errors."
 This variable is ignored if `treesit-auto-langs' is non-nil.")
 
 (defun treesit-auto--get-mode-recipe (&optional mode)
+  "Look up the recipe for MODE.  If MODE is nil, use the current `major-mode'."
   (let ((mode (or mode major-mode)))
     (cl-loop for recipe in treesit-auto-recipe-list
              if (memq
