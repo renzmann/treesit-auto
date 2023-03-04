@@ -385,7 +385,7 @@ how to modify the behavior of this function."
     (cl-loop for recipe in treesit-auto-recipe-list
              do (push (treesit-auto-recipe-ts-mode recipe) 'modes)
              do (dolist (mode (ensure-list (treesit-auto-recipe-remap recipe)))
-                  (add-to-list 'modes mode))
+                  (push mode 'modes))
              finally return modes))
   (if global-treesit-auto-mode
       ;; adding advice to set-auto-mode-0 is potentially dangerous
