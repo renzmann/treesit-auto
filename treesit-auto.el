@@ -382,7 +382,7 @@ how to modify the behavior of this function."
   ;; nice to also prompt for grammar installation
   (let ((modes '()))
     (cl-loop for recipe in treesit-auto-recipe-list
-             do (add-to-list 'modes (treesit-auto-recipe-ts-mode recipe))
+             do (push (treesit-auto-recipe-ts-mode recipe) 'modes)
              do (dolist (mode (ensure-list (treesit-auto-recipe-remap recipe)))
                   (add-to-list 'modes mode))
              finally return modes))
