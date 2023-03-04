@@ -334,7 +334,7 @@ This variable is ignored if `treesit-auto-langs' is non-nil.")
                      for ts-mode = (treesit-auto-recipe-ts-mode recipe)
                      when (treesit-auto--ready-p ts-mode)
                      do (dolist (remap (ensure-list (treesit-auto-recipe-remap recipe)))
-                          (add-to-list 'remap-alist (cons remap ts-mode)))
+                          (push (cons remap ts-mode) remap-alist))
                      finally return remap-alist))))
 
 (defun treesit-auto--build-treesit-source-alist ()
@@ -383,9 +383,9 @@ how to modify the behavior of this function."
   ;; nice to also prompt for grammar installation
   (let ((modes '()))
     (cl-loop for recipe in treesit-auto-recipe-list
-             do (push (treesit-auto-recipe-ts-mode recipe) 'modes)
+             do (push (treesit-auto-recipe-ts-mode recipe) modes)
              do (dolist (mode (ensure-list (treesit-auto-recipe-remap recipe)))
-                  (push mode 'modes))
+                  (push mode modes))
              finally return modes))
   (if global-treesit-auto-mode
       ;; adding advice to set-auto-mode-0 is potentially dangerous
