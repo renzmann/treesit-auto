@@ -327,6 +327,7 @@ This variable is ignored if `treesit-auto-langs' is non-nil.")
              return recipe)))
 
 (defun treesit-auto--build-major-mode-remap-alist ()
+  "Construct `major-mode-remap-alist' using all known recipes."
   (append major-mode-remap-alist
           (let ((remap-alist '()))
             (cl-loop for recipe in treesit-auto-recipe-list
