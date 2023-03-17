@@ -82,10 +82,32 @@ automatic installation (or prompting, based on the value of
   :type '(repeat symbol)
   :group 'treesit)
 
+;;;###autoload
+(defun make-treesit-auto-recipe ())
+;;;###autoload
+(defun treesit-auto-recipe-lang ())
+;;;###autoload
+(defun treesit-auto-recipe-ts-mode ())
+;;;###autoload
+(defun treesit-auto-recipe-remap ())
+;;;###autoload
+(defun treesit-auto-recipe-requires ())
+;;;###autoload
+(defun treesit-auto-recipe-url ())
+;;;###autoload
+(defun treesit-auto-recipe-revision ())
+;;;###autoload
+(defun treesit-auto-recipe-source-dir ())
+;;;###autoload
+(defun treesit-auto-recipe-cc ())
+;;;###autoload
+(defun treesit-auto-recipe-c++ ())
+
 (cl-defstruct treesit-auto-recipe
   "Emacs metadata for a tree-sitter language grammar."
   lang ts-mode remap requires url revision source-dir cc c++)
 
+;;;###autoload
 (defvar treesit-auto-recipe-list
   `(,(make-treesit-auto-recipe
       :lang 'bash
