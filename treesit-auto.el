@@ -372,7 +372,8 @@ This variable is ignored if `treesit-auto-langs' is non-nil.")
 See `treesit-auto-langs' and `treesit-auto-install' for
 how to modify the behavior of this function."
   (interactive)
-  (when-let* ((to-install (or treesit-auto-langs
+  (when-let* ((treesit-language-source-alist (treesit-auto--build-treesit-source-alist))
+              (to-install (or treesit-auto-langs
                               (seq-filter
                                (lambda (lang) (not (treesit-ready-p lang t)))
                                (cl-set-difference
