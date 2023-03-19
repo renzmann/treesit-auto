@@ -399,6 +399,7 @@ how to modify the behavior of this function."
     (advice-remove #'set-auto-mode-0 #'treesit-auto--set-major-remap)))
 
 (defun treesit-auto--set-major-remap (&rest _)
+  "Locally set `major-mode-remap-alist' with all known recipes."
   ;; even though major-mode-remap-alist is set as local here,
   ;; when a major-mode matches the mode will be added to the top of
   ;; auto-mode-alist so it can't be really "switched off" afterwards.
