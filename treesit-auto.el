@@ -360,10 +360,15 @@ This variable is ignored if `treesit-auto-langs' is non-nil.")
                      finally return remap-alist))))
 
 (defun treesit-auto--build-treesit-source-alist ()
+  "Construct the `treesit-language-source-alist' using all known recipes."
   (append treesit-language-source-alist
           (cl-loop for recipe in treesit-auto-recipe-list
                    collect (cons (treesit-auto-recipe-lang recipe)
-                                 `(,(treesit-auto-recipe-url recipe))))))
+                                 `(,(treesit-auto-recipe-url recipe)
+                                   ,(treesit-auto-recipe-revision recipe)
+                                   ,(treesit-auto-recipe-source-dir recipe)
+                                   ,(treesit-auto-recipe-cc recipe)
+                                   ,(treesit-auto-recipe-c++ recipe))))))
 
 ;;;###autoload
 (defun treesit-auto-install-all ()
