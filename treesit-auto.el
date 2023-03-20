@@ -82,32 +82,10 @@ automatic installation (or prompting, based on the value of
   :type '(repeat symbol)
   :group 'treesit)
 
-;;;###autoload
-(defun make-treesit-auto-recipe ())
-;;;###autoload
-(defun treesit-auto-recipe-lang ())
-;;;###autoload
-(defun treesit-auto-recipe-ts-mode ())
-;;;###autoload
-(defun treesit-auto-recipe-remap ())
-;;;###autoload
-(defun treesit-auto-recipe-requires ())
-;;;###autoload
-(defun treesit-auto-recipe-url ())
-;;;###autoload
-(defun treesit-auto-recipe-revision ())
-;;;###autoload
-(defun treesit-auto-recipe-source-dir ())
-;;;###autoload
-(defun treesit-auto-recipe-cc ())
-;;;###autoload
-(defun treesit-auto-recipe-c++ ())
-
 (cl-defstruct treesit-auto-recipe
   "Emacs metadata for a tree-sitter language grammar."
   lang ts-mode remap requires url revision source-dir cc c++)
 
-;;;###autoload
 (defvar treesit-auto-recipe-list
   `(,(make-treesit-auto-recipe
       :lang 'bash
@@ -370,7 +348,6 @@ This variable is ignored if `treesit-auto-langs' is non-nil.")
                                    ,(treesit-auto-recipe-cc recipe)
                                    ,(treesit-auto-recipe-c++ recipe))))))
 
-;;;###autoload
 (defun treesit-auto-install-all ()
   "Install every available, maintained grammar.
 
@@ -394,12 +371,10 @@ how to modify the behavior of this function."
               (y-or-n-p "Install missing grammars? "))
       (mapcar 'treesit-install-language-grammar to-install))))
 
-;;;###autoload
 (define-minor-mode treesit-auto-mode
   "Toggle `global-treesit-auto-mode'."
   :group 'treesit)
 
-;;;###autoload
 (define-globalized-minor-mode global-treesit-auto-mode treesit-auto-mode
   treesit-auto--on
   :group 'treesit
@@ -424,6 +399,7 @@ how to modify the behavior of this function."
     (advice-remove #'set-auto-mode-0 #'treesit-auto--set-major-remap)))
 
 (defun treesit-auto--set-major-remap (&rest _)
+  "Locally set `major-mode-remap-alist' with all known recipes."
   ;; even though major-mode-remap-alist is set as local here,
   ;; when a major-mode matches the mode will be added to the top of
   ;; auto-mode-alist so it can't be really "switched off" afterwards.
