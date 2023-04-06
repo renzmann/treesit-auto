@@ -142,6 +142,12 @@ automatic installation (or prompting, based on the value of
       :url "https://github.com/tree-sitter/tree-sitter-css"
       :ext "\\.css\\'")
     ,(make-treesit-auto-recipe
+      :lang 'dart
+      :ts-mode 'dart-ts-mode
+      :remap 'dart-mode
+      :url "https://github.com/ast-grep/tree-sitter-dart"
+      :ext "\\.dart\\'")
+    ,(make-treesit-auto-recipe
       :lang 'dockerfile
       :ts-mode 'dockerfile-ts-mode
       :remap 'dockerfile-mode
