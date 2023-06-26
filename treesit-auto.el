@@ -490,10 +490,10 @@ how to modify the behavior of this function."
       ;; but we need to temporary update major-mode-remap-alist
       ;; and not modify the user specified list which will allow
       ;; the user to be in control of existing remaps.
-      (advice-add #'set-auto-mode-0 :before #'treesit-auto--set-major-remap)
-    (advice-remove #'set-auto-mode-0 #'treesit-auto--set-major-remap)))
+      (advice-add #'set-auto-mode-0 :before #'treesit-auto--maybe-set-major-remap)
+    (advice-remove #'set-auto-mode-0 #'treesit-auto--maybe-set-major-remap)))
 
-(defun treesit-auto--set-major-remap (&rest _)
+(defun treesit-auto--maybe-set-major-remap (mode &rest _)
   "Locally set `major-mode-remap-alist' with all known recipes."
   ;; even though major-mode-remap-alist is set as local here,
   ;; when a major-mode matches the mode will be added to the top of
@@ -503,7 +503,8 @@ how to modify the behavior of this function."
   ;; For this mode to keep a cached copy is dangerous as it will be a global
   ;; replacement and ignores all changes while this mode is active, so
   ;; don't think it is a valid option.
-  (setq-local major-mode-remap-alist (treesit-auto--build-major-mode-remap-alist)))
+  (when (treesit-auto--enabled-on-major-mode-p global-treesit-auto-modes mode)
+    (setq-local major-mode-remap-alist (treesit-auto--build-major-mode-remap-alist))))
 
 (defun treesit-auto--on ()
   "Turn `treesit-auto-mode' on."
@@ -550,6 +551,35 @@ missing from `treesit-auto-langs', then it will not be added to
     (dolist (r recipes)
       (add-to-list 'auto-mode-alist
                    (cons (treesit-auto-recipe-ext r) (treesit-auto-recipe-ts-mode r))))))
+
+(defun treesit-auto--enabled-on-major-mode-p (predicate mode)
+  ;; Basically a copy of `easy-mmode--globalized-predicate-p', sans the
+  ;; (indirect) reliance on `major-mode' variable
+  (cond
+   ((eq predicate t)
+    t)
+   ((eq predicate nil)
+    nil)
+   ((listp predicate)
+    ;; Legacy support for (not a b c).
+    (when (eq (car predicate) 'not)
+      (setq predicate (nconc (mapcar (lambda (e) (list 'not e))
+                                     (cdr predicate))
+                             (list t))))
+    (catch 'found
+      (dolist (elem predicate)
+        (cond
+         ((eq elem t)
+          (throw 'found t))
+         ((eq elem nil)
+          (throw 'found nil))
+         ((and (consp elem)
+               (eq (car elem) 'not))
+          (when (apply #'provided-mode-derived-p mode (cdr elem))
+            (throw 'found nil)))
+         ((symbolp elem)
+          (when (provided-mode-derived-p mode elem)
+            (throw 'found t)))))))))
 
 (provide 'treesit-auto)
 ;;; treesit-auto.el ends here
