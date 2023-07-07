@@ -138,6 +138,11 @@ automatic installation (or prompting, based on the value of
       :remap 'dockerfile-mode
       :url "https://github.com/camdencheek/tree-sitter-dockerfile")
     ,(make-treesit-auto-recipe
+      :lang 'elisp
+      :ts-mode 'emacs-lisp-ts-mode
+      :remap 'emacs-lisp-mode
+      :url "https://github.com/Wilfred/tree-sitter-elisp")
+    ,(make-treesit-auto-recipe
       :lang 'elixir
       :ts-mode 'elixir-ts-mode
       :remap 'elixir-mode
