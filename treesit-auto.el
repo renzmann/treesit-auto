@@ -288,6 +288,18 @@ automatic installation (or prompting, based on the value of
       :source-dir "typescript/src"
       :ext "\\.ts\\'")
     ,(make-treesit-auto-recipe
+      :lang 'verilog
+      :ts-mode 'verilog-ts-mode
+      :remap 'verilog-mode
+      :url "https://github.com/gmlarumbe/tree-sitter-verilog"
+      :ext "\\.s?vh?\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'vhdl
+      :ts-mode 'vhdl-ts-mode
+      :remap 'vhdl-mode
+      :url "https://github.com/alemuller/tree-sitter-vhdl"
+      :ext "\\.vhdl?\\'")
+    ,(make-treesit-auto-recipe
       :lang 'yaml
       :ts-mode 'yaml-ts-mode
       :remap 'yaml-mode
