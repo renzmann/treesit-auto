@@ -84,169 +84,200 @@ automatic installation (or prompting, based on the value of
 
 (cl-defstruct treesit-auto-recipe
   "Emacs metadata for a tree-sitter language grammar."
-  lang ts-mode remap requires url revision source-dir cc c++)
+  lang ts-mode remap requires url revision source-dir cc c++ ext)
 
 (defvar treesit-auto-recipe-list
   `(,(make-treesit-auto-recipe
       :lang 'bash
       :ts-mode 'bash-ts-mode
       :remap 'sh-mode
-      :url "https://github.com/tree-sitter/tree-sitter-bash")
+      :url "https://github.com/tree-sitter/tree-sitter-bash"
+      :ext "\\.sh\\'")
     ,(make-treesit-auto-recipe
       :lang 'bibtex
       :ts-mode 'bibtex-ts-mode
       :remap 'bibtex-mode
-      :url "https://github.com/latex-lsp/tree-sitter-bibtex")
+      :url "https://github.com/latex-lsp/tree-sitter-bibtex"
+      :ext "\\.bib\\'")
     ,(make-treesit-auto-recipe
       :lang 'c
       :ts-mode 'c-ts-mode
       :remap 'c-mode
-      :url "https://github.com/tree-sitter/tree-sitter-c")
+      :url "https://github.com/tree-sitter/tree-sitter-c"
+      :ext "\\.c\\'")
     ,(make-treesit-auto-recipe
       :lang 'c-sharp
       :ts-mode 'csharp-ts-mode
       :remap 'csharp-mode
-      :url "https://github.com/tree-sitter/tree-sitter-c-sharp")
+      :url "https://github.com/tree-sitter/tree-sitter-c-sharp"
+      :ext "\\.cs\\'")
     ,(make-treesit-auto-recipe
       :lang 'clojure
       :ts-mode 'clojure-ts-mode
       :remap 'clojure-mode
-      :url "https://github.com/sogaiu/tree-sitter-clojure")
+      :url "https://github.com/sogaiu/tree-sitter-clojure"
+      :ext "\\.clj\\'")
     ,(make-treesit-auto-recipe
       :lang 'cmake
       :ts-mode 'cmake-ts-mode
       :remap 'cmake-mode
-      :url "https://github.com/uyha/tree-sitter-cmake")
+      :url "https://github.com/uyha/tree-sitter-cmake"
+      :ext "\\.cmake\\'")
     ,(make-treesit-auto-recipe
       :lang 'commonlisp
       :ts-mode 'commonlisp-ts-mode
       :remap 'common-lisp-mode
-      :url "https://github.com/theHamsta/tree-sitter-commonlisp")
+      :url "https://github.com/theHamsta/tree-sitter-commonlisp"
+      :ext "\\.cl\\'")
     ,(make-treesit-auto-recipe
       :lang 'cpp
       :ts-mode 'c++-ts-mode
       :remap 'c++-mode
-      :url "https://github.com/tree-sitter/tree-sitter-cpp")
+      :url "https://github.com/tree-sitter/tree-sitter-cpp"
+      :ext "\\.cpp\\'")
     ,(make-treesit-auto-recipe
       :lang 'css
       :ts-mode 'css-ts-mode
       :remap 'css-mode
-      :url "https://github.com/tree-sitter/tree-sitter-css")
+      :url "https://github.com/tree-sitter/tree-sitter-css"
+      :ext "\\.css\\'")
     ,(make-treesit-auto-recipe
       :lang 'dockerfile
       :ts-mode 'dockerfile-ts-mode
       :remap 'dockerfile-mode
-      :url "https://github.com/camdencheek/tree-sitter-dockerfile")
+      :url "https://github.com/camdencheek/tree-sitter-dockerfile"
+      :ext "\\Dockerfile\\'")
     ,(make-treesit-auto-recipe
       :lang 'elixir
       :ts-mode 'elixir-ts-mode
       :remap 'elixir-mode
       :requires 'heex
-      :url "https://github.com/elixir-lang/tree-sitter-elixir")
+      :url "https://github.com/elixir-lang/tree-sitter-elixir"
+      :ext "\\.ex\\'")
     ,(make-treesit-auto-recipe
       :lang 'go
       :ts-mode 'go-ts-mode
       :remap 'go-mode
-      :url "https://github.com/tree-sitter/tree-sitter-go")
+      :url "https://github.com/tree-sitter/tree-sitter-go"
+      :ext "\\.go\\'")
     ,(make-treesit-auto-recipe
       :lang 'gomod
       :ts-mode 'go-mod-ts-mode
       :remap 'go-mod-mode
-      :url "https://github.com/camdencheek/tree-sitter-go-mod")
+      :url "https://github.com/camdencheek/tree-sitter-go-mod"
+      :ext "go\\.mod\\'")
     ,(make-treesit-auto-recipe
       :lang 'heex
       :ts-mode 'heex-ts-mode
       :remap 'heex-mode
-      :url "https://github.com/phoenixframework/tree-sitter-heex")
+      :url "https://github.com/phoenixframework/tree-sitter-heex"
+      :ext "\\.heex\\'")
     ,(make-treesit-auto-recipe
       :lang 'html
       :ts-mode 'html-ts-mode
       :remap '(mhtml-mode sgml-mode)
-      :url "https://github.com/tree-sitter/tree-sitter-html")
+      :url "https://github.com/tree-sitter/tree-sitter-html"
+      :ext "\\.html\\'")
     ,(make-treesit-auto-recipe
       :lang 'java
       :ts-mode 'java-ts-mode
       :remap 'java-mode
-      :url "https://github.com/tree-sitter/tree-sitter-java")
+      :url "https://github.com/tree-sitter/tree-sitter-java"
+      :ext "\\.java\\'")
     ,(make-treesit-auto-recipe
       :lang 'javascript
       :ts-mode 'js-ts-mode
       :remap '(js-mode javascript-mode js2-mode)
       :url "https://github.com/tree-sitter/tree-sitter-javascript"
       :revision "master"
-      :source-dir "src")
+      :source-dir "src"
+      :ext "\\.js\\'")
     ,(make-treesit-auto-recipe
       :lang 'json
       :ts-mode 'json-ts-mode
       :remap 'js-json-mode
-      :url "https://github.com/tree-sitter/tree-sitter-json")
+      :url "https://github.com/tree-sitter/tree-sitter-json"
+      :ext "\\.json\\'")
     ,(make-treesit-auto-recipe
       :lang 'julia
       :ts-mode 'julia-ts-mode
       :remap 'julia-mode
-      :url "https://github.com/tree-sitter/tree-sitter-julia")
+      :url "https://github.com/tree-sitter/tree-sitter-julia"
+      :ext "\\.jl\\'")
     ,(make-treesit-auto-recipe
       :lang 'kotlin
       :ts-mode 'kotlin-ts-mode
       :remap 'kotlin-mode
-      :url "https://github.com/fwcd/tree-sitter-kotlin")
+      :url "https://github.com/fwcd/tree-sitter-kotlin"
+      :ext "\\.kt\\'")
     ,(make-treesit-auto-recipe
       :lang 'latex
       :ts-mode 'latex-ts-mode
       :remap 'latex-mode
-      :url "https://github.com/latex-lsp/tree-sitter-latex")
+      :url "https://github.com/latex-lsp/tree-sitter-latex"
+      :ext "\\.tex\\'")
     ,(make-treesit-auto-recipe
       :lang 'lua
       :ts-mode 'lua-ts-mode
       :remap 'lua-mode
-      :url "https://github.com/Azganoth/tree-sitter-lua")
+      :url "https://github.com/Azganoth/tree-sitter-lua"
+      :ext "\\.lua\\'")
     ,(make-treesit-auto-recipe
       :lang 'make
       :ts-mode 'makefile-ts-mode
       :remap 'makefile-mode
-      :url "https://github.com/alemuller/tree-sitter-make")
+      :url "https://github.com/alemuller/tree-sitter-make"
+      :ext "\\Makefile\\'")
     ,(make-treesit-auto-recipe
       :lang 'markdown
       :ts-mode 'markdown-ts-mode
       :remap '(poly-markdown-mode markdown-mode)
-      :url "https://github.com/ikatyang/tree-sitter-markdown")
+      :url "https://github.com/ikatyang/tree-sitter-markdown"
+      :ext "\\.md\\'")
     ,(make-treesit-auto-recipe
       :lang 'protobuf
       :ts-mode 'protobuf-ts-mode
       :remap 'protobuf-mode
-      :url "https://github.com/mitchellh/tree-sitter-proto")
+      :url "https://github.com/mitchellh/tree-sitter-proto"
+      :ext "\\.proto\\'")
     ,(make-treesit-auto-recipe
       :lang 'python
       :ts-mode 'python-ts-mode
       :remap 'python-mode
-      :url "https://github.com/tree-sitter/tree-sitter-python")
+      :url "https://github.com/tree-sitter/tree-sitter-python"
+      :ext "\\.py\\'")
     ,(make-treesit-auto-recipe
       :lang 'r
       :ts-mode 'r-ts-mode
       :remap 'ess-mode
-      :url "https://github.com/r-lib/tree-sitter-r")
+      :url "https://github.com/r-lib/tree-sitter-r"
+      :ext "\\.r\\'")
     ,(make-treesit-auto-recipe
       :lang 'ruby
       :ts-mode 'ruby-ts-mode
       :remap 'ruby-mode
-      :url "https://github.com/tree-sitter/tree-sitter-ruby")
+      :url "https://github.com/tree-sitter/tree-sitter-ruby"
+      :ext "\\.rb\\'")
     ,(make-treesit-auto-recipe
       :lang 'rust
       :ts-mode 'rust-ts-mode
       :remap 'rust-mode
-      :url "https://github.com/tree-sitter/tree-sitter-rust")
+      :url "https://github.com/tree-sitter/tree-sitter-rust"
+      :ext "\\.rs\\'")
     ,(make-treesit-auto-recipe
       :lang 'toml
       :ts-mode 'toml-ts-mode
       :remap '(conf-toml-mode toml-mode)
-      :url "https://github.com/tree-sitter/tree-sitter-toml")
+      :url "https://github.com/tree-sitter/tree-sitter-toml"
+      :ext "\\.toml\\'")
     ,(make-treesit-auto-recipe
       :lang 'tsx
       :ts-mode 'tsx-ts-mode
       :requires 'typescript
       :url "https://github.com/tree-sitter/tree-sitter-typescript"
       :revision "master"
-      :source-dir "tsx/src")
+      :source-dir "tsx/src"
+      :ext "\\.tsx\\'")
     ,(make-treesit-auto-recipe
       :lang 'typescript
       :ts-mode 'typescript-ts-mode
@@ -254,12 +285,14 @@ automatic installation (or prompting, based on the value of
       :requires 'tsx
       :url "https://github.com/tree-sitter/tree-sitter-typescript"
       :revision "master"
-      :source-dir "typescript/src")
+      :source-dir "typescript/src"
+      :ext "\\.ts\\'")
     ,(make-treesit-auto-recipe
       :lang 'yaml
       :ts-mode 'yaml-ts-mode
       :remap 'yaml-mode
-      :url "https://github.com/ikatyang/tree-sitter-yaml"))
+      :url "https://github.com/ikatyang/tree-sitter-yaml"
+      :ext "\\.ya?ml\\'"))
   "Map each tree-sitter lang to Emacs metadata.")
 
 (defun treesit-auto--maybe-install-grammar ()
@@ -415,6 +448,17 @@ how to modify the behavior of this function."
   (setq-local treesit-language-source-alist
               (treesit-auto--build-treesit-source-alist))
   (treesit-auto--maybe-install-grammar))
+
+(defun treesit-auto-add-to-auto-mode-alist ()
+  "Register `auto-mode-alist' entries for ready tree-sitter recipes."
+  (let ((installed-recipes
+         (seq-filter
+          (lambda (recipe) (treesit-ready-p (treesit-auto-recipe-lang recipe) t))
+          treesit-auto-recipe-list)))
+    (dolist (recipe installed-recipes)
+      (add-to-list
+       'auto-mode-alist
+       (cons (treesit-auto-recipe-ext recipe) (treesit-auto-recipe-ts-mode recipe))))))
 
 (provide 'treesit-auto)
 ;;; treesit-auto.el ends here
