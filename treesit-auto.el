@@ -408,6 +408,9 @@ how to modify the behavior of this function."
   "Toggle `global-treesit-auto-mode'."
   :group 'treesit)
 
+;; https://github.com/renzmann/treesit-auto/issues/47
+(defvar global-treesit-auto-modes)
+
 (define-globalized-minor-mode global-treesit-auto-mode treesit-auto-mode
   treesit-auto--on
   :group 'treesit
