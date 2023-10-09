@@ -16,8 +16,11 @@ Each of these behaviors are configurable and documented under the
 + Stick with =<name>-mode= if the grammar isn't installed
 + (Optional) automatically install a grammar before opening a compatible file
 
-There is also a convenience function =M-x treesit-auto-install-all=, which will
-install all of the maintained and compatible grammars.
+There is also a convenience function =M-x treesit-auto-install-all=,
+which will install all of the maintained and compatible grammars. You
+can add these grammars to your =auto-mode-alist= automatically by
+invoking the =treesit-auto-add-to-auto-mode-alist= function in your
+configuration.
 
 * Installation
 ~treesit-auto~ is available from [[https://melpa.org/][MELPA]].  After following [[https://melpa.org/#/getting-started][their setup]], you can
@@ -206,6 +209,22 @@ is to address this as part of your configuration.
 Some modes have a shared base, such as =python-ts-mode= and =python-mode= both
 deriving from =python-base-mode=.  For these languages, you can opt to hook into
 =python-base-mode-hook= instead of explicitly setting the tree-sitter mode's hook.
+
+** Automatically register extensions for =auto-mode-alist=
+This is an optional feature so that this package avoids mutating your
+=auto-mode-alist= without your permission.
+
+After your desired grammars are installed, you can register them to
+=auto-mode-alist= by calling =treesit-auto-add-to-auto-mode-alist=. This function
+will only add grammars that are considered ready (i.e. detected as installed).
+
+#+begin_src emacs-lisp
+(treesit-auto-add-to-auto-mode-alist)
+#+end_src
+
+This registers your tree-sitter modes according to the common file
+extension for that language. For example, the =auto-mode-alist= entry
+for TypeScript looks like ='("\\*.ts\\'" . typescript-ts-mode)=.
 
 ** Full example
 This is how I configure =treesit-auto= for my own personal use.
