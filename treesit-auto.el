@@ -235,7 +235,7 @@ automatic installation (or prompting, based on the value of
       :url "https://github.com/ikatyang/tree-sitter-markdown"
       :ext "\\.md\\'")
     ,(make-treesit-auto-recipe
-      :lang 'protobuf
+      :lang 'proto
       :ts-mode 'protobuf-ts-mode
       :remap 'protobuf-mode
       :url "https://github.com/mitchellh/tree-sitter-proto"
