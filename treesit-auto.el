@@ -88,6 +88,12 @@ automatic installation (or prompting, based on the value of
 
 (defvar treesit-auto-recipe-list
   `(,(make-treesit-auto-recipe
+      :lang 'awk
+      :ts-mode 'awk-ts-mode
+      :remap 'awk-mode
+      :url "https://github.com/Beaglefoot/tree-sitter-awk"
+      :ext "\\.awk\\'")
+    ,(make-treesit-auto-recipe
       :lang 'bash
       :ts-mode 'bash-ts-mode
       :remap 'sh-mode
