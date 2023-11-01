@@ -300,6 +300,14 @@ automatic installation (or prompting, based on the value of
       :source-dir "typescript/src"
       :ext "\\.ts\\'")
     ,(make-treesit-auto-recipe
+      :lang 'typst
+      :ts-mode 'typst-ts-mode
+      :remap 'typst-mode
+      :url "https://github.com/uben0/tree-sitter-typst"
+      :revision "master"
+      :source-dir "src"
+      :ext "\\.typ\\'")
+    ,(make-treesit-auto-recipe
       :lang 'verilog
       :ts-mode 'verilog-ts-mode
       :remap 'verilog-mode
