@@ -261,9 +261,9 @@ automatic installation (or prompting, based on the value of
     ,(make-treesit-auto-recipe
       :lang 'r
       :ts-mode 'r-ts-mode
-      :remap 'ess-mode
+      :remap 'ess-r-mode
       :url "https://github.com/r-lib/tree-sitter-r"
-      :ext "\\.r\\'")
+      :ext "\\.(r|R)\\'")
     ,(make-treesit-auto-recipe
       :lang 'ruby
       :ts-mode 'ruby-ts-mode
