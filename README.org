@@ -141,10 +141,11 @@ Running =treesit-auto-install-all= will only install these three grammars, and
 no automatic prompting/installation will occur when visiting a buffer that is
 not one of these three, either.
 
-Another method is to disable specific languages by just removing them from this list:
+Another method is to disable specific languages by just removing them from this
+list:
 
 #+begin_src emacs-lisp
-  (remove 'awk treesit-auto-langs)
+  (delete 'awk treesit-auto-langs)
 #+end_src
 
 Here, =treesit-auto= behaves as it normally would for all languages /except/ AWK.
