@@ -254,5 +254,5 @@ Issues are tracked on [[https://github.com/renzmann/treesit-auto/issues][GitHub]
 should be submitted.
 
 If you would like to submit a new language recipe to be distributed as part of
-this package, see [[CONTRIBUTING.md][CONTRIBUTING.md]] for a quick guide on how to write and submit
+this package, see [[CONTRIBUTING.org][CONTRIBUTING.org]] for a quick guide on how to write and submit
 the new recipe.
