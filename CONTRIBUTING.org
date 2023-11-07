@@ -19,8 +19,7 @@ JavaScript:
 
 
 1. =:lang= should *exactly* match the grammar name in the source repository's
-   =grammar.js=.  Look for a line [like
-   this](https://github.com/tree-sitter/tree-sitter-python/blob/9e53981ec31b789ee26162ea335de71f02186003/grammar.js#L28)
+   =grammar.js=.  Look for a line [[https://github.com/tree-sitter/tree-sitter-python/blob/9e53981ec31b789ee26162ea335de71f02186003/grammar.js#L28][like this]]
 2. =:ts-mode= must be a single quoted symbol that is the tree-sitter mode Emacs
    should use for this grammar
 3. =:remap= is either a quoted symbol or quoted list of symbols that are modes
@@ -30,7 +29,7 @@ JavaScript:
 4. =:requires= optionally specifies a quoted language symbol or quoted list of
    symbols of any grammars that must be installed alongside this one.
 4. =:url= must specify the grammar's source repository.  Many are already listed
-   on the [tree-sitter GitHub](https://github.com/tree-sitter)
+   on the [[https://github.com/tree-sitter][tree-sitter GitHub]]
 5. =:revision= and =:source-dir= are optional, but may be required if the
    =scanner.c= file is not found under the default directory or on the default
    branch
