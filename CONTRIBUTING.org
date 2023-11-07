@@ -38,6 +38,6 @@ JavaScript:
 7. =:ext= should be a regexp compatible with =auto-mode-alist=, specifying file
    extensions that would use this tree-sitter mode.
 
-When submitting a pull request for a new recipe, use the title =New recipe:
-<grammar name>=, and ensure that the patch consists only of the net-new recipe
+When submitting a pull request for a new recipe, use the title =New recipe: <grammar name>=,
+and ensure that the patch consists only of the net-new recipe
 lines, in the correct alphabetical position within =treesit-auto-recipe-list=.
