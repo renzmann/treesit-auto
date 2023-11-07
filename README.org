@@ -181,7 +181,7 @@ Moreover, since =js-2-mode= is first under the =:remap= section, that is the
 it will be the first mode tried.  If that doesn't work, it will try =js-mode=, and
 =javascript-mode=, in that order, until one /does/ work.  If only one fallback needs
 to be specified, a single quoted symbol is also acceptable.  For instance,
-=python-ts-mode= just uses =:remap 'python= in this argument position.
+=python-ts-mode= just uses =:remap 'python-mode= in this argument position.
 
 If a grammar mandates any other grammars be installed as a dependency, the
 =:requires= keyword can specify a language symbol or list of symbols that should
