@@ -12,11 +12,12 @@ Each of these behaviors are configurable and documented under the
 
 + Automatically switch to =<name>-ts-mode= when the grammar for =<name>= is installed
 + Stick with =<name>-mode= if the grammar isn't installed
-+ (Optional) automatically install a grammar before opening a compatible file
++ Automatically install a grammar before opening a compatible file
++ Modify =auto-mode-alist= for tree-sitter modes
 
-There is also a convenience function =M-x treesit-auto-install-all=,
-which will install all of the maintained and compatible grammars. You
-can add these grammars to your =auto-mode-alist= automatically by
+There is also a convenience function =M-x treesit-auto-install-all=, which will
+install all (or a selected subset) of the maintained and compatible
+grammars. You can add these grammars to your =auto-mode-alist= automatically by
 invoking the =treesit-auto-add-to-auto-mode-alist= function in your
 configuration.
 
@@ -93,7 +94,22 @@ recipe for that language like this:
 See "Configuration/Configuring behavior for a specific language" in case you
 would like to specify different fallback modes than the default.
 
-*4. All other cases...*
+*4. The grammar is installed, but there is no fallback mode*
+
+You can optionally use the =treesit-auto-add-to-auto-mode-alist= function to
+ensure that your installed tree-sitter languages have their corresponding
+=...-ts-mode= added to =auto-mode-alist=, so that Emacs opens the buffer in that
+=...-ts-mode=, rather than the default =Fundamental= mode.
+
+Supposing for instance we don't have =typescript-mode= installed, then even if
+we /do/ have =typescript-ts-mode= installed along with the typescript grammar
+compiled in =~/.emacs.d/tree-sitter/=, Emacs still won't use
+=typescript-ts-mode= unless you also added ='("\\.ts\\'" . typescript-ts-mode)=
+to =auto-mode-alist=.  By calling =(treesit-auto-add-to-auto-mode-alist)= in
+your configuration, this modification to =auto-mode-alist= is done automatically
+for you.
+
+*5. All other cases...*
 
 This is the most general case, where the grammar is not installed,
 ~treesit-auto-install~ is nil, and no fallback mode is specified in the language
@@ -105,6 +121,34 @@ attempt to switch away from the tree-sitter mode.
 * Configuration
 If you have modified =treesit-language-source-alist= through =setq=, then it is
 recommended to put any configuration of this package AFTER that =setq=.
+
+** Choose which languages =treesit-auto= should consider
+
+You can globally alter the behavior of =treesit-auto= to only consider a
+specific set of languages by setting the =treesit-auto-langs= list to a set of
+language symbols.  By default, this list includes every possible language that
+=treesit-auto= supports, so you can use =M-x describe-variable RET
+treesit-auto-langs= to see what the options are.
+
+One way to use this variable is to just set it manually:
+
+#+begin_src emacs-lisp
+  (setq treesit-auto-langs '(python rust go))
+#+end_src
+
+Now, =treesit-auto= features will only ever affect Python, Rust, and Go files.
+Running =treesit-auto-install-all= will only install these three grammars, and
+no automatic prompting/installation will occur when visiting a buffer that is
+not one of these three, either.
+
+Another method is to disable specific languages by just removing them from this
+list:
+
+#+begin_src emacs-lisp
+  (delete 'awk treesit-auto-langs)
+#+end_src
+
+Here, =treesit-auto= behaves as it normally would for all languages /except/ AWK.
 
 ** Automatically install grammars if they are missing
 The =treesit-auto-install= variable controls whether a grammar should be installed
