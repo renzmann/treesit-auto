@@ -485,7 +485,7 @@ how to modify the behavior of this function."
 (defun treesit-auto-add-to-auto-mode-alist ()
   "Register `auto-mode-alist' entries for ready tree-sitter recipes."
   (let ((installed-recipes (seq-filter
-                            (lambda (r) (treesit-auto--ready-p (treesit-auto-recipe-lang r)))
+                            (lambda (r) (treesit-auto--ready-p (treesit-auto-recipe-ts-mode r)))
                             (treesit-auto--selected-recipes))))
     (dolist (recipe installed-recipes)
       (add-to-list 'auto-mode-alist
