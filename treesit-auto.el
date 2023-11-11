@@ -341,10 +341,11 @@ is successful, activate the tree-sitter major mode."
               (ts-mode-exists (fboundp ts-mode))
               (lang (treesit-auto-recipe-lang recipe)))
     ;; install required grammars
-    (dolist (lang (ensure-list (treesit-auto-recipe-requires recipe)))
-      (treesit-auto--prompt-to-install-package lang))
-    (when (treesit-auto--prompt-to-install-package lang)
-      (funcall ts-mode))))
+    (dolist (req-lang (ensure-list (treesit-auto-recipe-requires recipe)))
+      (treesit-auto--prompt-to-install-package req-lang))
+    (treesit-auto--prompt-to-install-package lang)
+    (when (treesit-auto--ready-p lang))
+      (funcall ts-mode)))
 
 (defun treesit-auto--ready-p (mode)
   "Determine if MODE is tree-sitter ready.
