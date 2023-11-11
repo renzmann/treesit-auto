@@ -156,12 +156,14 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :lang 'go
       :ts-mode 'go-ts-mode
       :remap 'go-mode
+      :requires 'gomod
       :url "https://github.com/tree-sitter/tree-sitter-go"
       :ext "\\.go\\'")
     ,(make-treesit-auto-recipe
       :lang 'gomod
       :ts-mode 'go-mod-ts-mode
       :remap 'go-mod-mode
+      :requires 'go
       :url "https://github.com/camdencheek/tree-sitter-go-mod"
       :ext "go\\.mod\\'")
     ,(make-treesit-auto-recipe
@@ -328,19 +330,19 @@ automatic installation (or prompting, based on the value of
   :group 'treesit)
 
 (defun treesit-auto--maybe-install-grammar ()
-  "Try to install the grammar matching the current major-mode.
+  "Try to install the grammar matching the current major mode or file extension.
 
-If the tree-sitter grammar is missing for the current major mode,
-this will silently fail, automatically install the grammar, or
-prompt the user about automatic installation, depending on the
-value of `treesit-auto-install'.  If installation of the grammar
-is successful, activate the tree-sitter major mode."
+If the tree-sitter grammar is missing for the current major mode, this will
+silently fail, automatically install the grammar, or prompt the user about
+automatic installation, depending on the value of `treesit-auto-install'.  If
+installation of the grammar is successful, activate the tree-sitter major mode."
   (when-let* ((not-ready (not (treesit-auto--ready-p major-mode)))
-              (recipe (treesit-auto--get-mode-recipe))
+              (recipe (or (treesit-auto--get-mode-recipe)
+                          (treesit-auto--get-buffer-recipe)))
               (ts-mode (treesit-auto-recipe-ts-mode recipe))
               (ts-mode-exists (fboundp ts-mode))
-              (lang (treesit-auto-recipe-lang recipe)))
-    ;; install required grammars
+              (lang (treesit-auto-recipe-lang recipe))
+              (treesit-language-source-alist (treesit-auto--build-treesit-source-alist)))
     (dolist (req-lang (ensure-list (treesit-auto-recipe-requires recipe)))
       (treesit-auto--prompt-to-install-package req-lang))
     (treesit-auto--prompt-to-install-package lang)
@@ -385,6 +387,12 @@ Non-nil only if installation completed without any errors."
                  (cons (treesit-auto-recipe-ts-mode recipe)
                        (ensure-list (treesit-auto-recipe-remap recipe))))
              return recipe)))
+
+(defun treesit-auto--get-buffer-recipe ()
+  "Look up the recipe for the current buffer using its extension."
+  (seq-find
+   (lambda (r) (string-match (treesit-auto-recipe-ext r) (buffer-name)))
+   (treesit-auto--selected-recipes)))
 
 (defun treesit-auto--selected-recipes ()
   "Filter `treesit-auto-recipe-list' for members of `treesit-auto-langs'"
@@ -443,7 +451,7 @@ how to modify the behavior of this function."
 (defvar global-treesit-auto-modes)
 
 (define-globalized-minor-mode global-treesit-auto-mode treesit-auto-mode
-  treesit-auto--on
+  treesit-auto--maybe-install-grammar
   :group 'treesit
   :predicate
   ;; allow global mode to activate only on recipe modes,
@@ -451,7 +459,7 @@ how to modify the behavior of this function."
   ;; in case only the ts-mode is available.
   ;; non emacs core ts-modes might autoload and would be
   ;; nice to also prompt for grammar installation
-  (let ((modes '()))
+  (let ((modes '(fundamental-mode)))
     (cl-loop for recipe in (treesit-auto--selected-recipes)
              do (push (treesit-auto-recipe-ts-mode recipe) modes)
              do (dolist (mode (ensure-list (treesit-auto-recipe-remap recipe)))
@@ -476,12 +484,6 @@ how to modify the behavior of this function."
   ;; replacement and ignores all changes while this mode is active, so
   ;; don't think it is a valid option.
   (setq-local major-mode-remap-alist (treesit-auto--build-major-mode-remap-alist)))
-
-(defun treesit-auto--on ()
-  "Turn `treesit-auto-mode' on."
-  (setq-local treesit-language-source-alist
-              (treesit-auto--build-treesit-source-alist))
-  (treesit-auto--maybe-install-grammar))
 
 (defun treesit-auto-add-to-auto-mode-alist ()
   "Register `auto-mode-alist' entries for ready tree-sitter recipes."
