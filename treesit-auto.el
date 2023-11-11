@@ -106,9 +106,9 @@ by manipulating the `treesit-auto-recipe-list' variable."
     ,(make-treesit-auto-recipe
       :lang 'clojure
       :ts-mode 'clojure-ts-mode
-      :remap 'clojure-mode
+      :remap '(clojure-mode clojurescript-mode clojurec-mode)
       :url "https://github.com/sogaiu/tree-sitter-clojure"
-      :ext "\\.clj\\'")
+      :ext "\\.cljc?s?d?\\'")
     ,(make-treesit-auto-recipe
       :lang 'cmake
       :ts-mode 'cmake-ts-mode
