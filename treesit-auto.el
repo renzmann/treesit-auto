@@ -227,7 +227,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :ts-mode 'makefile-ts-mode
       :remap 'makefile-mode
       :url "https://github.com/alemuller/tree-sitter-make"
-      :ext "\\Makefile\\'")
+      :ext "\\([Mm]akefile\\|.*\\.\\(mk\\|make\\)\\)\\'")
     ,(make-treesit-auto-recipe
       :lang 'markdown
       :ts-mode 'markdown-ts-mode
@@ -251,13 +251,13 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :ts-mode 'r-ts-mode
       :remap 'ess-mode
       :url "https://github.com/r-lib/tree-sitter-r"
-      :ext "\\(?:\\.\\(?:rbw?\\|ru\\|rake\\|thor\\|jbuilder\\|rabl\\|gemspec\\|podspec\\)\\|/\\(?:Gem\\|Rake\\|Cap\\|Thor\\|Puppet\\|Berks\\|Brew\\|Vagrant\\|Guard\\|Pod\\)file\\)\\'")
+      :ext "\\.r\\'")
     ,(make-treesit-auto-recipe
       :lang 'ruby
       :ts-mode 'ruby-ts-mode
       :remap 'ruby-mode
       :url "https://github.com/tree-sitter/tree-sitter-ruby"
-      :ext "\\.rb\\'")
+      :ext "\\(?:\\.\\(?:rbw?\\|ru\\|rake\\|thor\\|jbuilder\\|rabl\\|gemspec\\|podspec\\)\\|/\\(?:Gem\\|Rake\\|Cap\\|Thor\\|Puppet\\|Berks\\|Brew\\|Vagrant\\|Guard\\|Pod\\)file\\)\\'")
     ,(make-treesit-auto-recipe
       :lang 'rust
       :ts-mode 'rust-ts-mode
@@ -390,10 +390,6 @@ Non-nil only if installation completed without any errors."
 
 (defun treesit-auto--get-buffer-recipe ()
   "Look up the recipe for the current buffer using its extension."
-  ;; Only do this if we aren't about to load a mode for real.  Otherwise, the
-  ;; installation function would be called twice; once when the buffer loads in
-  ;; fundamental mode, and again when the main mode loads.
-  ;; https://debbugs.gnu.org/db/11/11929.html
   (seq-find (lambda (r) (string-match (treesit-auto-recipe-ext r) (buffer-name)))
             (treesit-auto--selected-recipes)))
 
@@ -487,8 +483,6 @@ how to modify the behavior of this function."
   ;; replacement and ignores all changes while this mode is active, so
   ;; don't think it is a valid option.
   (setq-local major-mode-remap-alist (treesit-auto--build-major-mode-remap-alist)))
-
-(defvar treesit-auto--called nil)
 
 (defun treesit-auto--on ()
   "Turn `treesit-auto-mode' on."
