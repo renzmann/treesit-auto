@@ -336,8 +336,7 @@ If the tree-sitter grammar is missing for the current file type, this will
 silently fail, automatically install the grammar, or prompt the user about
 automatic installation, depending on the value of `treesit-auto-install'.  If
 installation of the grammar is successful, activate the tree-sitter major mode."
-  (when-let* ((in-fundamental (eq major-mode 'fundamental-mode))
-              (recipe (treesit-auto--get-buffer-recipe))
+  (when-let* ((recipe (treesit-auto--get-mode-recipe))
               (ts-mode (treesit-auto-recipe-ts-mode recipe))
               (not-ready (not (treesit-auto--ready-p ts-mode)))
               (ts-mode-exists (fboundp ts-mode))
@@ -346,8 +345,10 @@ installation of the grammar is successful, activate the tree-sitter major mode."
     (dolist (req-lang (ensure-list (treesit-auto-recipe-requires recipe)))
       (treesit-auto--prompt-to-install-package req-lang))
     (treesit-auto--prompt-to-install-package lang)
-    (when (treesit-auto--ready-p lang)
-      (funcall ts-mode))))
+    (if (file-exists-p buffer-file-name)
+        (revert-buffer nil t)
+      (when (treesit-auto--ready-p lang)
+        (funcall ts-mode)))))
 
 (defun treesit-auto--ready-p (mode)
   "Determine if MODE is tree-sitter ready.
@@ -458,7 +459,7 @@ how to modify the behavior of this function."
   ;; in case only the ts-mode is available.
   ;; non emacs core ts-modes might autoload and would be
   ;; nice to also prompt for grammar installation
-  (let ((modes '(fundamental-mode)))
+  (let ((modes '()))
     (cl-loop for recipe in (treesit-auto--selected-recipes)
              do (push (treesit-auto-recipe-ts-mode recipe) modes)
              do (dolist (mode (ensure-list (treesit-auto-recipe-remap recipe)))
@@ -488,14 +489,23 @@ how to modify the behavior of this function."
   "Turn `treesit-auto-mode' on."
   (treesit-auto--maybe-install-grammar))
 
-(defun treesit-auto-add-to-auto-mode-alist ()
-  "Register `auto-mode-alist' entries for ready tree-sitter recipes."
-  (let ((installed-recipes (seq-filter
-                            (lambda (r) (treesit-auto--ready-p (treesit-auto-recipe-ts-mode r)))
-                            (treesit-auto--selected-recipes))))
-    (dolist (recipe installed-recipes)
+(defun treesit-auto-add-to-auto-mode-alist (&optional all)
+  "Register `auto-mode-alist' entries for tree-sitter modes.
+
+If the optional argument ALL is non-nil, then every ts-mode
+will be added to `auto-mode-alist', regardless of whether the
+tree-sitter grammar is ready or not.  This has a beneficial side
+effect of installing grammars for which you have a corresponding
+ts-mode, but no fallback mode, such as `rust-ts-mode' in Emacs
+29.1"
+  (let ((recipes (treesit-auto--selected-recipes)))
+    (dolist (recipe (or (and all recipes)
+                        (seq-filter
+                         (lambda (r) (treesit-auto--ready-p (treesit-auto-recipe-ts-mode r)))
+                         recipes)))
       (add-to-list 'auto-mode-alist
-                   (cons (treesit-auto-recipe-ext recipe) (treesit-auto-recipe-ts-mode recipe))))))
+                   (cons (treesit-auto-recipe-ext recipe)
+                         (treesit-auto-recipe-ts-mode recipe))))))
 
 (provide 'treesit-auto)
 ;;; treesit-auto.el ends here
