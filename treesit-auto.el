@@ -489,23 +489,42 @@ how to modify the behavior of this function."
   "Turn `treesit-auto-mode' on."
   (treesit-auto--maybe-install-grammar))
 
-(defun treesit-auto-add-to-auto-mode-alist (&optional all)
-  "Register `auto-mode-alist' entries for tree-sitter modes.
+(defun treesit-auto--recipe-ready-p (recipe)
+  "Non-nil if the language associated with RECIPE is tree-sitter ready."
+  (treesit-auto--ready-p (treesit-auto-recipe-ts-mode recipe)))
 
-If the optional argument ALL is non-nil, then every ts-mode
-will be added to `auto-mode-alist', regardless of whether the
-tree-sitter grammar is ready or not.  This has a beneficial side
-effect of installing grammars for which you have a corresponding
-ts-mode, but no fallback mode, such as `rust-ts-mode' in Emacs
-29.1"
-  (let ((recipes (treesit-auto--selected-recipes)))
-    (dolist (recipe (or (and all recipes)
-                        (seq-filter
-                         (lambda (r) (treesit-auto--ready-p (treesit-auto-recipe-ts-mode r)))
-                         recipes)))
+(defun treesit-auto--filter-recipes-with-langs (langs recipes)
+  "Filter RECIPES down to only those corresponding to LANGS."
+  (seq-filter (lambda (r) (member (treesit-auto-recipe-lang r) langs)) recipes))
+
+(defun treesit-auto-add-to-auto-mode-alist (&optional langs)
+  "Register tree-sitter modes in `auto-mode-alist'.
+
+When the optional argument LANGS is nil (the default), then this
+function adds every tree-sitter mode that satisfies
+`treesit-ready-p' to `auto-mode-alist'.
+
+If LANGS is `all', then every tree-sitter mode available to
+Emacs will be added to `auto-mode-alist', regardless of whether
+it satisfies `treesit-ready-p'.  For instance, Emacs 29.1 ships
+with `rust-ts-mode', so \\=(treesit-auto-add-to-auto-mode-alist
+\\='all\\=) would cause Emacs to load a Rust file in `rust-ts-mode',
+rather than `fundamental-mode'.
+
+If LANGS is a list, then only the listed languages will be added
+to `auto-mode-alist'.  The symbols in LANGS should correspond to
+the `:lang' recipe argument for `treesit-auto-recipe-list', such
+as `python', `rust', `go', etc.  The `treesit-auto-langs'
+variable takes priority over this argument.  If a language is
+missing from `treesit-auto-langs', then it will not be added to
+`auto-mode-alist', even if it is listed in LANGS."
+  (let* ((selected-recipes (treesit-auto--selected-recipes))
+         (recipes (cond ((eq langs 'all) selected-recipes)
+                        ((listp langs) (treesit-auto--filter-recipes-with-langs langs selected-recipes))
+                        (t (seq-filter #'treesit-auto--recipe-ready-p selected-recipes)))))
+    (dolist (r recipes)
       (add-to-list 'auto-mode-alist
-                   (cons (treesit-auto-recipe-ext recipe)
-                         (treesit-auto-recipe-ts-mode recipe))))))
+                   (cons (treesit-auto-recipe-ext r) (treesit-auto-recipe-ts-mode r))))))
 
 (provide 'treesit-auto)
 ;;; treesit-auto.el ends here
