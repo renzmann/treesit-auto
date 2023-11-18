@@ -48,6 +48,18 @@ Then, in your Emacs configuration file (=~/.emacs.d/init.el=),
 For most users, this will be enough.  There are some nifty things you might want
 to enable, though, which are covered in the "Configuration" section below.
 
+* Configuration example
+This is how I configure =treesit-auto= for my own personal use.
+
+#+begin_src emacs-lisp
+  (use-package treesit-auto
+    :custom
+    (treesit-auto-install 'prompt)
+    :config
+    (treesit-auto-add-to-auto-mode-alist 'all)
+    (global-treesit-auto-mode))
+#+end_src
+
 * What this package does
 Emacs 29, while featuring =treesit.el= and a convenient
 =treesit-install-language-grammar=, [[https://archive.casouri.cc/note/2023/tree-sitter-in-emacs-29/index.html][will not feature an intelligent way to choose]]
@@ -258,15 +270,15 @@ You can register tree-sitter modes to =auto-mode-alist= by calling
 =treesit-auto-add-to-auto-mode-alist=.  Depending on the optional argument
 =langs=, this function can behave in three different ways:
 
-1. **nil**, the default - Only add tree-sitter modes to =auto-mode-alist= if the
+1. =nil=, the default - Only add tree-sitter modes to =auto-mode-alist= if the
    tree-sitter mode is available to Emacs /and/ the grammar is installed.
-2. **'all** - For every tree-sitter mode available to Emacs and in
+2. ='all= - For every tree-sitter mode available to Emacs and in
    =treesit-auto-langs=, add it to =auto-mode-alist= regardless of whether the
    grammar is installed.  This has the beneficial side effect of installing
    grammars for you when opening files that have a tree-sitter mode that comes
    with Emacs, but have no fallback mode.  Examples of this are =rust-ts-mode=,
    =go-ts-mode=, and a few others in Emacs 29+.
-3. **A list of language symbols** - behaves like ='all=, but only for the listed
+3. *A list of language symbols* - behaves like ='all=, but only for the listed
    languages
 
 For instance, you might run this function as:
@@ -279,18 +291,6 @@ This registers your tree-sitter modes according to the common file extension for
 Rust, Go, and TOML, but no other modes.  Most users will probably want to use
 =(treesit-auto-add-to-auto-mode-alist 'all)= for the easiest general behavior;
 always prompting/installing grammars when we can.
-
-** Full example
-This is how I configure =treesit-auto= for my own personal use.
-
-#+begin_src emacs-lisp
-  (use-package treesit-auto
-    :custom
-    (treesit-auto-install 'prompt)
-    :config
-    (treesit-auto-add-to-auto-mode-alist 'all)
-    (global-treesit-auto-mode))
-#+end_src
 
 * A rough vanilla equivalent
 I find it a good practice to be skeptical of adding any new dependency to my
