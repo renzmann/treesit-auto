@@ -363,7 +363,7 @@ to have this plugin available in the meantime.
 * Known bugs
 =treesit-auto= doesn't play super well with Org-babel, since Org has its own
 methods of hooking into and using languages.  In particular, you may need to set
-='org-src-lang-modes= yourself to get tree-sitter modes working correctly.
+=org-src-lang-modes= yourself to get tree-sitter modes working correctly.
 
 Another side behavior you may encounter is when opening an Org document with
 shell scripts inside and =treesit-auto-install= is non-nil, then =treesit-auto=
