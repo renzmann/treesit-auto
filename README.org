@@ -291,6 +291,65 @@ This is how I configure =treesit-auto= for my own personal use.
     (global-treesit-auto-mode))
 #+end_src
 
+* A rough vanilla equivalent
+I find it a good practice to be skeptical of adding any new dependency to my
+Emacs configuration.  So, what would you have to do to get similar behavior in
+your Emacs configuration without the =treesit-auto= package?
+
+We'll take two examples: TypeScript and Python.
+
+Emacs 29 ships with =typescript-ts-mode= and =tsx-ts-mode=, but no equivalent
+=typescript-mode= or =tsx-mode=.  =python-ts-mode= and =python-mode=, on the
+other hand, are both available out of the box.  If you wanted these grammars to
+automatically install on launch, and then use the tree-sitter modes instead of
+the base modes for every file, you'd need the following code in your init file:
+
+#+begin_src emacs-lisp
+  (setq treesit-language-source-alist
+        '((typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
+          (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
+          (python . ("https://github.com/tree-sitter/tree-sitter-python"))))
+
+  (dolist (source treesit-language-source-alist)
+    (unless (treesit-ready-p (car source))
+      (treesit-install-language-grammar (car source))))
+
+  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+  (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
+
+#+end_src
+
+There are plenty of reasons why some users would prefer to take this type of
+hand-tuned approach to their tree-sitter modes.  For most Emacs people, though,
+you can see the natural progression of where a config like the above would go:
+
++ You need to maintain a library of language symbols (which /must/ match the
+  language's =grammar.js=), URLs, revisions, and sub-directories for
+  =treesit-language-source-alist=.  Additionally, you'd need to know that
+  =typescript-ts-mode= relies on the tree-sitter grammar for =tsx=, which must
+  be installed alongside the grammar for TypeScript.  This is probably the main
+  value proposition of this package, since all of this information is stored
+  under the community-contributed =treesit-auto-recipe-list=
++ You need to be aware of when to use =auto-mode-alist= and
+  =major-mode-remap-alist=, depending on what modes are installed into Emacs
++ If you want lazy installation of grammars, rather than installing them all
+  up-front in your =init.el=, you'd need to write some hooks or derived modes to
+  check =treesit-ready-p= for the current buffer, and install the language
+  before loading the main tree-sitter mode
++ After a certain number of langauges, it becomes unweildy to do these
+  =add-to-list= calls for every single one, and it's better to programmatically
+  operate on a list of selected languages
+
+If you were to follow this chain yourself, you'd probably wind up with something
+in your =init.el= that looks very similar to the code in this package.
+
+All in all, this is a small package.  Roughly half of it is just maintaining a
+library of information for =treesit-language-source-alist=, and the other half
+works through the logic of handling edge cases related to the remaining bullets
+above.
+
+
 * Caveats
 This package is, admittedly, a hack.  =treesit.el= provides an excellent
 foundation to incremental source code parsing for Emacs 29, and over time that
