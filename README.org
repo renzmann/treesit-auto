@@ -253,30 +253,42 @@ deriving from =python-base-mode=.  For these languages, you can opt to hook into
 =python-base-mode-hook= instead of explicitly setting the tree-sitter mode's hook.
 
 ** Automatically register extensions for =auto-mode-alist=
-This is an optional feature so that this package avoids mutating your
-=auto-mode-alist= without your permission.
+You can register tree-sitter modes to =auto-mode-alist= by calling
+=treesit-auto-add-to-auto-mode-alist=.  Depending on the optional argument
+=langs=, this function can behave in three different ways:
 
-After your desired grammars are installed, you can register them to
-=auto-mode-alist= by calling =treesit-auto-add-to-auto-mode-alist=. This function
-will only add grammars that are considered ready (i.e. detected as installed).
+1. **nil**, the default - Only add tree-sitter modes to =auto-mode-alist= if the
+   tree-sitter mode is available to Emacs /and/ the grammar is installed.
+2. **'all** - For every tree-sitter mode available to Emacs and in
+   =treesit-auto-langs=, add it to =auto-mode-alist= regardless of whether the
+   grammar is installed.  This has the beneficial side effect of installing
+   grammars for you when opening files that have a tree-sitter mode that comes
+   with Emacs, but have no fallback mode.  Examples of this are =rust-ts-mode=,
+   =go-ts-mode=, and a few others in Emacs 29+.
+3. **A list of language symbols** - behaves like ='all=, but only for the listed
+   languages
+
+For instance, you might run this function as:
 
 #+begin_src emacs-lisp
-(treesit-auto-add-to-auto-mode-alist)
+(treesit-auto-add-to-auto-mode-alist '(rust go toml))
 #+end_src
 
-This registers your tree-sitter modes according to the common file
-extension for that language. For example, the =auto-mode-alist= entry
-for TypeScript looks like ='("\\*.ts\\'" . typescript-ts-mode)=.
+This registers your tree-sitter modes according to the common file extension for
+Rust, Go, and TOML, but no other modes.  Most users will probably want to use
+=(treesit-auto-add-to-auto-mode-alist 'all)= for the easiest general behavior;
+always prompting/installing grammars when we can.
 
 ** Full example
 This is how I configure =treesit-auto= for my own personal use.
 
 #+begin_src emacs-lisp
-(use-package treesit-auto
-  :demand t
-  :config
-  (setq treesit-auto-install 'prompt)
-  (global-treesit-auto-mode))
+  (use-package treesit-auto
+    :custom
+    (treesit-auto-install 'prompt)
+    :config
+    (treesit-auto-add-to-auto-mode-alist 'all)
+    (global-treesit-auto-mode))
 #+end_src
 
 * Caveats
@@ -287,6 +299,17 @@ mind, I fully expect this package to eventually be obsolesced by the default
 options in Emacs 30 and beyond.  That does not preclude us from adding a few
 quality of life improvements to Emacs 29, though, and so it still seems prudent
 to have this plugin available in the meantime.
+
+* Known bugs
+=treesit-auto= doesn't play super well with Org-babel, since Org has its own
+methods of hooking into and using languages.  In particular, you may need to set
+='org-src-lang-modes= yourself to get tree-sitter modes working correctly.
+
+Another side behavior you may encounter is when opening an Org document with
+shell scripts inside and =treesit-auto-install= is non-nil, then =treesit-auto=
+will prompt to install the Bash grammar, but won't display the prompt until you
+interact with Emacs in some way, such as using =next-line= (=C-n= by default) or
+hovering over Emacs with your mouse.
 
 * Contributing
 Bug reports, feature requests, and contributions are most welcome.  Even though
