@@ -520,7 +520,7 @@ missing from `treesit-auto-langs', then it will not be added to
 `auto-mode-alist', even if it is listed in LANGS."
   (let* ((selected-recipes (treesit-auto--selected-recipes))
          (recipes (cond ((eq langs 'all) selected-recipes)
-                        ((listp langs) (treesit-auto--filter-recipes-with-langs langs selected-recipes))
+                        ((and langs (listp langs)) (treesit-auto--filter-recipes-with-langs langs selected-recipes))
                         (t (seq-filter #'treesit-auto--recipe-ready-p selected-recipes)))))
     (dolist (r recipes)
       (add-to-list 'auto-mode-alist
