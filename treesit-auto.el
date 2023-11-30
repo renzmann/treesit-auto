@@ -429,10 +429,8 @@ See `treesit-auto-langs' and `treesit-auto-install' for
 how to modify the behavior of this function."
   (interactive)
   (when-let* ((treesit-language-source-alist (treesit-auto--build-treesit-source-alist))
-              (to-install (or treesit-auto-langs
-                              (seq-filter
-                               (lambda (lang) (not (treesit-ready-p lang t)))
-                               treesit-auto-langs)))
+              (to-install (seq-filter (lambda (lang) (not (treesit-ready-p lang t)))
+                                      treesit-auto-langs))
               (prompt (format "The following tree-sitter grammars are/were missing:\n%s\n"
                               (mapconcat 'symbol-name to-install "\n"))))
     ;; TODO QOL - it would be nice if this messaged what was installed or at
@@ -495,7 +493,10 @@ how to modify the behavior of this function."
 
 (defun treesit-auto--filter-recipes-with-langs (langs recipes)
   "Filter RECIPES down to only those corresponding to LANGS."
-  (seq-filter (lambda (r) (member (treesit-auto-recipe-lang r) langs)) recipes))
+  (seq-filter
+   (lambda (r) (and (member (treesit-auto-recipe-lang r) langs)
+                    (fboundp (treesit-auto-recipe-ts-mode r))))
+   recipes))
 
 (defun treesit-auto-add-to-auto-mode-alist (&optional langs)
   "Register tree-sitter modes in `auto-mode-alist'.
@@ -519,7 +520,9 @@ variable takes priority over this argument.  If a language is
 missing from `treesit-auto-langs', then it will not be added to
 `auto-mode-alist', even if it is listed in LANGS."
   (let* ((selected-recipes (treesit-auto--selected-recipes))
-         (recipes (cond ((eq langs 'all) selected-recipes)
+         (recipes (cond ((eq langs 'all) (seq-filter (lambda (r) (fboundp (treesit-auto-recipe-ts-mode r)))
+                                                     selected-recipes))
+                        ;; See https://github.com/renzmann/treesit-auto/pull/67 for why we have (and langs (listp langs)) here
                         ((and langs (listp langs)) (treesit-auto--filter-recipes-with-langs langs selected-recipes))
                         (t (seq-filter #'treesit-auto--recipe-ready-p selected-recipes)))))
     (dolist (r recipes)
