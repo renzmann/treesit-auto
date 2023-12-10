@@ -209,7 +209,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :ts-mode 'kotlin-ts-mode
       :remap 'kotlin-mode
       :url "https://github.com/fwcd/tree-sitter-kotlin"
-      :ext "\\.kt\\'")
+      :ext "\\.kts?\\'")
     ,(make-treesit-auto-recipe
       :lang 'latex
       :ts-mode 'latex-ts-mode
