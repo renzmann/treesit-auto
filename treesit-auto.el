@@ -220,7 +220,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :lang 'lua
       :ts-mode 'lua-ts-mode
       :remap 'lua-mode
-      :url "https://github.com/Azganoth/tree-sitter-lua"
+      :url "https://github.com/MunifTanjim/tree-sitter-lua"
       :ext "\\.lua\\'")
     ,(make-treesit-auto-recipe
       :lang 'make
