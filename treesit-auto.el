@@ -273,6 +273,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
     ,(make-treesit-auto-recipe
       :lang 'tsx
       :ts-mode 'tsx-ts-mode
+      :remap '(typescript-tsx-mode)
       :requires 'typescript
       :url "https://github.com/tree-sitter/tree-sitter-typescript"
       :revision "master"
