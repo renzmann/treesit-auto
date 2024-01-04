@@ -223,6 +223,12 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/Azganoth/tree-sitter-lua"
       :ext "\\.lua\\'")
     ,(make-treesit-auto-recipe
+      :lang 'magik
+      :ts-mode 'magik-ts-mode
+      :remap 'magik-mode
+      :url "https://github.com/krn-robin/tree-sitter-magik"
+      :ext "\\.magik\\'")
+    ,(make-treesit-auto-recipe
       :lang 'make
       :ts-mode 'makefile-ts-mode
       :remap 'makefile-mode
