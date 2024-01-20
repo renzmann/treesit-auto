@@ -321,6 +321,20 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/alemuller/tree-sitter-vhdl"
       :ext "\\.vhdl?\\'")
     ,(make-treesit-auto-recipe
+      :lang 'wat
+      :ts-mode 'wat-ts-mode
+      :remap 'wat-mode
+      :url "https://github.com/wasm-lsp/tree-sitter-wasm"
+      :source-dir "wat/src"
+      :ext "\\.wat\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'wast
+      :ts-mode 'wat-ts-wast-mode
+      :remap 'wat-mode
+      :url "https://github.com/wasm-lsp/tree-sitter-wasm"
+      :source-dir "wast/src"
+      :ext "\\.wast\\'")
+    ,(make-treesit-auto-recipe
       :lang 'yaml
       :ts-mode 'yaml-ts-mode
       :remap 'yaml-mode
