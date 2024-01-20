@@ -235,6 +235,12 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/ikatyang/tree-sitter-markdown"
       :ext "\\.md\\'")
     ,(make-treesit-auto-recipe
+      :lang 'nu
+      :ts-mode 'nushell-ts-mode
+      :remap 'nushell-mode
+      :url "https://github.com/nushell/tree-sitter-nu"
+      :ext "\\.nu\\'")
+    ,(make-treesit-auto-recipe
       :lang 'proto
       :ts-mode 'protobuf-ts-mode
       :remap 'protobuf-mode
