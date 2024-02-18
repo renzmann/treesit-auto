@@ -223,6 +223,12 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/MunifTanjim/tree-sitter-lua"
       :ext "\\.lua\\'")
     ,(make-treesit-auto-recipe
+      :lang 'magik
+      :ts-mode 'magik-ts-mode
+      :remap 'magik-mode
+      :url "https://github.com/krn-robin/tree-sitter-magik"
+      :ext "\\.magik\\'")
+    ,(make-treesit-auto-recipe
       :lang 'make
       :ts-mode 'makefile-ts-mode
       :remap 'makefile-mode
@@ -362,7 +368,8 @@ installation of the grammar is successful, activate the tree-sitter major mode."
               (not-ready (not (treesit-auto--ready-p ts-mode)))
               (ts-mode-exists (fboundp ts-mode))
               (lang (treesit-auto-recipe-lang recipe))
-              (treesit-language-source-alist (treesit-auto--build-treesit-source-alist)))
+              (treesit-language-source-alist (treesit-auto--build-treesit-source-alist))
+              (treesit-auto-langs (remove lang treesit-auto-langs)))
     (dolist (req-lang (ensure-list (treesit-auto-recipe-requires recipe)))
       (treesit-auto--prompt-to-install-package req-lang))
     (treesit-auto--prompt-to-install-package lang)
