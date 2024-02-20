@@ -116,12 +116,6 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/uyha/tree-sitter-cmake"
       :ext "\\.cmake\\'")
     ,(make-treesit-auto-recipe
-      :lang 'make
-      :ts-mode 'make-ts-mode
-      :remap 'make-mode
-      :url "https://github.com/alemuller/tree-sitter-make"
-      :ext "\\.mk\\'")
-    ,(make-treesit-auto-recipe
       :lang 'commonlisp
       :ts-mode 'commonlisp-ts-mode
       :remap 'common-lisp-mode
@@ -344,12 +338,6 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :revision "gh-pages"
       :url "https://github.com/DerekStride/tree-sitter-sql"
       :ext "\\.sql\\'")
-    ,(make-treesit-auto-recipe
-      :lang 'vhdl
-      :ts-mode 'vhdl-ts-mode
-      :remap 'vhdl-mode
-      :url "https://github.com/alemuller/tree-sitter-vhdl"
-      :ext "\\.vhd\\'")
     ,(make-treesit-auto-recipe
       :lang 'wgsl
       :ts-mode 'wgsl-ts-mode
