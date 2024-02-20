@@ -122,12 +122,6 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/tree-sitter-grammars/tree-sitter-commonlisp"
       :ext "\\.cl\\'")
     ,(make-treesit-auto-recipe
-      :lang 'elisp
-      :ts-mode 'elisp-ts-mode
-      :remap 'elisp-mode
-      :url "https://github.com/Wilfred/tree-sitter-elisp"
-      :ext "\\.el\\'")
-    ,(make-treesit-auto-recipe
       :lang 'cpp
       :ts-mode 'c++-ts-mode
       :remap 'c++-mode
@@ -145,12 +139,6 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :remap 'dart-mode
       :url "https://github.com/ast-grep/tree-sitter-dart"
       :ext "\\.dart\\'")
-    ,(make-treesit-auto-recipe
-      :lang 'scss
-      :ts-mode 'scss-ts-mode
-      :remap 'scss-mode
-      :url "https://github.com/serenadeai/tree-sitter-scss"
-      :ext "\\.scss\\'")
     ,(make-treesit-auto-recipe
       :lang 'dockerfile
       :ts-mode 'dockerfile-ts-mode
@@ -195,6 +183,12 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :remap '(mhtml-mode sgml-mode)
       :url "https://github.com/tree-sitter/tree-sitter-html"
       :ext "\\.html\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'janet
+      :ts-mode 'janet-ts-mode
+      :remap 'janet-mode
+      :url "https://github.com/sogaiu/tree-sitter-janet-simple"
+      :ext "\\.janet\\'")
     ,(make-treesit-auto-recipe
       :lang 'java
       :ts-mode 'java-ts-mode
@@ -264,6 +258,18 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/nushell/tree-sitter-nu"
       :ext "\\.nu\\'")
     ,(make-treesit-auto-recipe
+      :lang 'org
+      :ts-mode 'org-ts-mode
+      :remap 'org-mode
+      :url "https://github.com/milisims/tree-sitter-org"
+      :ext "\\.org\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'perl
+      :ts-mode 'perl-ts-mode
+      :remap 'perl-mode
+      :url "https://github.com/ganezdragon/tree-sitter-perl"
+      :ext "\\.pl\\'")
+    ,(make-treesit-auto-recipe
       :lang 'proto
       :ts-mode 'protobuf-ts-mode
       :remap 'protobuf-mode
@@ -294,6 +300,18 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/tree-sitter/tree-sitter-rust"
       :ext "\\.rs\\'")
     ,(make-treesit-auto-recipe
+      :lang 'sql
+      :ts-mode 'sql-ts-mode
+      :remap 'sql-mode
+      :revision "gh-pages"
+      :url "https://github.com/DerekStride/tree-sitter-sql"
+      :ext "\\.sql\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'surface
+      :ts-mode 'surface-ts-mode
+      :remap 'surface-mode
+      :url "https://github.com/connorlay/tree-sitter-surface")
+    ,(make-treesit-auto-recipe
       :lang 'toml
       :ts-mode 'toml-ts-mode
       :remap '(conf-toml-mode toml-mode)
@@ -308,42 +326,6 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :revision "master"
       :source-dir "tsx/src"
       :ext "\\.tsx\\'")
-    ,(make-treesit-auto-recipe
-      :lang 'janet
-      :ts-mode 'janet-ts-mode
-      :remap 'janet-mode
-      :url "https://github.com/sogaiu/tree-sitter-janet-simple"
-      :ext "\\.janet\\'")
-    ,(make-treesit-auto-recipe
-      :lang 'org
-      :ts-mode 'org-ts-mode
-      :remap 'org-mode
-      :url "https://github.com/milisims/tree-sitter-org"
-      :ext "\\.org\\'")
-    ,(make-treesit-auto-recipe
-      :lang 'perl
-      :ts-mode 'perl-ts-mode
-      :remap 'perl-mode
-      :url "https://github.com/ganezdragon/tree-sitter-perl"
-      :ext "\\.pl\\'")
-    ,(make-treesit-auto-recipe
-      :lang 'surface
-      :ts-mode 'surface-ts-mode
-      :remap 'surface-mode
-      :url "https://github.com/connorlay/tree-sitter-surface")
-    ,(make-treesit-auto-recipe
-      :lang 'sql
-      :ts-mode 'sql-ts-mode
-      :remap 'sql-mode
-      :revision "gh-pages"
-      :url "https://github.com/DerekStride/tree-sitter-sql"
-      :ext "\\.sql\\'")
-    ,(make-treesit-auto-recipe
-      :lang 'wgsl
-      :ts-mode 'wgsl-ts-mode
-      :remap 'wgsl-mode
-      :url "https://github.com/mehmetoguzderin/tree-sitter-wgsl"
-      :ext "\\.wgsl\\'")
     ,(make-treesit-auto-recipe
       :lang 'typescript
       :ts-mode 'typescript-ts-mode
@@ -380,6 +362,13 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/tree-sitter-grammars/tree-sitter-vue"
       :ext "\\.vue\\'")
     ,(make-treesit-auto-recipe
+      :lang 'wast
+      :ts-mode 'wat-ts-wast-mode
+      :remap 'wat-mode
+      :url "https://github.com/wasm-lsp/tree-sitter-wasm"
+      :source-dir "wast/src"
+      :ext "\\.wast\\'")
+    ,(make-treesit-auto-recipe
       :lang 'wat
       :ts-mode 'wat-ts-mode
       :remap 'wat-mode
@@ -387,12 +376,11 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :source-dir "wat/src"
       :ext "\\.wat\\'")
     ,(make-treesit-auto-recipe
-      :lang 'wast
-      :ts-mode 'wat-ts-wast-mode
-      :remap 'wat-mode
-      :url "https://github.com/wasm-lsp/tree-sitter-wasm"
-      :source-dir "wast/src"
-      :ext "\\.wast\\'")
+      :lang 'wgsl
+      :ts-mode 'wgsl-ts-mode
+      :remap 'wgsl-mode
+      :url "https://github.com/mehmetoguzderin/tree-sitter-wgsl"
+      :ext "\\.wgsl\\'")
     ,(make-treesit-auto-recipe
       :lang 'yaml
       :ts-mode 'yaml-ts-mode
