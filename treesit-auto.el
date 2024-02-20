@@ -125,7 +125,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :lang 'commonlisp
       :ts-mode 'commonlisp-ts-mode
       :remap 'common-lisp-mode
-      :url "https://github.com/theHamsta/tree-sitter-commonlisp"
+      :url "https://github.com/tree-sitter-grammars/tree-sitter-commonlisp"
       :ext "\\.cl\\'")
     ,(make-treesit-auto-recipe
       :lang 'elisp
@@ -174,7 +174,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :lang 'glsl
       :ts-mode 'glsl-ts-mode
       :remap 'glsl-mode
-      :url "https://github.com/theHamsta/tree-sitter-glsl")
+      :url "https://github.com/tree-sitter-grammars/tree-sitter-glsl")
     ,(make-treesit-auto-recipe
       :lang 'go
       :ts-mode 'go-ts-mode
@@ -243,7 +243,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :lang 'lua
       :ts-mode 'lua-ts-mode
       :remap 'lua-mode
-      :url "https://github.com/MunifTanjim/tree-sitter-lua"
+      :url "https://github.com/tree-sitter-grammars/tree-sitter-lua"
       :ext "\\.lua\\'")
     ,(make-treesit-auto-recipe
       :lang 'magik
@@ -255,13 +255,13 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :lang 'make
       :ts-mode 'makefile-ts-mode
       :remap 'makefile-mode
-      :url "https://github.com/alemuller/tree-sitter-make"
+      :url "https://github.com/tree-sitter-grammars/tree-sitter-make"
       :ext "\\([Mm]akefile\\|.*\\.\\(mk\\|make\\)\\)\\'")
     ,(make-treesit-auto-recipe
       :lang 'markdown
       :ts-mode 'markdown-ts-mode
       :remap '(poly-markdown-mode markdown-mode)
-      :url "https://github.com/ikatyang/tree-sitter-markdown"
+      :url "https://github.com/tree-sitter-grammars/tree-sitter-markdown"
       :ext "\\.md\\'")
     ,(make-treesit-auto-recipe
       :lang 'nu
@@ -403,7 +403,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :lang 'yaml
       :ts-mode 'yaml-ts-mode
       :remap 'yaml-mode
-      :url "https://github.com/ikatyang/tree-sitter-yaml"
+      :url "https://github.com/tree-sitter-grammars/tree-sitter-yaml"
       :ext "\\.ya?ml\\'"))
   "Map each tree-sitter lang to Emacs metadata.")
 
