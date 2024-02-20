@@ -386,6 +386,12 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/alemuller/tree-sitter-vhdl"
       :ext "\\.vhdl?\\'")
     ,(make-treesit-auto-recipe
+      :lang 'vue
+      :ts-mode 'vue-ts-mode
+      :remap 'vue-mode
+      :url "https://github.com/tree-sitter-grammars/tree-sitter-vue"
+      :ext "\\.vue\\'")
+    ,(make-treesit-auto-recipe
       :lang 'wat
       :ts-mode 'wat-ts-mode
       :remap 'wat-mode
