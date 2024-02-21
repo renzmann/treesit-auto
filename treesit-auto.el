@@ -422,15 +422,20 @@ Non-nil only if installation completed without any errors."
    (lambda (r) (memq (treesit-auto-recipe-lang r) treesit-auto-langs))
    treesit-auto-recipe-list))
 
-(defun treesit-auto--build-major-mode-remap-alist ()
-  "Construct `major-mode-remap-alist' using all known recipes."
+(defun treesit-auto--build-major-mode-remap-alist (&optional mode)
+  "Construct `major-mode-remap-alist' using all known recipes.
+When MODE is specified, only add to `major-mode-remap-alist' for recipes that
+have the specified MODE in the :remap value of the recipe."
   (append major-mode-remap-alist
           (let ((remap-alist '()))
             (cl-loop for recipe in (treesit-auto--selected-recipes)
                      for ts-mode = (treesit-auto-recipe-ts-mode recipe)
-                     when (treesit-auto--ready-p ts-mode)
-                     do (dolist (remap (ensure-list (treesit-auto-recipe-remap recipe)))
-                          (push (cons remap ts-mode) remap-alist))
+                     for remap-modes = (ensure-list
+                                        (treesit-auto-recipe-remap recipe))
+                     when (and (or (null mode) (memq mode remap-modes))
+                               (treesit-auto--ready-p ts-mode))
+                     do (dolist (remap-mode remap-modes)
+                          (push (cons remap-mode ts-mode) remap-alist))
                      finally return remap-alist))))
 
 (defun treesit-auto--build-treesit-source-alist ()
@@ -444,6 +449,7 @@ Non-nil only if installation completed without any errors."
                                    ,(treesit-auto-recipe-cc recipe)
                                    ,(treesit-auto-recipe-c++ recipe))))))
 
+;;;###autoload
 (defun treesit-auto-install-all ()
   "Install every available, maintained grammar.
 
@@ -463,6 +469,7 @@ how to modify the behavior of this function."
               (y-or-n-p "Install missing grammars? "))
       (mapcar 'treesit-install-language-grammar to-install))))
 
+;;;###autoload
 (define-minor-mode treesit-auto-mode
   "Toggle `global-treesit-auto-mode'."
   :group 'treesit)
@@ -490,20 +497,15 @@ how to modify the behavior of this function."
       ;; but we need to temporary update major-mode-remap-alist
       ;; and not modify the user specified list which will allow
       ;; the user to be in control of existing remaps.
-      (advice-add #'set-auto-mode-0 :before #'treesit-auto--set-major-remap)
+      (advice-add #'set-auto-mode-0 :around #'treesit-auto--set-major-remap)
     (advice-remove #'set-auto-mode-0 #'treesit-auto--set-major-remap)))
 
-(defun treesit-auto--set-major-remap (&rest _)
-  "Locally set `major-mode-remap-alist' with all known recipes."
-  ;; even though major-mode-remap-alist is set as local here,
-  ;; when a major-mode matches the mode will be added to the top of
-  ;; auto-mode-alist so it can't be really "switched off" afterwards.
-  ;; The user needs to restart emacs or somehow reset auto-mode-alist to
-  ;; the original.
-  ;; For this mode to keep a cached copy is dangerous as it will be a global
-  ;; replacement and ignores all changes while this mode is active, so
-  ;; don't think it is a valid option.
-  (setq-local major-mode-remap-alist (treesit-auto--build-major-mode-remap-alist)))
+(defun treesit-auto--set-major-remap (oldfun mode &rest args)
+  "Locally bind `major-mode-remap-alist' around OLDFUN.
+Search recipes for those matching MODE (as the :remap value) and add them to
+`major-mode-remap-alist' when calling OLDFUN.  Call OLDFUN with MODE and ARGS."
+  (let ((major-mode-remap-alist (treesit-auto--build-major-mode-remap-alist mode)))
+    (apply oldfun mode args)))
 
 (defun treesit-auto--on ()
   "Turn `treesit-auto-mode' on."
@@ -520,6 +522,7 @@ how to modify the behavior of this function."
                     (fboundp (treesit-auto-recipe-ts-mode r))))
    recipes))
 
+;;;###autoload
 (defun treesit-auto-add-to-auto-mode-alist (&optional langs)
   "Register tree-sitter modes in `auto-mode-alist'.
 
