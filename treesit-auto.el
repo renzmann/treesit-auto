@@ -369,7 +369,7 @@ installation of the grammar is successful, activate the tree-sitter major mode."
               (ts-mode-exists (fboundp ts-mode))
               (lang (treesit-auto-recipe-lang recipe))
               (treesit-language-source-alist (treesit-auto--build-treesit-source-alist))
-              (treesit-auto-langs (remove lang treesit-auto-langs)))
+              (treesit-auto-langs (remove lang treesit-auto-langs)))
     (dolist (req-lang (ensure-list (treesit-auto-recipe-requires recipe)))
       (treesit-auto--prompt-to-install-package req-lang))
     (treesit-auto--prompt-to-install-package lang)
