@@ -300,6 +300,12 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/tree-sitter/tree-sitter-rust"
       :ext "\\.rs\\'")
     ,(make-treesit-auto-recipe
+      :lang 'scala
+      :ts-mode 'scala-ts-mode
+      :remap 'scala-mode
+      :url "https://github.com/tree-sitter/tree-sitter-scala"
+      :ext "\\.sc[ala]?\\'")
+    ,(make-treesit-auto-recipe
       :lang 'sql
       :ts-mode 'sql-ts-mode
       :remap 'sql-mode
