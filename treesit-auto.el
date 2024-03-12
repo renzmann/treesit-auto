@@ -304,7 +304,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :ts-mode 'scala-ts-mode
       :remap 'scala-mode
       :url "https://github.com/tree-sitter/tree-sitter-scala"
-      :ext "\\.sc[ala]?\\'")
+      :ext "\\.\\(scala\\|sbt\\)\\'")
     ,(make-treesit-auto-recipe
       :lang 'sql
       :ts-mode 'sql-ts-mode
