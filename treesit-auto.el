@@ -119,7 +119,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :lang 'commonlisp
       :ts-mode 'commonlisp-ts-mode
       :remap 'common-lisp-mode
-      :url "https://github.com/theHamsta/tree-sitter-commonlisp"
+      :url "https://github.com/tree-sitter-grammars/tree-sitter-commonlisp"
       :ext "\\.cl\\'")
     ,(make-treesit-auto-recipe
       :lang 'cpp
@@ -153,6 +153,11 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/elixir-lang/tree-sitter-elixir"
       :ext "\\.ex\\'")
     ,(make-treesit-auto-recipe
+      :lang 'glsl
+      :ts-mode 'glsl-ts-mode
+      :remap 'glsl-mode
+      :url "https://github.com/tree-sitter-grammars/tree-sitter-glsl")
+    ,(make-treesit-auto-recipe
       :lang 'go
       :ts-mode 'go-ts-mode
       :remap 'go-mode
@@ -178,6 +183,12 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :remap '(mhtml-mode sgml-mode)
       :url "https://github.com/tree-sitter/tree-sitter-html"
       :ext "\\.html\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'janet
+      :ts-mode 'janet-ts-mode
+      :remap 'janet-mode
+      :url "https://github.com/sogaiu/tree-sitter-janet-simple"
+      :ext "\\.janet\\'")
     ,(make-treesit-auto-recipe
       :lang 'java
       :ts-mode 'java-ts-mode
@@ -220,7 +231,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :lang 'lua
       :ts-mode 'lua-ts-mode
       :remap 'lua-mode
-      :url "https://github.com/MunifTanjim/tree-sitter-lua"
+      :url "https://github.com/tree-sitter-grammars/tree-sitter-lua"
       :ext "\\.lua\\'")
     ,(make-treesit-auto-recipe
       :lang 'magik
@@ -232,13 +243,13 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :lang 'make
       :ts-mode 'makefile-ts-mode
       :remap 'makefile-mode
-      :url "https://github.com/alemuller/tree-sitter-make"
+      :url "https://github.com/tree-sitter-grammars/tree-sitter-make"
       :ext "\\([Mm]akefile\\|.*\\.\\(mk\\|make\\)\\)\\'")
     ,(make-treesit-auto-recipe
       :lang 'markdown
       :ts-mode 'markdown-ts-mode
       :remap '(poly-markdown-mode markdown-mode)
-      :url "https://github.com/ikatyang/tree-sitter-markdown"
+      :url "https://github.com/tree-sitter-grammars/tree-sitter-markdown"
       :ext "\\.md\\'")
     ,(make-treesit-auto-recipe
       :lang 'nu
@@ -246,6 +257,18 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :remap 'nushell-mode
       :url "https://github.com/nushell/tree-sitter-nu"
       :ext "\\.nu\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'org
+      :ts-mode 'org-ts-mode
+      :remap 'org-mode
+      :url "https://github.com/milisims/tree-sitter-org"
+      :ext "\\.org\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'perl
+      :ts-mode 'perl-ts-mode
+      :remap 'perl-mode
+      :url "https://github.com/ganezdragon/tree-sitter-perl"
+      :ext "\\.pl\\'")
     ,(make-treesit-auto-recipe
       :lang 'proto
       :ts-mode 'protobuf-ts-mode
@@ -276,6 +299,24 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :remap 'rust-mode
       :url "https://github.com/tree-sitter/tree-sitter-rust"
       :ext "\\.rs\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'scala
+      :ts-mode 'scala-ts-mode
+      :remap 'scala-mode
+      :url "https://github.com/tree-sitter/tree-sitter-scala"
+      :ext "\\.\\(scala\\|sbt\\)\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'sql
+      :ts-mode 'sql-ts-mode
+      :remap 'sql-mode
+      :revision "gh-pages"
+      :url "https://github.com/DerekStride/tree-sitter-sql"
+      :ext "\\.sql\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'surface
+      :ts-mode 'surface-ts-mode
+      :remap 'surface-mode
+      :url "https://github.com/connorlay/tree-sitter-surface")
     ,(make-treesit-auto-recipe
       :lang 'toml
       :ts-mode 'toml-ts-mode
@@ -321,12 +362,11 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/alemuller/tree-sitter-vhdl"
       :ext "\\.vhdl?\\'")
     ,(make-treesit-auto-recipe
-      :lang 'wat
-      :ts-mode 'wat-ts-mode
-      :remap 'wat-mode
-      :url "https://github.com/wasm-lsp/tree-sitter-wasm"
-      :source-dir "wat/src"
-      :ext "\\.wat\\'")
+      :lang 'vue
+      :ts-mode 'vue-ts-mode
+      :remap 'vue-mode
+      :url "https://github.com/tree-sitter-grammars/tree-sitter-vue"
+      :ext "\\.vue\\'")
     ,(make-treesit-auto-recipe
       :lang 'wast
       :ts-mode 'wat-ts-wast-mode
@@ -335,10 +375,23 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :source-dir "wast/src"
       :ext "\\.wast\\'")
     ,(make-treesit-auto-recipe
+      :lang 'wat
+      :ts-mode 'wat-ts-mode
+      :remap 'wat-mode
+      :url "https://github.com/wasm-lsp/tree-sitter-wasm"
+      :source-dir "wat/src"
+      :ext "\\.wat\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'wgsl
+      :ts-mode 'wgsl-ts-mode
+      :remap 'wgsl-mode
+      :url "https://github.com/mehmetoguzderin/tree-sitter-wgsl"
+      :ext "\\.wgsl\\'")
+    ,(make-treesit-auto-recipe
       :lang 'yaml
       :ts-mode 'yaml-ts-mode
       :remap 'yaml-mode
-      :url "https://github.com/ikatyang/tree-sitter-yaml"
+      :url "https://github.com/tree-sitter-grammars/tree-sitter-yaml"
       :ext "\\.ya?ml\\'"))
   "Map each tree-sitter lang to Emacs metadata.")
 
