@@ -92,6 +92,12 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/latex-lsp/tree-sitter-bibtex"
       :ext "\\.bib\\'")
     ,(make-treesit-auto-recipe
+      :lang 'blueprint
+      :ts-mode 'blueprint-ts-mode
+      :remap 'blueprint-mode
+      :url "https://github.com/huanie/tree-sitter-blueprint"
+      :ext "\\.blp\\'")
+    ,(make-treesit-auto-recipe
       :lang 'c
       :ts-mode 'c-ts-mode
       :remap 'c-mode
