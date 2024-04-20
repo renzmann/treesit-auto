@@ -150,7 +150,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :ts-mode 'dockerfile-ts-mode
       :remap 'dockerfile-mode
       :url "https://github.com/camdencheek/tree-sitter-dockerfile"
-      :ext "\\Dockerfile\\'")
+      :ext "[/\\]\\(?:Containerfile\\|Dockerfile\\)\\(?:\\.[^/\\]*\\)?\\'")
     ,(make-treesit-auto-recipe
       :lang 'elixir
       :ts-mode 'elixir-ts-mode
