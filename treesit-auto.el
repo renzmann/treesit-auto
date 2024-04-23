@@ -255,8 +255,16 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :lang 'markdown
       :ts-mode 'markdown-ts-mode
       :remap '(poly-markdown-mode markdown-mode)
+      :requires 'markdown-inline
       :url "https://github.com/tree-sitter-grammars/tree-sitter-markdown"
+      :revision "split_parser"
+      :source-dir "tree-sitter-markdown/src"
       :ext "\\.md\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'markdown-inline
+      :url "https://github.com/tree-sitter-grammars/tree-sitter-markdown"
+      :revision "split_parser"
+      :source-dir "tree-sitter-markdown-inline/src")
     ,(make-treesit-auto-recipe
       :lang 'nu
       :ts-mode 'nushell-ts-mode
