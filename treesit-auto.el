@@ -258,6 +258,12 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/tree-sitter-grammars/tree-sitter-markdown"
       :ext "\\.md\\'")
     ,(make-treesit-auto-recipe
+      :lang 'nix
+      :ts-mode 'nix-ts-mode
+      :remap 'nix-mode
+      :url "https://github.com/nix-community/tree-sitter-nix"
+      :ext "\\.nix\\'")
+    ,(make-treesit-auto-recipe
       :lang 'nu
       :ts-mode 'nushell-ts-mode
       :remap 'nushell-mode
