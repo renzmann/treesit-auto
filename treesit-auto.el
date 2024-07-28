@@ -210,6 +210,11 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :source-dir "src"
       :ext "\\.js\\'")
     ,(make-treesit-auto-recipe
+      :lang 'jsdoc
+      :ts-mode 'php-ts-mode
+      :url "https://github.com/tree-sitter/tree-sitter-jsdoc"
+      :ext "\\.php\\'")
+    ,(make-treesit-auto-recipe
       :lang 'json
       :ts-mode 'json-ts-mode
       :remap 'js-json-mode
@@ -281,6 +286,17 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :remap 'perl-mode
       :url "https://github.com/ganezdragon/tree-sitter-perl"
       :ext "\\.pl\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'php
+      :ts-mode 'php-ts-mode
+      :url "https://github.com/tree-sitter/tree-sitter-php"
+      :source-dir "php/src"
+      :ext "\\.php\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'phpdoc
+      :ts-mode 'php-ts-mode
+      :url "https://github.com/claytonrcarter/tree-sitter-phpdoc"
+      :ext "\\.php\\'")
     ,(make-treesit-auto-recipe
       :lang 'proto
       :ts-mode 'protobuf-ts-mode
