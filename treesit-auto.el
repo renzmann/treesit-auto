@@ -190,7 +190,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/tree-sitter/tree-sitter-html"
       :ext "\\.html\\'")
     ,(make-treesit-auto-recipe
-      :lang 'janet
+      :lang 'janet-simple
       :ts-mode 'janet-ts-mode
       :remap 'janet-mode
       :url "https://github.com/sogaiu/tree-sitter-janet-simple"
