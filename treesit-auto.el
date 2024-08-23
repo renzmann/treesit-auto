@@ -333,7 +333,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :lang 'toml
       :ts-mode 'toml-ts-mode
       :remap '(conf-toml-mode toml-mode)
-      :url "https://github.com/tree-sitter/tree-sitter-toml"
+      :url "https://github.com/tree-sitter-grammars/tree-sitter-toml"
       :ext "\\.toml\\'")
     ,(make-treesit-auto-recipe
       :lang 'tsx
