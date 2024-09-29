@@ -152,6 +152,12 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/camdencheek/tree-sitter-dockerfile"
       :ext "[/\\]\\(?:Containerfile\\|Dockerfile\\)\\(?:\\.[^/\\]*\\)?\\'")
     ,(make-treesit-auto-recipe
+      :lang 'elisp
+      :ts-mode 'elisp-ts-mode
+      :remap 'elisp-mode
+      :url "https://github.com/Wilfred/tree-sitter-elisp"
+      :ext "\\.el\\'")
+    ,(make-treesit-auto-recipe
       :lang 'elixir
       :ts-mode 'elixir-ts-mode
       :remap 'elixir-mode
@@ -312,6 +318,12 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :remap 'scala-mode
       :url "https://github.com/tree-sitter/tree-sitter-scala"
       :ext "\\.\\(scala\\|sbt\\)\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'solidity
+      :ts-mode 'solidity-ts-mode
+      :remap 'solidity-mode
+      :url "https://github.com/JoranHonig/tree-sitter-solidity"
+      :ext "\\.sol\\'")
     ,(make-treesit-auto-recipe
       :lang 'sql
       :ts-mode 'sql-ts-mode
