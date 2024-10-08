@@ -122,6 +122,12 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/uyha/tree-sitter-cmake"
       :ext "\\.cmake\\'")
     ,(make-treesit-auto-recipe
+      :lang 'cobol
+      :ts-mode 'cobol-ts-mode
+      :remap 'cobol-mode
+      :url "https://github.com/yutaro-sakamoto/tree-sitter-cobol"
+      :ext "\\.\\(cob\\|cbl\\)\\'")
+    ,(make-treesit-auto-recipe
       :lang 'commonlisp
       :ts-mode 'commonlisp-ts-mode
       :remap 'common-lisp-mode
