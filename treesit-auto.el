@@ -330,6 +330,11 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :remap 'surface-mode
       :url "https://github.com/connorlay/tree-sitter-surface")
     ,(make-treesit-auto-recipe
+      :lang 'swift
+      :ts-mode 'swift-ts-mode
+      :remap 'swift-mode
+      :url "https://github.com/alex-pinkus/tree-sitter-swift")
+    ,(make-treesit-auto-recipe
       :lang 'toml
       :ts-mode 'toml-ts-mode
       :remap '(conf-toml-mode toml-mode)
