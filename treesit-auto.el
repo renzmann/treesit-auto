@@ -178,6 +178,12 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/camdencheek/tree-sitter-go-mod"
       :ext "go\\.mod\\'")
     ,(make-treesit-auto-recipe
+      :lang 'gowork
+      :ts-mode 'go-work-ts-mode
+      :requires 'go
+      :url "https://github.com/omertuc/tree-sitter-go-work"
+      :ext "go\\.work\\'")
+    ,(make-treesit-auto-recipe
       :lang 'heex
       :ts-mode 'heex-ts-mode
       :remap 'heex-mode
