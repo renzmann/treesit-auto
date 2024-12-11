@@ -102,6 +102,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :ts-mode 'c-ts-mode
       :remap 'c-mode
       :url "https://github.com/tree-sitter/tree-sitter-c"
+      :requires 'cpp
       :ext "\\.c\\'")
     ,(make-treesit-auto-recipe
       :lang 'c-sharp
@@ -131,6 +132,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :lang 'cpp
       :ts-mode 'c++-ts-mode
       :remap 'c++-mode
+      :requires 'c
       :url "https://github.com/tree-sitter/tree-sitter-cpp"
       :ext "\\.cpp\\'")
     ,(make-treesit-auto-recipe
