@@ -401,6 +401,12 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :source-dir "wat/src"
       :ext "\\.wat\\'")
     ,(make-treesit-auto-recipe
+      :lang 'zig
+      :ts-mode 'zig-ts-mode
+      :remap 'zig-mode
+      :url "https://github.com/maxxnino/tree-sitter-zig"
+      :ext "\\.zig\\'")
+    ,(make-treesit-auto-recipe
       :lang 'wgsl
       :ts-mode 'wgsl-ts-mode
       :remap 'wgsl-mode
