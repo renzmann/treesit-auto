@@ -182,7 +182,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :ts-mode 'haskell-ts-mode
       :remap 'haskell-mode
       :url "https://github.com/tree-sitter/tree-sitter-haskell"
-      :ext "\\.l?hs\\'")
+      :ext "\\.hs\\'")
     ,(make-treesit-auto-recipe
       :lang 'heex
       :ts-mode 'heex-ts-mode
