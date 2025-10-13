@@ -84,6 +84,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :ts-mode 'bash-ts-mode
       :remap 'sh-mode
       :url "https://github.com/tree-sitter/tree-sitter-bash"
+      :abi14-revision "v0.23.3"
       :ext "\\.sh\\'")
     ,(make-treesit-auto-recipe
       :lang 'bibtex
@@ -169,6 +170,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :remap 'go-mode
       :requires 'gomod
       :url "https://github.com/tree-sitter/tree-sitter-go"
+      :abi14-revision "v0.23.4"
       :ext "\\.go\\'")
     ,(make-treesit-auto-recipe
       :lang 'gomod
@@ -176,6 +178,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :remap 'go-mod-mode
       :requires 'go
       :url "https://github.com/camdencheek/tree-sitter-go-mod"
+      :abi14-revision "v1.1.0"
       :ext "go\\.mod\\'")
     ,(make-treesit-auto-recipe
       :lang 'heex
@@ -292,6 +295,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :ts-mode 'python-ts-mode
       :remap 'python-mode
       :url "https://github.com/tree-sitter/tree-sitter-python"
+      :abi14-revision "v0.23.6"
       :ext "\\.py[iw]?\\'")
     ,(make-treesit-auto-recipe
       :lang 'r
