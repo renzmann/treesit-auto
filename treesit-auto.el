@@ -70,7 +70,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
 
 (cl-defstruct treesit-auto-recipe
   "Emacs metadata for a tree-sitter language grammar."
-  lang ts-mode remap requires url revision source-dir cc c++ ext)
+  lang ts-mode remap requires url revision abi14-revision source-dir cc c++ ext)
 
 (defvar treesit-auto-recipe-list
   `(,(make-treesit-auto-recipe
@@ -511,10 +511,17 @@ Non-nil only if installation completed without any errors."
           (cl-loop for recipe in (treesit-auto--selected-recipes)
                    collect (cons (treesit-auto-recipe-lang recipe)
                                  `(,(treesit-auto-recipe-url recipe)
-                                   ,(treesit-auto-recipe-revision recipe)
+                                   ,(treesit-auto-get-revision recipe)
                                    ,(treesit-auto-recipe-source-dir recipe)
                                    ,(treesit-auto-recipe-cc recipe)
                                    ,(treesit-auto-recipe-c++ recipe))))))
+
+(defun treesit-auto-get-revision (recipe)
+  "Return the revision for recipe, potentially using abi14-revision."
+  (let ((default-revision (treesit-auto-recipe-revision recipe)))
+    (if (and (fboundp 'treesit-library-abi-version) (eq (treesit-library-abi-version) 14))
+	(or (treesit-auto-recipe-abi14-revision recipe) default-revision)
+      default-revision)))
 
 (defun treesit-auto-install-all ()
   "Install every available, maintained grammar.
