@@ -143,7 +143,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :lang 'dart
       :ts-mode 'dart-ts-mode
       :remap 'dart-mode
-      :url "https://github.com/ast-grep/tree-sitter-dart"
+      :url "https://github.com/UserNobody14/tree-sitter-dart"
       :ext "\\.dart\\'")
     ,(make-treesit-auto-recipe
       :lang 'dockerfile
