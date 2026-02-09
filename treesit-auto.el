@@ -374,6 +374,13 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :source-dir "typescript/src"
       :ext "\\.ts\\'")
     ,(make-treesit-auto-recipe
+      :lang 'typespec
+      :ts-mode 'typespec-ts-mode
+      :url "https://github.com/happenslol/tree-sitter-typespec/"
+      :revision "main"
+      :source-dir "src"
+      :ext "\\.tsp\\'")
+    ,(make-treesit-auto-recipe
       :lang 'typst
       :ts-mode 'typst-ts-mode
       :remap 'typst-mode
