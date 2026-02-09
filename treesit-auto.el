@@ -157,7 +157,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :remap 'elixir-mode
       :requires 'heex
       :url "https://github.com/elixir-lang/tree-sitter-elixir"
-      :ext "\\.ex\\'")
+      :ext "\\.exs?\\'")
     ,(make-treesit-auto-recipe
       :lang 'gitcommit
       :ts-mode 'git-commit-ts-mode
