@@ -143,7 +143,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :lang 'dart
       :ts-mode 'dart-ts-mode
       :remap 'dart-mode
-      :url "https://github.com/ast-grep/tree-sitter-dart"
+      :url "https://github.com/UserNobody14/tree-sitter-dart"
       :ext "\\.dart\\'")
     ,(make-treesit-auto-recipe
       :lang 'dockerfile
@@ -157,7 +157,12 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :remap 'elixir-mode
       :requires 'heex
       :url "https://github.com/elixir-lang/tree-sitter-elixir"
-      :ext "\\.ex\\'")
+      :ext "\\.exs?\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'gitcommit
+      :ts-mode 'git-commit-ts-mode
+      :url "https://github.com/gbprod/tree-sitter-gitcommit"
+      :ext "\\COMMIT_EDITMSG\\'")
     ,(make-treesit-auto-recipe
       :lang 'glsl
       :ts-mode 'glsl-ts-mode
@@ -184,6 +189,12 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/omertuc/tree-sitter-go-work"
       :ext "go\\.work\\'")
     ,(make-treesit-auto-recipe
+      :lang 'haskell
+      :ts-mode 'haskell-ts-mode
+      :remap 'haskell-mode
+      :url "https://github.com/tree-sitter/tree-sitter-haskell"
+      :ext "\\.hs\\'")
+    ,(make-treesit-auto-recipe
       :lang 'heex
       :ts-mode 'heex-ts-mode
       :remap 'heex-mode
@@ -195,6 +206,11 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :remap '(mhtml-mode sgml-mode)
       :url "https://github.com/tree-sitter/tree-sitter-html"
       :ext "\\.html\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'hyprlang
+      :ts-mode 'hyprlang-ts-mode
+      :url "https://github.com/tree-sitter-grammars/tree-sitter-hyprlang"
+      :ext "/hypr/.*\\.conf\\'")
     ,(make-treesit-auto-recipe
       :lang 'janet
       :ts-mode 'janet-ts-mode
@@ -215,6 +231,10 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :revision "master"
       :source-dir "src"
       :ext "\\.js\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'jsdoc
+      :ts-mode 'php-ts-mode
+      :url "https://github.com/tree-sitter/tree-sitter-jsdoc")
     ,(make-treesit-auto-recipe
       :lang 'json
       :ts-mode 'json-ts-mode
@@ -288,6 +308,16 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/ganezdragon/tree-sitter-perl"
       :ext "\\.pl\\'")
     ,(make-treesit-auto-recipe
+      :lang 'php
+      :ts-mode 'php-ts-mode
+      :url "https://github.com/tree-sitter/tree-sitter-php"
+      :source-dir "php/src"
+      :ext "\\.php\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'phpdoc
+      :ts-mode 'php-ts-mode
+      :url "https://github.com/claytonrcarter/tree-sitter-phpdoc")
+    ,(make-treesit-auto-recipe
       :lang 'proto
       :ts-mode 'protobuf-ts-mode
       :remap 'protobuf-mode
@@ -336,10 +366,15 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :remap 'surface-mode
       :url "https://github.com/connorlay/tree-sitter-surface")
     ,(make-treesit-auto-recipe
+      :lang 'swift
+      :ts-mode 'swift-ts-mode
+      :remap 'swift-mode
+      :url "https://github.com/alex-pinkus/tree-sitter-swift")
+    ,(make-treesit-auto-recipe
       :lang 'toml
       :ts-mode 'toml-ts-mode
       :remap '(conf-toml-mode toml-mode)
-      :url "https://github.com/tree-sitter/tree-sitter-toml"
+      :url "https://github.com/tree-sitter-grammars/tree-sitter-toml"
       :ext "\\.toml\\'")
     ,(make-treesit-auto-recipe
       :lang 'tsx
@@ -360,6 +395,13 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :source-dir "typescript/src"
       :ext "\\.ts\\'")
     ,(make-treesit-auto-recipe
+      :lang 'typespec
+      :ts-mode 'typespec-ts-mode
+      :url "https://github.com/happenslol/tree-sitter-typespec/"
+      :revision "main"
+      :source-dir "src"
+      :ext "\\.tsp\\'")
+    ,(make-treesit-auto-recipe
       :lang 'typst
       :ts-mode 'typst-ts-mode
       :remap 'typst-mode
@@ -371,7 +413,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :lang 'verilog
       :ts-mode 'verilog-ts-mode
       :remap 'verilog-mode
-      :url "https://github.com/gmlarumbe/tree-sitter-verilog"
+      :url "https://github.com/gmlarumbe/tree-sitter-systemverilog"
       :ext "\\.s?vh?\\'")
     ,(make-treesit-auto-recipe
       :lang 'vhdl
