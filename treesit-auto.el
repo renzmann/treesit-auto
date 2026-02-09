@@ -220,7 +220,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/tree-sitter-grammars/tree-sitter-hyprlang"
       :ext "/hypr/.*\\.conf\\'")
     ,(make-treesit-auto-recipe
-      :lang 'janet
+      :lang 'janet-simple
       :ts-mode 'janet-ts-mode
       :remap 'janet-mode
       :url "https://github.com/sogaiu/tree-sitter-janet-simple"
@@ -262,12 +262,6 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/fwcd/tree-sitter-kotlin"
       :ext "\\.kts?\\'")
     ,(make-treesit-auto-recipe
-      :lang 'latex
-      :ts-mode 'latex-ts-mode
-      :remap 'latex-mode
-      :url "https://github.com/latex-lsp/tree-sitter-latex"
-      :ext "\\.tex\\'")
-    ,(make-treesit-auto-recipe
       :lang 'lua
       :ts-mode 'lua-ts-mode
       :remap 'lua-mode
@@ -290,6 +284,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :ts-mode 'markdown-ts-mode
       :remap '(poly-markdown-mode markdown-mode)
       :url "https://github.com/tree-sitter-grammars/tree-sitter-markdown"
+      :source-dir "tree-sitter-markdown/src"
       :ext "\\.md\\'")
     ,(make-treesit-auto-recipe
       :lang 'nix
@@ -361,6 +356,12 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :remap 'scala-mode
       :url "https://github.com/tree-sitter/tree-sitter-scala"
       :ext "\\.\\(scala\\|sbt\\)\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'solidity
+      :ts-mode 'solidity-ts-mode
+      :remap 'solidity-mode
+      :url "https://github.com/JoranHonig/tree-sitter-solidity"
+      :ext "\\.sol\\'")
     ,(make-treesit-auto-recipe
       :lang 'sql
       :ts-mode 'sql-ts-mode
@@ -449,6 +450,12 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/wasm-lsp/tree-sitter-wasm"
       :source-dir "wat/src"
       :ext "\\.wat\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'zig
+      :ts-mode 'zig-ts-mode
+      :remap 'zig-mode
+      :url "https://github.com/maxxnino/tree-sitter-zig"
+      :ext "\\.zig\\'")
     ,(make-treesit-auto-recipe
       :lang 'wgsl
       :ts-mode 'wgsl-ts-mode
