@@ -365,7 +365,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :lang 'verilog
       :ts-mode 'verilog-ts-mode
       :remap 'verilog-mode
-      :url "https://github.com/gmlarumbe/tree-sitter-verilog"
+      :url "https://github.com/gmlarumbe/tree-sitter-systemverilog"
       :ext "\\.s?vh?\\'")
     ,(make-treesit-auto-recipe
       :lang 'vhdl
