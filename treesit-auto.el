@@ -196,6 +196,11 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/tree-sitter/tree-sitter-html"
       :ext "\\.html\\'")
     ,(make-treesit-auto-recipe
+      :lang 'hyprlang
+      :ts-mode 'hyprlang-ts-mode
+      :url "https://github.com/tree-sitter-grammars/tree-sitter-hyprlang"
+      :ext "/hypr/.*\\.conf\\'")
+    ,(make-treesit-auto-recipe
       :lang 'janet
       :ts-mode 'janet-ts-mode
       :remap 'janet-mode
