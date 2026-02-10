@@ -5,7 +5,7 @@
 ;; Author: Robb Enzmann <robbenzmann@gmail.com>
 ;; Keywords: treesitter auto automatic major mode fallback convenience
 ;; URL: https://github.com/renzmann/treesit-auto.git
-;; Version: 1.0.8
+;; Version: 1.0.9
 ;; Package-Requires: ((emacs "29.0"))
 
 ;; This file is not part of GNU Emacs.
