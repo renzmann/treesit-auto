@@ -300,6 +300,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
     ,(make-treesit-auto-recipe
       :lang 'php
       :ts-mode 'php-ts-mode
+      :remap 'php-mode
       :url "https://github.com/tree-sitter/tree-sitter-php"
       :source-dir "php/src"
       :ext "\\.php\\'")
