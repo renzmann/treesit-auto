@@ -689,8 +689,10 @@ missing from `treesit-auto-langs', then it will not be added to
                         ((and langs (listp langs)) (treesit-auto--filter-recipes-with-langs langs selected-recipes))
                         (t (seq-filter #'treesit-auto--recipe-ready-p selected-recipes)))))
     (dolist (r recipes)
-      (add-to-list 'auto-mode-alist
-                   (cons (treesit-auto-recipe-ext r) (treesit-auto-recipe-ts-mode r))))))
+      (let ((ext (treesit-auto-recipe-ext r)))
+        (unless (null ext)
+          (add-to-list 'auto-mode-alist
+                       (cons ext (treesit-auto-recipe-ts-mode r))))))))
 
 (provide 'treesit-auto)
 ;;; treesit-auto.el ends here
