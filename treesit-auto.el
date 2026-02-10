@@ -5,7 +5,7 @@
 ;; Author: Robb Enzmann <robbenzmann@gmail.com>
 ;; Keywords: treesitter auto automatic major mode fallback convenience
 ;; URL: https://github.com/renzmann/treesit-auto.git
-;; Version: 1.0.7
+;; Version: 1.0.8
 ;; Package-Requires: ((emacs "29.0"))
 
 ;; This file is not part of GNU Emacs.
@@ -70,7 +70,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
 
 (cl-defstruct treesit-auto-recipe
   "Emacs metadata for a tree-sitter language grammar."
-  lang ts-mode remap requires url revision source-dir cc c++ ext)
+  lang ts-mode remap requires url revision abi14-revision source-dir cc c++ ext)
 
 (defvar treesit-auto-recipe-list
   `(,(make-treesit-auto-recipe
@@ -84,6 +84,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :ts-mode 'bash-ts-mode
       :remap 'sh-mode
       :url "https://github.com/tree-sitter/tree-sitter-bash"
+      :abi14-revision "v0.23.3"
       :ext "\\.sh\\'")
     ,(make-treesit-auto-recipe
       :lang 'bibtex
@@ -102,6 +103,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :ts-mode 'c-ts-mode
       :remap 'c-mode
       :url "https://github.com/tree-sitter/tree-sitter-c"
+      :requires 'cpp
       :ext "\\.c\\'")
     ,(make-treesit-auto-recipe
       :lang 'c-sharp
@@ -122,6 +124,12 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/uyha/tree-sitter-cmake"
       :ext "\\.cmake\\'")
     ,(make-treesit-auto-recipe
+      :lang 'cobol
+      :ts-mode 'cobol-ts-mode
+      :remap 'cobol-mode
+      :url "https://github.com/yutaro-sakamoto/tree-sitter-cobol"
+      :ext "\\.\\(cob\\|cbl\\)\\'")
+    ,(make-treesit-auto-recipe
       :lang 'commonlisp
       :ts-mode 'commonlisp-ts-mode
       :remap 'common-lisp-mode
@@ -131,7 +139,9 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :lang 'cpp
       :ts-mode 'c++-ts-mode
       :remap 'c++-mode
+      :requires 'c
       :url "https://github.com/tree-sitter/tree-sitter-cpp"
+      :revision "v0.22.0" ;; BUG: newer grammar breaks syntax highlighting in `c++-ts-mode'
       :ext "\\.cpp\\'")
     ,(make-treesit-auto-recipe
       :lang 'css
@@ -174,6 +184,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :remap 'go-mode
       :requires 'gomod
       :url "https://github.com/tree-sitter/tree-sitter-go"
+      :abi14-revision "v0.23.4"
       :ext "\\.go\\'")
     ,(make-treesit-auto-recipe
       :lang 'gomod
@@ -181,7 +192,14 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :remap 'go-mod-mode
       :requires 'go
       :url "https://github.com/camdencheek/tree-sitter-go-mod"
+      :abi14-revision "v1.1.0"
       :ext "go\\.mod\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'gowork
+      :ts-mode 'go-work-ts-mode
+      :requires 'go
+      :url "https://github.com/omertuc/tree-sitter-go-work"
+      :ext "go\\.work\\'")
     ,(make-treesit-auto-recipe
       :lang 'haskell
       :ts-mode 'haskell-ts-mode
@@ -206,7 +224,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/tree-sitter-grammars/tree-sitter-hyprlang"
       :ext "/hypr/.*\\.conf\\'")
     ,(make-treesit-auto-recipe
-      :lang 'janet
+      :lang 'janet-simple
       :ts-mode 'janet-ts-mode
       :remap 'janet-mode
       :url "https://github.com/sogaiu/tree-sitter-janet-simple"
@@ -244,12 +262,6 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/fwcd/tree-sitter-kotlin"
       :ext "\\.kts?\\'")
     ,(make-treesit-auto-recipe
-      :lang 'latex
-      :ts-mode 'latex-ts-mode
-      :remap 'latex-mode
-      :url "https://github.com/latex-lsp/tree-sitter-latex"
-      :ext "\\.tex\\'")
-    ,(make-treesit-auto-recipe
       :lang 'lua
       :ts-mode 'lua-ts-mode
       :remap 'lua-mode
@@ -272,6 +284,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :ts-mode 'markdown-ts-mode
       :remap '(poly-markdown-mode markdown-mode)
       :url "https://github.com/tree-sitter-grammars/tree-sitter-markdown"
+      :source-dir "tree-sitter-markdown/src"
       :ext "\\.md\\'")
     ,(make-treesit-auto-recipe
       :lang 'nix
@@ -315,6 +328,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :ts-mode 'python-ts-mode
       :remap 'python-mode
       :url "https://github.com/tree-sitter/tree-sitter-python"
+      :abi14-revision "v0.23.6"
       :ext "\\.py[iw]?\\'")
     ,(make-treesit-auto-recipe
       :lang 'r
@@ -340,6 +354,12 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :remap 'scala-mode
       :url "https://github.com/tree-sitter/tree-sitter-scala"
       :ext "\\.\\(scala\\|sbt\\)\\'")
+    ,(make-treesit-auto-recipe
+      :lang 'solidity
+      :ts-mode 'solidity-ts-mode
+      :remap 'solidity-mode
+      :url "https://github.com/JoranHonig/tree-sitter-solidity"
+      :ext "\\.sol\\'")
     ,(make-treesit-auto-recipe
       :lang 'sql
       :ts-mode 'sql-ts-mode
@@ -429,6 +449,12 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :source-dir "wat/src"
       :ext "\\.wat\\'")
     ,(make-treesit-auto-recipe
+      :lang 'zig
+      :ts-mode 'zig-ts-mode
+      :remap 'zig-mode
+      :url "https://github.com/maxxnino/tree-sitter-zig"
+      :ext "\\.zig\\'")
+    ,(make-treesit-auto-recipe
       :lang 'wgsl
       :ts-mode 'wgsl-ts-mode
       :remap 'wgsl-mode
@@ -439,6 +465,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :ts-mode 'yaml-ts-mode
       :remap 'yaml-mode
       :url "https://github.com/tree-sitter-grammars/tree-sitter-yaml"
+      :abi14-revision "v0.7.2"
       :ext "\\.ya?ml\\'"))
   "Map each tree-sitter lang to Emacs metadata.")
 
@@ -546,10 +573,17 @@ Non-nil only if installation completed without any errors."
           (cl-loop for recipe in (treesit-auto--selected-recipes)
                    collect (cons (treesit-auto-recipe-lang recipe)
                                  `(,(treesit-auto-recipe-url recipe)
-                                   ,(treesit-auto-recipe-revision recipe)
+                                   ,(treesit-auto-get-revision recipe)
                                    ,(treesit-auto-recipe-source-dir recipe)
                                    ,(treesit-auto-recipe-cc recipe)
                                    ,(treesit-auto-recipe-c++ recipe))))))
+
+(defun treesit-auto-get-revision (recipe)
+  "Return the revision for recipe, potentially using abi14-revision."
+  (let ((default-revision (treesit-auto-recipe-revision recipe)))
+    (if (and (fboundp 'treesit-library-abi-version) (eq (treesit-library-abi-version) 14))
+	(or (treesit-auto-recipe-abi14-revision recipe) default-revision)
+      default-revision)))
 
 (defun treesit-auto-install-all ()
   "Install every available, maintained grammar.

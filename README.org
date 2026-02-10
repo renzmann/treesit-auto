@@ -205,6 +205,7 @@ compiler to use.  Each recipe can take these arguments:
 :remap
 :url
 :revision
+:abi14-revision
 :requires
 :source-dir
 :cc
@@ -249,6 +250,27 @@ builds will attempt to load the TSX grammar.
 The =:url=, =:revision=, =:source-dir=, =:cc=, and =:c++= arguments are all documented
 under =treesit-language-source-alist=, which is part of base Emacs, not this
 package.
+
+*** =:abi14-revision= and =version-mismatch= errors
+If treesit reports reports =(treesit): The installed language grammar
+for foo cannot be located or has problems (version-mismatch): 15= it
+means that the grammar is using ABI 15, but Emacs only supports
+earlier versions (e.g. Emacs 30.1 supports ABI versions 13 and 14). To
+fix this, set =:abi14-revision= to a git tag that corresponds to an
+ABI 14 version in the grammar repository.
+
+Finding the right tag can require some trial and error, by checking
+out different revisions of the grammar and building them. Once you've
+built a grammar you can use the script =check_treesit_abi.py= to print
+its ABI version.
+
+Once you find the tag for the ABI 14 revision of a grammar, please
+submit a pull request to add it to the default value of
+=treesit-auto-recipe-list=.
+
+Setting =:abi14-revision= is preferable to changing =:revision=,
+because changing =:revision= would force the ABI 14 version even after
+Emacs starts supporting ABI 15.
 
 ** Keep track of your hooks
 This package does not modify any of your major mode hooks.  That is, if you have
