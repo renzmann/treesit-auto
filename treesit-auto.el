@@ -472,6 +472,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :ts-mode 'yaml-ts-mode
       :remap 'yaml-mode
       :url "https://github.com/tree-sitter-grammars/tree-sitter-yaml"
+      :abi14-revision "v0.7.2"
       :ext "\\.ya?ml\\'"))
   "Map each tree-sitter lang to Emacs metadata.")
 
