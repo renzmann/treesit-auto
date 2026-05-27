@@ -104,6 +104,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :remap 'c-mode
       :url "https://github.com/tree-sitter/tree-sitter-c"
       :requires 'cpp
+      :abi14-revision "v0.23.6"
       :ext "\\.c\\'")
     ,(make-treesit-auto-recipe
       :lang 'c-sharp
