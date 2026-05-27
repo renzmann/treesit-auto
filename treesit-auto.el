@@ -242,6 +242,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/tree-sitter/tree-sitter-javascript"
       :revision "master"
       :source-dir "src"
+      :abi14-revision "v0.23.1"
       :ext "\\.js\\'")
     ,(make-treesit-auto-recipe
       :lang 'json
