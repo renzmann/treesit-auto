@@ -248,7 +248,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :ts-mode 'json-ts-mode
       :remap 'js-json-mode
       :url "https://github.com/tree-sitter/tree-sitter-json"
-      :ext "\\.json\\'")
+      :ext "\\.jsonc?\\'")
     ,(make-treesit-auto-recipe
       :lang 'julia
       :ts-mode 'julia-ts-mode
