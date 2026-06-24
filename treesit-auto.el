@@ -582,7 +582,7 @@ Non-nil only if installation completed without any errors."
   "Return the revision for recipe, potentially using abi14-revision."
   (let ((default-revision (treesit-auto-recipe-revision recipe)))
     (if (and (fboundp 'treesit-library-abi-version) (eq (treesit-library-abi-version) 14))
-	(or (treesit-auto-recipe-abi14-revision recipe) default-revision)
+        (or (treesit-auto-recipe-abi14-revision recipe) default-revision)
       default-revision)))
 
 (defun treesit-auto-install-all ()
