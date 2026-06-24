@@ -103,6 +103,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :ts-mode 'c-ts-mode
       :remap 'c-mode
       :url "https://github.com/tree-sitter/tree-sitter-c"
+      :abi14-revision "v0.23.6"
       :requires 'cpp
       :ext "\\.c\\'")
     ,(make-treesit-auto-recipe
@@ -142,12 +143,14 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :requires 'c
       :url "https://github.com/tree-sitter/tree-sitter-cpp"
       :revision "v0.22.0" ;; BUG: newer grammar breaks syntax highlighting in `c++-ts-mode'
+      :abi14-revision "v0.23.4"
       :ext "\\.cpp\\'")
     ,(make-treesit-auto-recipe
       :lang 'css
       :ts-mode 'css-ts-mode
       :remap 'css-mode
       :url "https://github.com/tree-sitter/tree-sitter-css"
+      :abi14-revision "v0.23.2"
       :ext "\\.css\\'")
     ,(make-treesit-auto-recipe
       :lang 'dart
@@ -241,6 +244,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :remap '(js-mode javascript-mode js2-mode)
       :url "https://github.com/tree-sitter/tree-sitter-javascript"
       :revision "master"
+      :abi14-revision "v0.23.1"
       :source-dir "src"
       :ext "\\.js\\'")
     ,(make-treesit-auto-recipe
@@ -347,6 +351,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :ts-mode 'rust-ts-mode
       :remap 'rust-mode
       :url "https://github.com/tree-sitter/tree-sitter-rust"
+      :abi14-revision "v0.23.2"
       :ext "\\.rs\\'")
     ,(make-treesit-auto-recipe
       :lang 'scala
@@ -390,6 +395,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :requires 'typescript
       :url "https://github.com/tree-sitter/tree-sitter-typescript"
       :revision "master"
+      :abi14-revision "v0.20.3"
       :source-dir "tsx/src"
       :ext "\\.tsx\\'")
     ,(make-treesit-auto-recipe
@@ -399,6 +405,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :requires 'tsx
       :url "https://github.com/tree-sitter/tree-sitter-typescript"
       :revision "master"
+      :abi14-revision "v0.20.3"
       :source-dir "typescript/src"
       :ext "\\.ts\\'")
     ,(make-treesit-auto-recipe
