@@ -142,7 +142,6 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :remap 'c++-mode
       :requires 'c
       :url "https://github.com/tree-sitter/tree-sitter-cpp"
-      :revision "v0.22.0" ;; BUG: newer grammar breaks syntax highlighting in `c++-ts-mode'
       :abi14-revision "v0.23.4"
       :ext "\\.cpp\\'")
     ,(make-treesit-auto-recipe
