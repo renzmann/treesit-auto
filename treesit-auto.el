@@ -383,6 +383,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :remap 'sql-mode
       :revision "gh-pages"
       :url "https://github.com/DerekStride/tree-sitter-sql"
+      :source-dir "src"
       :ext "\\.sql\\'")
     ,(make-treesit-auto-recipe
       :lang 'surface
