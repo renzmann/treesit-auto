@@ -105,7 +105,6 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/tree-sitter/tree-sitter-c"
       :abi14-revision "v0.23.6"
       :requires 'cpp
-      :abi14-revision "v0.23.6"
       :ext "\\.c\\'")
     ,(make-treesit-auto-recipe
       :lang 'c-sharp
@@ -250,7 +249,6 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :revision "master"
       :abi14-revision "v0.23.1"
       :source-dir "src"
-      :abi14-revision "v0.23.1"
       :ext "\\.js\\'")
     ,(make-treesit-auto-recipe
       :lang 'json
@@ -299,7 +297,6 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/tree-sitter-grammars/tree-sitter-markdown"
       :abi14-revision "v0.4.1"
       :source-dir "tree-sitter-markdown/src"
-      :abi14-revision "v0.3.2"
       :ext "\\.md\\'")
     ,(make-treesit-auto-recipe
       :lang 'nix
