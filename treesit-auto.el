@@ -361,7 +361,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :ts-mode 'rust-ts-mode
       :remap 'rust-mode
       :url "https://github.com/tree-sitter/tree-sitter-rust"
-      :abi14-revision "v0.23.2"
+      :abi14-revision "v0.23.3"
       :ext "\\.rs\\'")
     ,(make-treesit-auto-recipe
       :lang 'scala
