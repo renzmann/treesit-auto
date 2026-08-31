@@ -172,6 +172,11 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :url "https://github.com/elixir-lang/tree-sitter-elixir"
       :ext "\\.exs?\\'")
     ,(make-treesit-auto-recipe
+      :lang 'gleam
+      :ts-mode 'gleam-ts-mode
+      :url "https://github.com/gleam-lang/tree-sitter-gleam"
+      :ext "\\.gleam\\'")
+    ,(make-treesit-auto-recipe
       :lang 'gitcommit
       :ts-mode 'git-commit-ts-mode
       :url "https://github.com/gbprod/tree-sitter-gitcommit"
