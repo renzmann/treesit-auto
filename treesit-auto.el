@@ -689,11 +689,11 @@ function adds every tree-sitter mode that satisfies
 `treesit-ready-p' to `auto-mode-alist'.
 
 If LANGS is `all', then every tree-sitter mode available to
-Emacs will be added to `auto-mode-alist', regardless of whether
-it satisfies `treesit-ready-p'.  For instance, Emacs 29.1 ships
-with `rust-ts-mode', so \\=(treesit-auto-add-to-auto-mode-alist
-\\='all\\=) would cause Emacs to load a Rust file in `rust-ts-mode',
-rather than `fundamental-mode'.
+Emacs that either satisfies `treesit-ready-p' or has no fallback
+mode available will be added to `auto-mode-alist'.  For instance,
+Emacs 29.1 ships with `rust-ts-mode', so
+\\=(treesit-auto-add-to-auto-mode-alist \\='all\\=) would cause Emacs to
+load a Rust file in `rust-ts-mode', rather than `fundamental-mode'.
 
 If LANGS is a list, then only the listed languages will be added
 to `auto-mode-alist'.  The symbols in LANGS should correspond to
@@ -703,8 +703,13 @@ variable takes priority over this argument.  If a language is
 missing from `treesit-auto-langs', then it will not be added to
 `auto-mode-alist', even if it is listed in LANGS."
   (let* ((selected-recipes (treesit-auto--selected-recipes))
-         (recipes (cond ((eq langs 'all) (seq-filter (lambda (r) (fboundp (treesit-auto-recipe-ts-mode r)))
-                                                     selected-recipes))
+         (recipes (cond ((eq langs 'all)
+                         (seq-filter (lambda (r)
+                                       (and (fboundp (treesit-auto-recipe-ts-mode r))
+                                            (or (treesit-auto--recipe-ready-p r)
+                                                (not (seq-some #'fboundp
+                                                               (ensure-list (treesit-auto-recipe-remap r)))))))
+                                     selected-recipes))
                         ;; See https://github.com/renzmann/treesit-auto/pull/67 for why we have (and langs (listp langs)) here
                         ((and langs (listp langs)) (treesit-auto--filter-recipes-with-langs langs selected-recipes))
                         (t (seq-filter #'treesit-auto--recipe-ready-p selected-recipes)))))
