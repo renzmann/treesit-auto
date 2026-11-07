@@ -472,7 +472,7 @@ by manipulating the `treesit-auto-recipe-list' variable."
       :lang 'zig
       :ts-mode 'zig-ts-mode
       :remap 'zig-mode
-      :url "https://github.com/maxxnino/tree-sitter-zig"
+      :url "https://github.com/tree-sitter-grammars/tree-sitter-zig"
       :ext "\\.zig\\'")
     ,(make-treesit-auto-recipe
       :lang 'wgsl
